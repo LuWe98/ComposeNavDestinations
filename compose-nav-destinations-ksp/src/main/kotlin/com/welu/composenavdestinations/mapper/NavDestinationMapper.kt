@@ -3,71 +3,79 @@ package com.welu.composenavdestinations.mapper
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
-import com.google.devtools.ksp.symbol.ClassKind.CLASS
-import com.google.devtools.ksp.symbol.ClassKind.OBJECT
-import com.welu.composenavdestinations.DefaultValueExtractor.getDefaultValue
-import com.welu.composenavdestinations.annotaioninfo.NavDestinationAnnotation
-import com.welu.composenavdestinations.extensions.*
-import com.welu.composenavdestinations.model.KSFileContent
-import com.welu.composenavdestinations.model.mapper.GeneratedClass
-import com.welu.composenavdestinations.model.mapper.ValueParameter
+import com.welu.composenavdestinations.annotationinfo.NavDestinationAnnotation
+import com.welu.composenavdestinations.extensions.ksp.*
+import com.welu.composenavdestinations.mapper.DefaultValueExtractor.getDefaultValue
+import com.welu.composenavdestinations.model.*
+import com.welu.composenavdestinations.utils.StandardLibraries
+import java.io.Serializable
 
 class NavDestinationMapper(
     private val resolver: Resolver,
-    private val logger: KSPLogger
-): AnnotationMapper<GeneratedClass> {
+    private val logger: KSPLogger,
+    private val navArguments: Sequence<KSValueParameter>
+) : AnnotationMapper<KSFunctionDeclaration, NavDestinationInfo> {
 
-    private val ksFileContentMap = mutableMapOf<KSFile, KSFileContent>()
+    private val ksFileContentMap by lazy { mutableMapOf<KSFile, KSFileContent>() }
 
-    //Alles suspending machen, mit parameterverarbeitung etc
-    override fun map(declaration: KSClassDeclaration): GeneratedClass {
-         return when (declaration.classKind) {
-            OBJECT -> mapToGeneratedObject(declaration)
-            CLASS -> mapToGeneratedClass(declaration)
-            else -> {
-                logger.error("Only Classes and Objects are allowed")
-                throw  IllegalStateException()
-            }
+    private val parcelableType: KSType by lazy { resolver.getTypeWithClassName(StandardLibraries.PARCELABLE) }
+
+    private val KSType?.isParcelable get() = this?.let(parcelableType::isAssignableFrom) ?: false
+
+    private val serializableType: KSType by lazy { resolver.getTypeWithClass(Serializable::class) }
+
+    private val KSType?.isSerializable get() = this?.let(serializableType::isAssignableFrom) ?: false
+
+    private val listType: KSType by lazy { resolver.getStarProjectedTypeWithClass(List::class) }
+
+    private val KSType?.isList get() = this?.let(listType::isAssignableFrom) ?: false
+
+    private val setType: KSType by lazy { resolver.getStarProjectedTypeWithClass(Set::class) }
+
+    private val KSType?.isSet get() = this?.let(setType::isAssignableFrom) ?: false
+
+
+    override fun map(declaration: KSFunctionDeclaration): NavDestinationInfo {
+
+        val destinationName = declaration.simpleName.asString() + "NavDestination"
+
+        val routeArg: String = declaration.getRouteName()
+
+        var destinationInfo = NavDestinationInfo(
+            name = destinationName,
+            route = routeArg,
+            functionDeclaration = declaration
+        )
+
+        // Die NavArgs Klasse wird verwendet, wenn man eine angibt, ansonsten wird eine generiert mit @NavArgument annotierten Parametern
+        val navArgsClass: KSClassDeclaration = declaration.getNavArgsClass()
+
+        val validParameters: List<KSValueParameter>
+
+        if (navArgsClass.qualifiedName?.asString() != Unit::class.qualifiedName) {
+            validParameters = navArgsClass.primaryConstructor?.validParameters ?: throw IllegalStateException("")
+            destinationInfo = destinationInfo.copy(navArgsClass = navArgsClass)
+        } else {
+            validParameters = declaration.parameters.filter(navArguments::contains)
         }
+
+        if (validParameters.isEmpty()) return destinationInfo
+
+        val fileContent: KSFileContent = declaration.getKSFileContent(validParameters)
+
+        val parameters = validParameters.map { parameter ->
+            mapToParameter(parameter, fileContent)
+        }
+
+        return destinationInfo.copy(parameters = parameters)
     }
 
-    private fun mapToGeneratedObject(objectDeclaration: KSClassDeclaration): GeneratedClass {
-        val routeArg: String = objectDeclaration.getRouteName()
-        logger.info("ANNOTATED OBJECT: $routeArg \n")
-        return GeneratedClass(routeArg, objectDeclaration, OBJECT)
-    }
-
-    private fun mapToGeneratedClass(classDeclaration: KSClassDeclaration): GeneratedClass {
-        val routeArg: String = classDeclaration.getRouteName()
-        logger.info("ANNOTATED CLASS: $routeArg \n")
-
-        // ODER: classDeclaration.validProperties -> Wenn man nicht nur die vom Konstrukktor nehmen will
-        val validParameters = classDeclaration.primaryConstructor?.validParameters ?: return GeneratedClass(routeArg, classDeclaration, CLASS)
-        if (validParameters.isEmpty()) return GeneratedClass(routeArg, classDeclaration, CLASS)
-
-        val fileContent: KSFileContent = getKSFileContent(classDeclaration, validParameters)
-
-        val valueParameters = validParameters.map { parameter ->
-            mapToValueParameter(parameter, fileContent)
-        }
-
-        valueParameters.forEach {
-            logger.info("ArgName - ${it.name}, Type - ${it.type}, IsNullable - ${it.isNullable}, Def Value - ${it.defaultValue?.value ?: "NO DEFAULT VALUE PRESENT"}\n\n")
-        }
-
-        return GeneratedClass(routeArg, classDeclaration, CLASS, valueParameters)
-    }
-
-
-    private fun getKSFileContent(
-        classDeclaration: KSClassDeclaration,
-        constructorParameters: List<KSValueParameter>
-    ): KSFileContent {
+    private fun KSDeclaration.getKSFileContent(parameters: List<KSValueParameter>): KSFileContent {
         //Checks if any default Value is Present. If yes, we load the related file in order to read those and extract the imports
-        if (constructorParameters.none(KSValueParameter::hasDefault)) return KSFileContent()
+        if (parameters.none(KSValueParameter::hasDefault)) return KSFileContent()
 
         //Checkt ob das File mit den Import schon geladen wurden oder nicht. Lädt es nur, wenn es noch nicht reingeladen wurde
-        val rootKSFile = classDeclaration.rootKSFile
+        val rootKSFile = rootKSFile
         return ksFileContentMap[rootKSFile] ?: run {
             val fileLines = rootKSFile.fileLines
             return KSFileContent(fileLines, rootKSFile.extractImports(lines = fileLines)).also {
@@ -76,55 +84,68 @@ class NavDestinationMapper(
         }
     }
 
-    private fun mapToValueParameter(valueParameter: KSValueParameter, fileContent: KSFileContent): ValueParameter {
+    private fun mapToParameter(valueParameter: KSValueParameter, fileContent: KSFileContent): Parameter {
         //Das ist der Name von der Property
-        val argName = valueParameter.name!!.asString()
-        //Das ist der reolved Type
-        val argResolvedType = valueParameter.type.resolve()
-        //Das ist der Typ der Variablen
-        val argType = argResolvedType.declaration.simpleName.asString()
+        val parameterName = valueParameter.name!!.asString()
+        //Das ist der resolved Type
+        val resolvedType = valueParameter.type.resolve()
         //Das ist der Import Name
-        val argQualifiedType = argResolvedType.declaration.qualifiedName!!.asString()
-        //Nullability Check
-        val isNullable = argResolvedType.isNullable
-        //Default Value Check
-        val argDefValue = valueParameter.getDefaultValue(
-            resolver = resolver,
-            fileContent = fileContent,
-            argQualifiedType = argQualifiedType
-        )
+        val qualifiedType = resolvedType.declaration.qualifiedName?.asString() ?: resolvedType.declaration.simpleName.asString()
+        //Gets the parameter Type Info
+        val parameterTypeInfo = resolvedType.asParameterTypeInfo ?: throw IllegalStateException("Parameter is invalid!")
+        //Default Value Check and retrieval
+        val parameterDefValue = valueParameter.getDefaultValue(resolver, fileContent, qualifiedType)
 
-        return ValueParameter(
-            name = argName,
-            type = argType,
-            qualifiedType = argQualifiedType,
-            isNullable = isNullable,
-            defaultValue = argDefValue
+        return Parameter(
+            name = parameterName,
+            typeInfo = parameterTypeInfo,
+            defaultValue = parameterDefValue
         )
     }
 
-    private inline fun <reified T> KSClassDeclaration.getAnnotationArgument(argName: String): T =
-        requireAnnotationWith(NavDestinationAnnotation).requireValueArgument(argName).valueAs()
+    private val KSType.asParameterTypeInfo get(): ParameterTypeInfo? {
+        if (declaration.qualifiedName == null) return null
 
-    private fun KSClassDeclaration.getRouteName(): String {
-        return getAnnotationArgument<String>(NavDestinationAnnotation.routeArg).ifBlank { simpleName.asString() }
+        val classDeclaration: KSClassDeclaration = (getTypeAliasDeclaration() ?: declaration) as KSClassDeclaration
+        val classDeclarationType: KSType = classDeclaration.asType
+
+        val packageImport = PackageImport(
+            simpleName = classDeclaration.simpleName.asString(),
+            qualifiedName = classDeclaration.qualifiedName?.asString() ?: declaration.qualifiedName!!.asString()
+        )
+
+        return ParameterTypeInfo(
+            isNullable = isMarkedNullable,
+            type = ParameterType(
+                import = packageImport,
+                typeArguments = extractedParameterTypeArguments,
+                isSerializable = classDeclarationType.isSerializable,
+                isParcelable = classDeclarationType.isParcelable,
+                isEnum = classDeclaration.isEnum,
+                isList = classDeclarationType.isList,
+                isSet = classDeclarationType.isSet
+            )
+        )
     }
 
+    private val KSType.extractedParameterTypeArguments get(): List<ParameterTypeArgument> = arguments.mapNotNull { arg ->
+        if (arg.variance == Variance.STAR) return@mapNotNull ParameterTypeArgument.Star
 
-    /*
-    Standard Imports:
-    kotlin.*
-    kotlin.annotation.*
-    kotlin.collections.*
-    kotlin.comparisons.*
-    kotlin.io.*
-    kotlin.ranges.*
-    kotlin.sequences.*
-    kotlin.text.*
- */
-//        runCatching {
-//            resolver.getValidDeclarationsOfPackage("kotlin.text").distinctBy { it.simpleName }.forEachWithIterator {
-//                fileOutputStream.write(it.simpleName.asString() + "\n")
-//            }
-//        }
+        val resolvedType = arg.type?.resolve() ?: return@mapNotNull null
+
+        // Alternativ einfach null zurückgeben
+        if (resolvedType.isError) throw IllegalArgumentException("Resolved type contains errors: $resolvedType")
+
+        ParameterTypeArgument.Typed(
+            typeInfo = resolvedType.asParameterTypeInfo ?: return@mapNotNull null,
+            varianceLabel = arg.variance.label
+        )
+    }
+
+    private fun KSFunctionDeclaration.getRouteName() =
+        getAnnotationArgument<String>(NavDestinationAnnotation.ROUTE_ARG, NavDestinationAnnotation).ifBlank(simpleName::asString)
+
+    private fun KSFunctionDeclaration.getNavArgsClass(): KSClassDeclaration =
+        (getAnnotationArgument<KSType>(NavDestinationAnnotation.NAV_ARGS_ARG, NavDestinationAnnotation).declaration as KSClassDeclaration)
+
 }

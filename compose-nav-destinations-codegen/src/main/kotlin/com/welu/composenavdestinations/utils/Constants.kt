@@ -5,5 +5,4 @@ object Constants {
 
     const val ANNOTATION_NAV_DESTINATION = "$PACKAGE_NAME.annotations.NavDestination"
 
-
 }

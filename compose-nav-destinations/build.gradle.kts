@@ -20,6 +20,15 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.3.0-beta01"
+    }
+    
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -31,5 +40,5 @@ android {
 }
 
 dependencies {
-    api("androidx.navigation:navigation-compose:2.5.0")
+    api("androidx.navigation:navigation-compose:2.5.1")
 }

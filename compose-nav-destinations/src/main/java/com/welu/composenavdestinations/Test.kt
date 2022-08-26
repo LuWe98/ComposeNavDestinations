@@ -7,11 +7,9 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.welu.composenavdestinations.annotations.NavDestination
 import com.welu.composenavdestinations.extensions.requireArg
-import com.welu.composenavdestinations.navigation.NavHost
-import com.welu.composenavdestinations.navigation.composable
-import com.welu.composenavdestinations.navigation.navigate
+import com.welu.composenavdestinations.extensions.navigation.NavHost
+import com.welu.composenavdestinations.extensions.navigation.navigate
 import com.welu.composenavdestinations.spec.NavDestinationPlainSpec
 import com.welu.composenavdestinations.spec.NavDestinationSpec
 import com.welu.composenavdestinations.spec.Routable
@@ -22,13 +20,7 @@ fun App() {
     val controller = rememberNavController()
 
     NavHost(controller, startDestination = HomeScreenNavDestination) {
-        composable(HomeScreenNavDestination) {
-            controller.navigate(DetailsScreenNavDestination("21"))
-        }
 
-        composable(DetailsScreenNavDestination) {
-            controller.navigate(HomeScreenNavDestination())
-        }
     }
 }
 

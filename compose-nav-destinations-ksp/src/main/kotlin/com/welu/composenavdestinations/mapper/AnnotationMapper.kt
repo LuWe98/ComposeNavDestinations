@@ -1,9 +1,9 @@
 package com.welu.composenavdestinations.mapper
 
-import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 
-interface AnnotationMapper<T> {
+interface AnnotationMapper<D: KSDeclaration, T> {
 
-    fun map(declaration: KSClassDeclaration): T
+    fun map(declaration: D): T
 
 }

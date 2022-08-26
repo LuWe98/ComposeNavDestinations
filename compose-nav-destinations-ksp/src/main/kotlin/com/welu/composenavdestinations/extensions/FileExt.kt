@@ -7,6 +7,8 @@ fun OutputStream.write(str: String): OutputStream = apply {
     write(str.toByteArray())
 }
 
+fun OutputStream.writeComment(str: String): OutputStream = write("// $str")
+
 val FileLocation.file get() = File(filePath)
 
 
@@ -28,7 +30,9 @@ fun <T> File.readFromLine(lineNumber: Int, block: (Sequence<String>) -> T) {
     reader.readFromLine(lineNumber, block)
 }
 
-fun File.readLine(lineNumber: Int): String = reader.readLines()[lineNumber]
+fun File.readLine(lineNumber: Int): String = reader.use {
+    it.readLines()[lineNumber]
+}
 
 fun File.readLines(from: Int, to: Int): String = reader.readLines().subList(from, to).reduce { acc, s -> acc + s + "\n" }
 

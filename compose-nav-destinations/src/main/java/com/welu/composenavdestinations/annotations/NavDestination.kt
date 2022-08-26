@@ -1,11 +1,10 @@
 package com.welu.composenavdestinations.annotations
 
-@Target(AnnotationTarget.CLASS)
+import kotlin.reflect.KClass
+
+@Target(AnnotationTarget.FUNCTION)
 annotation class NavDestination(
     val route: String = "",
+    val navArgs: KClass<*> = Unit::class,
     val deepLinks: Array<NavDestinationDeepLink> = []
-)
-
-annotation class NavDestinationDeepLink(
-    val route: String
 )
