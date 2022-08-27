@@ -3,14 +3,19 @@ package com.welu.composenavdestinations.extensions
 import com.google.devtools.ksp.symbol.FileLocation
 import java.io.*
 
-fun OutputStream.write(str: String): OutputStream = apply {
+fun OutputStream.write(str: String, lineBreaks: Int = 0): OutputStream = apply {
     write(str.toByteArray())
+    repeat(lineBreaks) {
+        write("\n".toByteArray())
+    }
 }
 
-fun OutputStream.writeComment(str: String): OutputStream = write("// $str")
+fun OutputStream.writeLine(str: String, lineBreaks: Int = 1) = write(str, lineBreaks)
+
+fun OutputStream.writeComment(str: String, lineBreaks: Int = 0): OutputStream = write("// $str", lineBreaks)
+
 
 val FileLocation.file get() = File(filePath)
-
 
 val File.reader get() = BufferedReader(InputStreamReader(FileInputStream(this), Charsets.UTF_8))
 

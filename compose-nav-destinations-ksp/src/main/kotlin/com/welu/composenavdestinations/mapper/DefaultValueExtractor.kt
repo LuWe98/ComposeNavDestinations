@@ -8,7 +8,7 @@ import com.welu.composenavdestinations.extensions.ksp.isImportNameContainedInPac
 import com.welu.composenavdestinations.model.DefaultValue
 import com.welu.composenavdestinations.model.DefaultValueDeclaration
 import com.welu.composenavdestinations.model.KSFileContent
-import com.welu.composenavdestinations.model.PackageImport
+import com.welu.composenavdestinations.model.PackageImportInfo
 
 object DefaultValueExtractor {
 
@@ -50,8 +50,8 @@ object DefaultValueExtractor {
 
             // Es handelt sich um ein Objekt, Funktion oder String.
             val imports = extractDefaultValueDeclarations(defaultValueString).flatMap {
-                findRelevantImportsForDeclaration(it, fileContent.packageImports, resolver)
-            }.distinctBy(PackageImport::qualifiedName)
+                findRelevantImportsForDeclaration(it, fileContent.packageImportInfos, resolver)
+            }.distinctBy(PackageImportInfo::qualifiedName)
 
             return DefaultValue(defaultValueString, imports)
         }
@@ -214,17 +214,17 @@ object DefaultValueExtractor {
 
     private fun findRelevantImportsForDeclaration(
         declaration: DefaultValueDeclaration,
-        filePackageImports: List<PackageImport>,
+        filePackageImportInfos: List<PackageImportInfo>,
         resolver: Resolver
-    ): List<PackageImport> {
+    ): List<PackageImportInfo> {
         // Imported As wird noch genommen, da die Declaration auch als der Wert angesprochen werden kann
-        val filtered = filePackageImports.filter {
+        val filtered = filePackageImportInfos.filter {
             declaration.name.isOneOf(it.simpleName, it.importedAs)
         }
 
         if (filtered.isNotEmpty()) return filtered
 
-        return filePackageImports.filter { import ->
+        return filePackageImportInfos.filter { import ->
             import.isWholePackageImport && resolver.isImportNameContainedInPackage(import.root, declaration.name)
         }.map { import ->
             //TODO -> Überprüfen ob das Mapping sinnvoll ist oder nicht

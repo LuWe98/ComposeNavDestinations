@@ -6,9 +6,15 @@ sealed class ListNavArgType<T>(
     serializeValueTransformation: (T) -> String = Any?::toString
 ) : CollectionNavArgType<T, List<T?>>(
     parseValueAction = parseValueAction,
-    listToCollectionMapper = { it },
+    collectionProvider = ::ArrayList,
     serializeValueTransformation = serializeValueTransformation
 )
+
+
+
+
+
+
 
 /*
 sealed class ListNavArgType<T>(

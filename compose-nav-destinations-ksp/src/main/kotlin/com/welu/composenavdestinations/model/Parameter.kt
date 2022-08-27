@@ -9,7 +9,7 @@ data class Parameter(
     val hasDefaultValue get() = defaultValue != null
 
     val imports
-        get(): List<PackageImport> = typeInfo.type.typeArguments.filterIsInstance<ParameterTypeArgument.Typed>().flatMap {
+        get(): List<PackageImportInfo> = typeInfo.type.typeArguments.filterIsInstance<ParameterTypeArgument.Typed>().flatMap {
             it.typeInfo.allChildImports
         }.toMutableList().apply {
             add(typeInfo.type.import)

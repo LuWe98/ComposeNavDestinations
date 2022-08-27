@@ -39,7 +39,7 @@ object NavArgCharSetType: SetNavArgType<Char>(NavArgCharType::parseValue)
 object NavArgCharArrayType: ArrayNavArgType<CharArray, Char>(
     emptyArrayProvider = ::charArrayOf,
     arrayProvider = List<Char>::toCharArray,
-    parseValueAction = ParseUtil::parseValue,
+    parseValueAction = ParseUtil::parseChar,
     arrayToStringTransformation = CharArray::joinToString
 )
 
@@ -164,6 +164,8 @@ class NavArgEnumListType<T: Enum<T>>(enumClass: KClass<T>): ListNavArgType<T>(en
 
 class NavArgEnumSetType<T: Enum<T>>(enumClass: KClass<T>): SetNavArgType<T>(enumClass::receiveValueOf, Enum<T>::name)
 
+class NavArgEnumArrayType<T: Enum<T>>(enumClass: KClass<T>): ArrayNullableNavArgType<T>(enumClass, enumClass::receiveValueOf, Enum<T>::name)
+
 
 
 // Parcelable
@@ -190,8 +192,3 @@ class NavArgParcelableArrayType<T : Parcelable>(clazz: KClass<T>, creator: Parce
 
 // Serializable
 object NavArgSerializableType: SingleNavArgType<Serializable>(Base64Util::deserialize, Serializable::serialize)
-
-
-
-// TODO
-// class NavArgListType<T>: ListNavArgType<T>()

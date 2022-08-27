@@ -11,9 +11,9 @@ import com.welu.composenavdestinations.navargs.NavArgConstants.ENCODED_VALUE_SEP
 sealed class ArrayNullableNavArgType<T : Any>(
     private val clazz: KClass<T>,
     private val parseValueAction: (value: String) -> T?,
+    private val serializeValueTransformation: (T) -> String = Any?::toString,
     private val emptyArrayProvider: () -> Array<T?> = { emptyArrayReflect(clazz) },
-    private val arrayProvider: (list: List<T?>) -> Array<T?> = { it.toTypedArray(clazz) },
-    private val serializeValueTransformation: (T) -> String = Any?::toString
+    private val arrayProvider: (list: List<T?>) -> Array<T?> = { it.toTypedArray(clazz) }
 ) : NavArgType<Array<T?>?>() {
 
     override fun parseValue(value: String): Array<T?>? = when (value) {

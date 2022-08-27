@@ -1,13 +1,28 @@
 package com.welu.composenavdestinations.extensions
 
+import android.annotation.SuppressLint
+import android.os.BaseBundle
 import android.os.Binder
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.ArrayMap
 import android.util.Size
 import java.io.Serializable
 
+@SuppressLint("DiscouragedPrivateApi")
+private val mapField = lazy {
+    BaseBundle::class.java.getDeclaredField("mMap").apply {
+        isAccessible = true
+    }
+}
+
 @Suppress("UNCHECKED_CAST")
 internal fun <T> Bundle.getTyped(key: String): T? = get(key) as T?
+
+//@Suppress("UNCHECKED_CAST")
+//fun <T: Any> Bundle.put(key: String, value: T?) {
+//    (mapField.value[this] as ArrayMap<String, Any>)[key] = value
+//}
 
 @Suppress("UNCHECKED_CAST")
 fun <T: Any> Bundle.put(key: String, value: T?) {
@@ -50,4 +65,3 @@ fun <T: Any> Bundle.put(key: String, value: T?) {
         else -> throw IllegalArgumentException("Unknown ValueType: ${value::class.simpleName}")
     }
 }
-

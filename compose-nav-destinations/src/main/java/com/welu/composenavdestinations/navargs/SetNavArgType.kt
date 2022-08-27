@@ -1,14 +1,15 @@
 package com.welu.composenavdestinations.navargs
 
-//TODO -> Check if Set Type is supported
 sealed class SetNavArgType<T>(
     parseValueAction: (value: String) -> T?,
     serializeValueTransformation: (T) -> String = Any?::toString
 ) : CollectionNavArgType<T, Set<T?>>(
     parseValueAction = parseValueAction,
-    listToCollectionMapper = List<T?>::toSet,
+    collectionProvider = ::HashSet,
     serializeValueTransformation = serializeValueTransformation
 )
+
+
 
 /*
 sealed class SetNavArgType<T>(

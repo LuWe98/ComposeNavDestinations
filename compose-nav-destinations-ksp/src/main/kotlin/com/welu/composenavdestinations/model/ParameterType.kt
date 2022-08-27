@@ -1,7 +1,7 @@
 package com.welu.composenavdestinations.model
 
 data class ParameterType(
-    val import: PackageImport,
+    val import: PackageImportInfo,
     val isEnum: Boolean = false,
     val isSerializable: Boolean = false,
     val isKtxSerializable: Boolean = false,

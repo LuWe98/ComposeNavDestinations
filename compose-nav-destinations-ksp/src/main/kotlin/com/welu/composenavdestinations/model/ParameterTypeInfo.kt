@@ -7,7 +7,7 @@ data class ParameterTypeInfo(
     val isNullable: Boolean
 ) {
 
-    val allChildImports get(): List<PackageImport> = type.typeArguments.filterIsInstance<Typed>().flatMap {
+    val allChildImports get(): List<PackageImportInfo> = type.typeArguments.filterIsInstance<Typed>().flatMap {
         it.typeInfo.allChildImports
     } + type.import
 
@@ -17,7 +17,7 @@ data class ParameterTypeInfo(
     val isKtxSerializable get() = type.isKtxSerializable
     val qualifiedName get() = type.import.qualifiedName
     val hasNoTypeArguments get() = type.typeArguments.isEmpty()
-    val hasOneTypeArguments get() = type.typeArguments.size == 1
+    val hasOneTypeArgument get() = type.typeArguments.size == 1
 
     val definition get(): String = run {
         if(type.typeArguments.isEmpty()) return@run type.import.simpleName

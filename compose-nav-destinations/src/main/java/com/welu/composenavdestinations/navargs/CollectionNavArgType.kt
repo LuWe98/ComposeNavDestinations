@@ -10,19 +10,20 @@ import com.welu.composenavdestinations.navargs.NavArgConstants.ENCODED_VALUE_SEP
 //TODO -> Check if List Type is supported
 sealed class CollectionNavArgType<E, T : Collection<E?>>(
     private val parseValueAction: (value: String) -> E?,
-    private val listToCollectionMapper: (List<E?>) -> T,
+    private val collectionProvider: () -> MutableCollection<E?>,
     private val serializeValueTransformation: (E) -> String = Any?::toString
 ) : NavArgType<T?>() {
 
     override fun put(bundle: Bundle, key: String, value: T?) = bundle.put(key, value)
 
+    @Suppress("UNCHECKED_CAST")
     override fun parseValue(value: String): T? = when (value) {
         DECODED_NULL_VALUE -> null
-        "{}" -> emptyList()
-        else -> value.subSequence(1, value.lastIndex).split(DECODED_VALUE_SEPARATOR).map {
+        "{}" -> collectionProvider()
+        else -> value.subSequence(1, value.lastIndex).split(DECODED_VALUE_SEPARATOR).mapTo(collectionProvider()) {
             if (it == DECODED_NULL_VALUE) null else parseValueAction(it)
         }
-    }?.let(listToCollectionMapper)
+    } as T?
 
     override fun serializeValue(value: T?) = value?.let {
         "{" + value.joinToString(ENCODED_VALUE_SEPARATOR, transform = {
