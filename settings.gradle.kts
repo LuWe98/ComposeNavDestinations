@@ -19,4 +19,3 @@ rootProject.name = "ComposeNavDestinations"
 include(":app")
 include(":compose-nav-destinations")
 include(":compose-nav-destinations-ksp")
-include(":compose-nav-destinations-codegen")

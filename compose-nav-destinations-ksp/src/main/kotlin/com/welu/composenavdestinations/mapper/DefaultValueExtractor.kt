@@ -8,7 +8,7 @@ import com.welu.composenavdestinations.extensions.ksp.isImportNameContainedInPac
 import com.welu.composenavdestinations.model.DefaultValue
 import com.welu.composenavdestinations.model.DefaultValueDeclaration
 import com.welu.composenavdestinations.model.KSFileContent
-import com.welu.composenavdestinations.model.PackageImportInfo
+import com.welu.composenavdestinations.model.ImportInfo
 
 object DefaultValueExtractor {
 
@@ -23,10 +23,10 @@ object DefaultValueExtractor {
     private const val ENDS_WITH_CRITERIA = "\\d[d|f|F]?"
     private val NUMBER_REGEX = Regex("^(($NO_DOT_DIGIT_CRITERIA|$DOT_DIGIT_CRITERIA)$ENDS_WITH_CRITERIA)\$")
 
-    @JvmName("getDefaultValueExt")
     fun KSValueParameter.getDefaultValue(
         resolver: Resolver,
         fileContent: KSFileContent,
+        //TODO -> can probably be removed - Falls jemand den qualified Name hinschreibt, statt den simple Name -> Sonst kann es nicht gefunden werden
         argQualifiedType: String,
     ): DefaultValue? {
         if (!hasDefault) return null
@@ -50,8 +50,8 @@ object DefaultValueExtractor {
 
             // Es handelt sich um ein Objekt, Funktion oder String.
             val imports = extractDefaultValueDeclarations(defaultValueString).flatMap {
-                findRelevantImportsForDeclaration(it, fileContent.packageImportInfos, resolver)
-            }.distinctBy(PackageImportInfo::qualifiedName)
+                findRelevantImportsForDeclaration(it, fileContent.importInfos, resolver)
+            }.distinctBy(ImportInfo::qualifiedName)
 
             return DefaultValue(defaultValueString, imports)
         }
@@ -214,18 +214,18 @@ object DefaultValueExtractor {
 
     private fun findRelevantImportsForDeclaration(
         declaration: DefaultValueDeclaration,
-        filePackageImportInfos: List<PackageImportInfo>,
+        fileImportInfos: List<ImportInfo>,
         resolver: Resolver
-    ): List<PackageImportInfo> {
+    ): List<ImportInfo> {
         // Imported As wird noch genommen, da die Declaration auch als der Wert angesprochen werden kann
-        val filtered = filePackageImportInfos.filter {
+        val filtered = fileImportInfos.filter {
             declaration.name.isOneOf(it.simpleName, it.importedAs)
         }
 
         if (filtered.isNotEmpty()) return filtered
 
-        return filePackageImportInfos.filter { import ->
-            import.isWholePackageImport && resolver.isImportNameContainedInPackage(import.root, declaration.name)
+        return fileImportInfos.filter { import ->
+            import.isWholePackageImport && resolver.isImportNameContainedInPackage(import.packageDir, declaration.name)
         }.map { import ->
             //TODO -> Überprüfen ob das Mapping sinnvoll ist oder nicht
             import.withSimpleName(declaration.name)

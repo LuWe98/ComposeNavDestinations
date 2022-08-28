@@ -25,7 +25,7 @@ internal fun <T> Bundle.getTyped(key: String): T? = get(key) as T?
 //}
 
 @Suppress("UNCHECKED_CAST")
-fun <T: Any> Bundle.put(key: String, value: T?) {
+fun <T : Any> Bundle.put(key: String, value: T?) {
     when (value) {
         null -> return
         is Boolean -> putBoolean(key, value)
@@ -49,19 +49,15 @@ fun <T: Any> Bundle.put(key: String, value: T?) {
         is Serializable -> putSerializable(key, value)
         is Size -> putSize(key, value)
         is Binder -> putBinder(key, value)
-        //TODO -> Sinnvoll das zu haben? - putSerializable(key, value.asArrayList)
+        is Array<*> -> when {
+            value.isArrayOf<String>() -> putStringArray(key, value as Array<String>)
+            value.isArrayOf<CharSequence>() -> putCharSequenceArray(key, value as Array<CharSequence>)
+            value.isArrayOf<Parcelable>() -> putParcelableArray(key, value as Array<Parcelable>)
+            else -> throw IllegalArgumentException("Unknown Array ValueType ${value::class.simpleName}")
+        }
+        //TODO -> Noch implementieren für Parcelable - is SparseArray<*>
         is List<*> -> throw IllegalArgumentException("List must implement Serializable or Parcelable")
         is Set<*> -> throw IllegalArgumentException("Set must implement Serializable or Parcelable")
-        is Array<*> -> {
-            when {
-                value.isArrayOf<String>() -> putStringArray(key, value as Array<String>)
-                value.isArrayOf<CharSequence>() -> putCharSequenceArray(key, value as Array<CharSequence>)
-                value.isArrayOf<Parcelable>() -> putParcelableArray(key, value as Array<Parcelable>)
-                else -> throw IllegalArgumentException("Unknown Array ValueType ${value::class.simpleName}")
-            }
-        }
-        //TODO -> Noch implementieren für Parcelable
-        // is SparseArray<*>
         else -> throw IllegalArgumentException("Unknown ValueType: ${value::class.simpleName}")
     }
 }

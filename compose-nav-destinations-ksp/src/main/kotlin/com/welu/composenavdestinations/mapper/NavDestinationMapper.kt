@@ -7,8 +7,9 @@ import com.welu.composenavdestinations.annotationinfo.NavDestinationAnnotation
 import com.welu.composenavdestinations.extensions.isOneOf
 import com.welu.composenavdestinations.extensions.ksp.*
 import com.welu.composenavdestinations.mapper.DefaultValueExtractor.getDefaultValue
+import com.welu.composenavdestinations.mapper.ParameterNavArgInfoMapper.extractParameterNavArgInfo
 import com.welu.composenavdestinations.model.*
-import com.welu.composenavdestinations.utils.StandardLibraries
+import com.welu.composenavdestinations.utils.PackageUtils
 import java.io.Serializable
 
 class NavDestinationMapper(
@@ -19,7 +20,7 @@ class NavDestinationMapper(
 
     private val ksFileContentMap by lazy { mutableMapOf<KSFile, KSFileContent>() }
 
-    private val parcelableType: KSType by lazy { resolver.getTypeWithClassName(StandardLibraries.PARCELABLE) }
+    private val parcelableType: KSType by lazy { resolver.getTypeWithClassName(PackageUtils.PARCELABLE_QUALIFIED_NAME) }
 
     private val KSType?.isParcelable get() = this?.let(parcelableType::isAssignableFrom) ?: false
 
@@ -30,14 +31,7 @@ class NavDestinationMapper(
     private val listType: KSType by lazy { resolver.getStarProjectedTypeWithClass(List::class) }
 
     private val KSType?.isValidList
-        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isOneOf(
-            List::class.qualifiedName,
-            java.util.List::class.qualifiedName,
-            MutableList::class.qualifiedName,
-            AbstractList::class.qualifiedName,
-            ArrayList::class.qualifiedName,
-            java.util.ArrayList::class.qualifiedName
-        ) ?: false
+        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isOneOf(*PackageUtils.VALID_LIST_QUALIFIERS) ?: false
 
     private val KSType?.isList
         get() = this?.let(listType::isAssignableFrom)?.also {
@@ -49,14 +43,7 @@ class NavDestinationMapper(
     private val setType: KSType by lazy { resolver.getStarProjectedTypeWithClass(Set::class) }
 
     private val KSType?.isValidSet
-        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isOneOf(
-            Set::class.qualifiedName,
-            java.util.Set::class.qualifiedName,
-            MutableSet::class.qualifiedName,
-            AbstractSet::class.qualifiedName,
-            HashSet::class.qualifiedName,
-            java.util.HashSet::class.qualifiedName
-        ) ?: false
+        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isOneOf(*PackageUtils.VALID_SET_QUALIFIERS) ?: false
 
     private val KSType?.isSet
         get() = this?.let(setType::isAssignableFrom)?.also {
@@ -76,14 +63,13 @@ class NavDestinationMapper(
 
         // Die NavArgs Klasse wird verwendet, wenn man eine angibt, ansonsten wird eine generiert mit @NavArgument annotierten Parametern
         val navArgsClass: KSClassDeclaration = declaration.getNavArgsClass()
-
         val validParameters: List<KSValueParameter>
 
-        if (navArgsClass.qualifiedName?.asString() != Unit::class.qualifiedName) {
+        if (navArgsClass.qualifiedName?.asString() == Unit::class.qualifiedName) {
+            validParameters = declaration.parameters.filter(navArguments::contains)
+        } else {
             validParameters = navArgsClass.primaryConstructor?.validParameters ?: throw IllegalStateException("")
             destinationInfo = destinationInfo.copy(navArgsClass = navArgsClass)
-        } else {
-            validParameters = declaration.parameters.filter(navArguments::contains)
         }
 
         if (validParameters.isEmpty()) return destinationInfo
@@ -122,10 +108,13 @@ class NavDestinationMapper(
         val parameterTypeInfo = resolvedType.asParameterTypeInfo ?: throw IllegalStateException("Parameter is invalid!")
         //Default Value Check and retrieval
         val parameterDefValue = valueParameter.getDefaultValue(resolver, fileContent, qualifiedType)
+        //The NavArgInfo for the according NavType<T>
+        val parameterNavArgInfo = parameterTypeInfo.extractParameterNavArgInfo()
 
         return Parameter(
             name = parameterName,
             typeInfo = parameterTypeInfo,
+            navArgInfo = parameterNavArgInfo,
             defaultValue = parameterDefValue
         )
     }
@@ -138,18 +127,18 @@ class NavDestinationMapper(
             val classDeclarationType: KSType = classDeclaration.asType
 
             //simpleName = classDeclaration.simpleName.asString(),
-            val packageImportInfo = PackageImportInfo(
+            val importInfo = ImportInfo(
                 qualifiedName = classDeclaration.qualifiedName?.asString() ?: declaration.qualifiedName!!.asString()
             )
 
             return ParameterTypeInfo(
                 isNullable = isMarkedNullable,
                 type = ParameterType(
-                    import = packageImportInfo,
+                    import = importInfo,
                     typeArguments = extractedParameterTypeArguments,
+                    isEnum = classDeclaration.isEnum,
                     isSerializable = classDeclarationType.isSerializable,
                     isParcelable = classDeclarationType.isParcelable,
-                    isEnum = classDeclaration.isEnum,
                     isList = classDeclarationType.isList,
                     isSet = classDeclarationType.isSet
                 )

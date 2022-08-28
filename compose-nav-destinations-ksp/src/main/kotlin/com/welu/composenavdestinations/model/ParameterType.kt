@@ -1,7 +1,7 @@
 package com.welu.composenavdestinations.model
 
 data class ParameterType(
-    val import: PackageImportInfo,
+    val import: ImportInfo,
     val isEnum: Boolean = false,
     val isSerializable: Boolean = false,
     val isKtxSerializable: Boolean = false,
@@ -9,4 +9,8 @@ data class ParameterType(
     val isList: Boolean = false,
     val isSet: Boolean = false,
     val typeArguments: List<ParameterTypeArgument> = emptyList()
-)
+) {
+
+    val isArray get() = import.qualifiedName == Array::class.qualifiedName
+
+}

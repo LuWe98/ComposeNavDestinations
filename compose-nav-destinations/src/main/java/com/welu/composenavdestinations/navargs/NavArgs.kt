@@ -19,8 +19,7 @@ object NavArgStringListType: ListNavArgType<String>(NavArgStringType::parseValue
 
 object NavArgStringSetType: SetNavArgType<String>(NavArgStringType::parseValue, NavArgStringType::serializeValue)
 
-object NavArgStringArrayType : ArrayNullableNavArgType<String>(
-    clazz = String::class,
+object NavArgStringArrayType : ArrayNavArgType<String>(
     emptyArrayProvider = ::emptyArray,
     arrayProvider = List<String?>::toTypedArray,
     parseValueAction = NavArgStringType::parseValue,
@@ -36,7 +35,13 @@ object NavArgCharListType: ListNavArgType<Char>(NavArgCharType::parseValue)
 
 object NavArgCharSetType: SetNavArgType<Char>(NavArgCharType::parseValue)
 
-object NavArgCharArrayType: ArrayNavArgType<CharArray, Char>(
+object NavArgCharArrayType: ArrayNavArgType<Char>(
+    emptyArrayProvider = ::emptyArray,
+    arrayProvider = List<Char?>::toTypedArray,
+    parseValueAction = NavArgCharType::parseValue
+)
+
+object NavArgPrimitiveCharArrayType: PrimitiveArrayNavArgType<CharArray, Char>(
     emptyArrayProvider = ::charArrayOf,
     arrayProvider = List<Char>::toCharArray,
     parseValueAction = ParseUtil::parseChar,
@@ -52,7 +57,13 @@ object NavArgBooleanListType: ListNavArgType<Boolean>(NavArgBooleanType::parseVa
 
 object NavArgBooleanSetType: SetNavArgType<Boolean>(NavArgBooleanType::parseValue)
 
-object NavArgBooleanArrayType: ArrayNavArgType<BooleanArray, Boolean>(
+object NavArgBooleanArrayType: ArrayNavArgType<Boolean>(
+    emptyArrayProvider = ::emptyArray,
+    arrayProvider = List<Boolean?>::toTypedArray,
+    parseValueAction = NavArgBooleanType::parseValue
+)
+
+object NavArgPrimitiveBooleanArrayType: PrimitiveArrayNavArgType<BooleanArray, Boolean>(
     emptyArrayProvider = ::booleanArrayOf,
     arrayProvider = List<Boolean>::toBooleanArray,
     parseValueAction = BoolType::parseValue,
@@ -68,7 +79,13 @@ object NavArgByteListType: ListNavArgType<Byte>(NavArgByteType::parseValue)
 
 object NavArgByteSetType: SetNavArgType<Byte>(NavArgByteType::parseValue)
 
-object NavArgByteArrayType: ArrayNavArgType<ByteArray, Byte>(
+object NavArgByteArrayType: ArrayNavArgType<Byte>(
+    emptyArrayProvider = ::emptyArray,
+    arrayProvider = List<Byte?>::toTypedArray,
+    parseValueAction = NavArgByteType::parseValue
+)
+
+object NavArgPrimitiveByteArrayType: PrimitiveArrayNavArgType<ByteArray, Byte>(
     emptyArrayProvider = ::byteArrayOf,
     arrayProvider = List<Byte>::toByteArray,
     parseValueAction = ParseUtil::parseByte,
@@ -84,7 +101,13 @@ object NavArgShortListType: ListNavArgType<Short>(NavArgShortType::parseValue)
 
 object NavArgShortSetType: SetNavArgType<Short>(NavArgShortType::parseValue)
 
-object NavArgShortArrayType: ArrayNavArgType<ShortArray, Short>(
+object NavArgShortArrayType: ArrayNavArgType<Short>(
+    emptyArrayProvider = ::emptyArray,
+    arrayProvider = List<Short?>::toTypedArray,
+    parseValueAction = NavArgShortType::parseValue
+)
+
+object NavArgPrimitiveShortArrayType: PrimitiveArrayNavArgType<ShortArray, Short>(
     emptyArrayProvider = ::shortArrayOf,
     arrayProvider = List<Short>::toShortArray,
     parseValueAction = ParseUtil::parseShort,
@@ -100,7 +123,13 @@ object NavArgIntListType: ListNavArgType<Int>(NavArgIntType::parseValue)
 
 object NavArgIntSetType: SetNavArgType<Int>(NavArgIntType::parseValue)
 
-object NavArgIntArrayType: ArrayNavArgType<IntArray, Int>(
+object NavArgIntArrayType: ArrayNavArgType<Int>(
+    emptyArrayProvider = ::emptyArray,
+    arrayProvider = List<Int?>::toTypedArray,
+    parseValueAction = NavArgIntType::parseValue
+)
+
+object NavArgPrimitiveIntArrayType: PrimitiveArrayNavArgType<IntArray, Int>(
     emptyArrayProvider = ::intArrayOf,
     arrayProvider = List<Int>::toIntArray,
     parseValueAction = IntType::parseValue,
@@ -116,7 +145,13 @@ object NavArgLongListType: ListNavArgType<Long>(NavArgLongType::parseValue)
 
 object NavArgLongSetType: SetNavArgType<Long>(NavArgLongType::parseValue)
 
-object NavArgLongArrayType : ArrayNavArgType<LongArray, Long>(
+object NavArgLongArrayType: ArrayNavArgType<Long>(
+    emptyArrayProvider = ::emptyArray,
+    arrayProvider = List<Long?>::toTypedArray,
+    parseValueAction = NavArgLongType::parseValue
+)
+
+object NavArgPrimitiveLongArrayType : PrimitiveArrayNavArgType<LongArray, Long>(
     emptyArrayProvider = ::longArrayOf,
     arrayProvider = List<Long>::toLongArray,
     parseValueAction = LongType::parseValue,
@@ -132,7 +167,13 @@ object NavArgFloatListType: ListNavArgType<Float>(NavArgFloatType::parseValue)
 
 object NavArgFloatSetType: SetNavArgType<Float>(NavArgFloatType::parseValue)
 
-object NavArgFloatArrayType : ArrayNavArgType<FloatArray, Float>(
+object NavArgFloatArrayType: ArrayNavArgType<Float>(
+    emptyArrayProvider = ::emptyArray,
+    arrayProvider = List<Float?>::toTypedArray,
+    parseValueAction = NavArgFloatType::parseValue
+)
+
+object NavArgPrimitiveFloatArrayType : PrimitiveArrayNavArgType<FloatArray, Float>(
     emptyArrayProvider = ::floatArrayOf,
     arrayProvider = List<Float>::toFloatArray,
     parseValueAction = FloatType::parseValue,
@@ -148,7 +189,13 @@ object NavArgDoubleListType: ListNavArgType<Double>(NavArgDoubleType::parseValue
 
 object NavArgDoubleSetType: SetNavArgType<Double>(NavArgDoubleType::parseValue)
 
-object NavArgDoubleArrayType : ArrayNavArgType<DoubleArray, Double>(
+object NavArgDoubleArrayType: ArrayNavArgType<Double>(
+    emptyArrayProvider = ::emptyArray,
+    arrayProvider = List<Double?>::toTypedArray,
+    parseValueAction = NavArgDoubleType::parseValue
+)
+
+object NavArgPrimitiveDoubleArrayType : PrimitiveArrayNavArgType<DoubleArray, Double>(
     emptyArrayProvider = ::doubleArrayOf,
     arrayProvider = List<Double>::toDoubleArray,
     parseValueAction = ParseUtil::parseDouble,
@@ -164,7 +211,7 @@ class NavArgEnumListType<T: Enum<T>>(enumClass: KClass<T>): ListNavArgType<T>(en
 
 class NavArgEnumSetType<T: Enum<T>>(enumClass: KClass<T>): SetNavArgType<T>(enumClass::receiveValueOf, Enum<T>::name)
 
-class NavArgEnumArrayType<T: Enum<T>>(enumClass: KClass<T>): ArrayNullableNavArgType<T>(enumClass, enumClass::receiveValueOf, Enum<T>::name)
+class NavArgEnumArrayType<T: Enum<T>>(enumClass: KClass<T>): ArrayNavArgType<T>(enumClass::receiveValueOf, Enum<T>::name, enumClass)
 
 
 
@@ -182,10 +229,10 @@ class NavArgParcelableSetType<T : Parcelable>(creator: Parcelable.Creator<T>): S
     constructor(clazz: KClass<T>): this(clazz.CREATOR)
 }
 
-class NavArgParcelableArrayType<T : Parcelable>(clazz: KClass<T>, creator: Parcelable.Creator<T> = clazz.CREATOR): ArrayNullableNavArgType<T>(
-    clazz = clazz,
+class NavArgParcelableArrayType<T : Parcelable>(clazz: KClass<T>, creator: Parcelable.Creator<T> = clazz.CREATOR): ArrayNavArgType<T>(
     parseValueAction = creator::unmarshall,
-    serializeValueTransformation = Parcelable::marshall
+    serializeValueTransformation = Parcelable::marshall,
+    clazz = clazz
 )
 
 

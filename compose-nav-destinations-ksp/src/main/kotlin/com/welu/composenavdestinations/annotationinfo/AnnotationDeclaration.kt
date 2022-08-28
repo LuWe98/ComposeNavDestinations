@@ -1,10 +1,10 @@
 package com.welu.composenavdestinations.annotationinfo
 
-import com.welu.composenavdestinations.utils.Constants
+import com.welu.composenavdestinations.utils.PackageUtils
 
 sealed class AnnotationDeclaration(
     val name: String,
-    val identifier: String = "${Constants.PACKAGE_NAME}.annotations.$name"
+    val identifier: String = "${PackageUtils.PACKAGE_NAME}.annotations.$name"
 )
 
 object NavArgumentAnnotation: AnnotationDeclaration("NavArgument") {

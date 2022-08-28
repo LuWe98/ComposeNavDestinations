@@ -16,6 +16,6 @@ data class NavDestinationInfo(
 
     val allImports get() = parameters
         .flatMap(Parameter::imports)
-        .filter(PackageImportInfo::isNonDefaultPackage)
-        .distinct()
+        .filter(ImportInfo::isNonDefaultPackage)
+        .distinctBy(ImportInfo::qualifiedName)
 }

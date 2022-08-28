@@ -13,7 +13,7 @@ import com.welu.composenavdestinations.extensions.ksp.getNavArguments
 import com.welu.composenavdestinations.extensions.ksp.getNavDestinations
 import com.welu.composenavdestinations.generation.NavDestinationFileGenerator
 import com.welu.composenavdestinations.mapper.NavDestinationMapper
-import com.welu.composenavdestinations.utils.Constants
+import com.welu.composenavdestinations.utils.PackageUtils
 import java.io.OutputStream
 
 class NavDestinationsProcessor(
@@ -33,7 +33,7 @@ class NavDestinationsProcessor(
 
         _debugFile = codeGenerator.createNewFile(
             dependencies = resolver.dependencies,
-            packageName = Constants.PACKAGE_NAME,
+            packageName = PackageUtils.PACKAGE_NAME,
             fileName = "LoggingFile"
         )
 
@@ -64,59 +64,53 @@ class NavDestinationsProcessor(
     }
 
 
-
-
-
-//    enum class TestEnumHallo {
-//        ONE,
-//        TWO
-//    }
-//
-//    fun a() {
-//        //val array = asTypeInfo<ArrayList<*>>(asTypeInfo<String>())
-//        val a = ArrayList::class.asTypeInfo(TestEnumHallo::class.asTypeInfo())
-//
-//        debugFile.write(a.toString())
-//    }
-//
-//    //TODO -> Man muss schauen, dass die Arguments hier repräsentiert werden
-//
-//
-//    private fun KClass<*>.asTypeInfo(
+//    //    enum class TestEnumHallo {
+////        ONE,
+////        TWO
+////    }
+////
+////    fun a() {
+////        //val array = asTypeInfo<ArrayList<*>>(asTypeInfo<String>())
+////        val a = ArrayList::class.asTypeInfo(TestEnumHallo::class.asTypeInfo())
+////
+////        debugFile.write(a.toString())
+////    }
+////
+////    //TODO -> Man muss schauen, dass die Arguments hier repräsentiert werden
+////
+////
+//    private fun <T: KClass<T>> T.asTypeInfo(
 //        vararg typeArgs: ParameterTypeInfo,
 //        isNullable: Boolean = false,
 //        isSerializable: Boolean = Serializable::class.java.isAssignableFrom(javaObjectType)
 //    ) = ParameterTypeInfo(
 //        isNullable = isNullable,
 //        type = ParameterType(
-//            import = PackageImport(
-//                simpleName!!,
-//                qualifiedName!!
-//            ),
+//            import = PackageImportInfo(qualifiedName!!),
 //            typeArguments = typeArgs.map(ParameterTypeArgument::Typed),
 //            isEnum = java.isEnum,
 //            isSerializable = isSerializable
 //        )
 //    )
-
-//    private inline fun <reified T : Any?> asTypeInfo(
-//        isSerializable: Boolean = false,
-//        vararg typeArgs: ParameterTypeInfo
-//    ) = ParameterTypeInfo(
-//        isNullable = null is T,
-//        type = ParameterType(
-//            import = PackageImport(
-//                T::class.simpleName!!,
-//                T::class.qualifiedName!!
-//            ),
-//            typeArguments = typeArgs.map(ParameterTypeArgument::Typed),
-//            isEnum = T::class.java.isEnum,
-//            isSerializable = isSerializable
-//        )
-//    )
 //
-//    private inline fun <reified T : Any> asTypeInfo(vararg typeArgs: ParameterTypeInfo) = asTypeInfo<T>(
-//        isSerializable = Serializable::class.java.isAssignableFrom(T::class.javaObjectType),
-//        typeArgs = typeArgs
-//    )
+////    private inline fun <reified T : Any?> asTypeInfo(
+////        isSerializable: Boolean = false,
+////        vararg typeArgs: ParameterTypeInfo
+////    ) = ParameterTypeInfo(
+////        isNullable = null is T,
+////        type = ParameterType(
+////            import = PackageImport(
+////                T::class.simpleName!!,
+////                T::class.qualifiedName!!
+////            ),
+////            typeArguments = typeArgs.map(ParameterTypeArgument::Typed),
+////            isEnum = T::class.java.isEnum,
+////            isSerializable = isSerializable
+////        )
+////    )
+////
+////    private inline fun <reified T : Any> asTypeInfo(vararg typeArgs: ParameterTypeInfo) = asTypeInfo<T>(
+////        isSerializable = Serializable::class.java.isAssignableFrom(T::class.javaObjectType),
+////        typeArgs = typeArgs
+////    )
 }

@@ -5,7 +5,7 @@ import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.validate
-import com.welu.composenavdestinations.model.PackageImportInfo
+import com.welu.composenavdestinations.model.ImportInfo
 import kotlin.reflect.KClass
 
 @OptIn(KspExperimental::class)
@@ -19,7 +19,7 @@ fun Resolver.isImportNameContainedInPackage(packageName: String, importName: Str
     }?.let(KSDeclaration::isAccessible) ?: false
 }.getOrDefault(false)
 
-fun Resolver.isImportNameContainedInPackage(packageImportInfo: PackageImportInfo, importName: String) = isImportNameContainedInPackage(packageImportInfo.root, importName)
+fun Resolver.isImportNameContainedInPackage(importInfo: ImportInfo, importName: String) = isImportNameContainedInPackage(importInfo.packageDir, importName)
 
 fun Resolver.getTypeWithClassName(name: String) = getClassDeclarationByName(name)!!.asType
 

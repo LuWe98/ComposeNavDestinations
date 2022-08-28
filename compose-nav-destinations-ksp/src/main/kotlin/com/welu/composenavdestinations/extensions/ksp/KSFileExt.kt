@@ -2,14 +2,14 @@ package com.welu.composenavdestinations.extensions.ksp
 
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
-import com.welu.composenavdestinations.model.PackageImportInfo
+import com.welu.composenavdestinations.model.ImportInfo
 
 val KSFile.firstDeclaration get(): KSDeclaration? = declarations.firstOrNull()
 
 fun KSFile.extractImports(
     firstDeclarationRow: Int = firstDeclaration?.lineNumber ?: 0,
     lines: List<String> = firstNFileLines(firstDeclarationRow)
-): List<PackageImportInfo> {
+): List<ImportInfo> {
 
     var joined = ""
     for (index in 0..firstDeclarationRow) {
@@ -26,9 +26,9 @@ fun KSFile.extractImports(
         isInsideStringLookup[charIndex] = isInsideString
     }
 
-    return PackageImportInfo.FILE_IMPORT_REGEX.findAll(joined).filter {
+    return ImportInfo.FILE_IMPORT_REGEX.findAll(joined).filter {
         !isInsideStringLookup[it.range.first]
     }.map{
-        PackageImportInfo.fromImportLine(it.value)
+        ImportInfo.fromImportLine(it.value)
     }.toList()
 }

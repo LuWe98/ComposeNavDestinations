@@ -4,34 +4,17 @@ import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Resolver
 import com.welu.composenavdestinations.extensions.ksp.dependencies
 import com.welu.composenavdestinations.extensions.write
+import com.welu.composenavdestinations.extensions.writeComment
 import com.welu.composenavdestinations.extensions.writeLine
-import com.welu.composenavdestinations.mapper.ParameterTypeMapper
+import com.welu.composenavdestinations.mapper.ParameterNavArgInfoMapper
 import com.welu.composenavdestinations.model.NavDestinationInfo
+import com.welu.composenavdestinations.processors.NavDestinationsProcessor
 import java.io.OutputStream
 
 class NavDestinationFileGenerator(
     private val resolver: Resolver,
     private val codeGenerator: CodeGenerator
 ): FileGenerator<NavDestinationInfo> {
-
-//    val coreTypes = mapOf(
-//        String::class.asType() to CORE_STRING_NAV_TYPE,
-//        Int::class.asType() to CORE_INT_NAV_TYPE,
-//        Float::class.asType() to CORE_FLOAT_NAV_TYPE,
-//        Long::class.asType() to CORE_LONG_NAV_TYPE,
-//        Boolean::class.asType() to CORE_BOOLEAN_NAV_TYPE,
-//        IntArray::class.asType() to CORE_INT_ARRAY_NAV_TYPE,
-//        FloatArray::class.asType() to CORE_FLOAT_ARRAY_NAV_TYPE,
-//        LongArray::class.asType() to CORE_LONG_ARRAY_NAV_TYPE,
-//        BooleanArray::class.asType() to CORE_BOOLEAN_ARRAY_NAV_TYPE,
-//        Array::class.asTypeWithArg(String::class) to CORE_STRING_ARRAY_NAV_TYPE,
-//        ArrayList::class.asTypeWithArg(Boolean::class) to CORE_BOOLEAN_ARRAY_LIST_NAV_TYPE,
-//        ArrayList::class.asTypeWithArg(Float::class) to CORE_FLOAT_ARRAY_LIST_NAV_TYPE,
-//        ArrayList::class.asTypeWithArg(Int::class) to CORE_INT_ARRAY_LIST_NAV_TYPE,
-//        ArrayList::class.asTypeWithArg(Long::class) to CORE_LONG_ARRAY_LIST_NAV_TYPE,
-//        ArrayList::class.asTypeWithArg(String::class) to CORE_STRING_ARRAY_LIST_NAV_TYPE,
-//    )//        fileOutputStream.write("DESTINATION NAME: ${instance.name}\n")
-//        fileOutputStream.write("DESTINATION ROUTE NAME: ${instance.route}\n")
 
 //        instance.parameters.forEach {
 //            fileOutputStream.write("ArgName - ${it.name}, " +
@@ -56,10 +39,13 @@ class NavDestinationFileGenerator(
             fileName = instance.name
         )
 
-        instance.parameters.forEach { ParameterTypeMapper.map(it) }
+        fos.writeLine("package ${instance.packageName}", 2)
+        //writeImports(fos, instance)
 
-//        fos.writeLine("package ${instance.packageName}", 2)
-//        writeImports(fos, instance)
+        instance.parameters.forEach {
+            NavDestinationsProcessor.debugFile.writeComment("${it.navArgInfo}", 1)
+        }
+
 //        fos.writeLine("object ${instance.name} {", 2)
 //        writeRouteArg(fos, instance)
 //        writeNavArgsVariable(fos, instance)
@@ -69,9 +55,9 @@ class NavDestinationFileGenerator(
     }
 
     private fun writeImports(fos: OutputStream, instance: NavDestinationInfo) {
-        fos.writeLine("import androidx.navigation.NamedNavArgument")
-        fos.writeLine("import com.welu.composenavdestinations.util.navArgument")
-        fos.writeLine("import com.welu.composenavdestinations.navargs.*")
+//        fos.writeLine("import androidx.navigation.NamedNavArgument")
+//        fos.writeLine("import com.welu.composenavdestinations.util.navArgument")
+//        fos.writeLine("import com.welu.composenavdestinations.navargs.*")
         instance.allImports.forEach { fos.writeLine(it.asImportLine) }
         fos.write("\n")
     }

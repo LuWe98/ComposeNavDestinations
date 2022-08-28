@@ -120,12 +120,16 @@ fun DetailScreen(
 
             Text(text = "Int: $int")
             Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "IntPrimitiveArray: ${intPrimitiveArray.joinToString()}")
+            Spacer(modifier = Modifier.height(8.dp))
             Text(text = "IntArray: ${intArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "IntList: ${intList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(text = "Long: $long")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "LongPrimitiveArray: ${longPrimitiveArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "LongArray: ${longArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
@@ -134,12 +138,16 @@ fun DetailScreen(
 
             Text(text = "Float: $float")
             Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "FloatPrimitiveArray: ${floatPrimitiveArray.joinToString()}")
+            Spacer(modifier = Modifier.height(8.dp))
             Text(text = "FloatArray: ${floatArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "FloatList: ${floatList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(text = "Double: $double")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "DoublePrimitiveArray: ${doublePrimitiveArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "DoubleArray: ${doubleArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
@@ -148,12 +156,16 @@ fun DetailScreen(
 
             Text(text = "Boolean: $boolean")
             Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "BooleanPrimitiveArray: ${booleanPrimitiveArray.joinToString()}")
+            Spacer(modifier = Modifier.height(8.dp))
             Text(text = "BooleanArray: ${booleanArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "BooleanList: ${booleanList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(text = "Byte: $byte")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "BytePrimitiveArray: ${bytePrimitiveArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "ByteArray: ${byteArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
@@ -162,12 +174,16 @@ fun DetailScreen(
 
             Text(text = "Short: $short")
             Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "ShortPrimitiveArray: ${shortPrimitiveArray.joinToString()}")
+            Spacer(modifier = Modifier.height(8.dp))
             Text(text = "ShortArray: ${shortArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "ShortList: ${shortList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(text = "Char: $char")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "CharPrimitiveArray: ${charPrimitiveArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "CharArray: ${charArray.joinToString()}")
             Spacer(modifier = Modifier.height(8.dp))
@@ -188,51 +204,59 @@ fun DetailScreen(
             Text(text = "ParcelableList: ${parcelableList.joinToString()}")
             Spacer(modifier = Modifier.height(25.dp))
 
-            Text(text = "Serializable: ${serializable}")
+            Text(text = "Serializable: $serializable")
             Spacer(modifier = Modifier.height(25.dp))
 
-            Text(text = "Map: ${map}")
+            Text(text = "Map: $map")
             Spacer(modifier = Modifier.height(25.dp))
         }
     }
 }
 
 data class DetailScreenNavArgs(
-    val string: String = "Hallo",
+    val string: String? = "Hallo",
     val stringArray: Array<String?> = arrayOf("hallo", "tschau"),
     val stringList: List<String> = listOf("Hallo", "Bernd"),
     val stringSet: Set<String>? = hashSetOf("12", "12"),
 
     val int: Int = 46,
-    val intArray: IntArray = intArrayOf(21, 22, 23),
+    val intPrimitiveArray: IntArray = intArrayOf(21, 22, 23),
+    val intArray: Array<Int> = arrayOf(21, 22, 23),
     val intList: List<Int?> = listOf(21, 221, 2221),
 
     val long: Long = 32,
-    val longArray: LongArray = longArrayOf(24, 25, 26),
+    val longPrimitiveArray: LongArray = longArrayOf(24, 25, 26),
+    val longArray: Array<Long> = arrayOf(24, 25, 26),
     val longList: ArrayList<Long?> = arrayListOf(32, 12, 4324),
 
     val float: Float = 21f,
-    val floatArray: FloatArray = floatArrayOf(1f, 2f),
+    val floatPrimitiveArray: FloatArray = floatArrayOf(1f, 2f),
+    val floatArray: Array<Float> = arrayOf(1f, 2f),
     val floatList: List<Float?> = listOf(212f, 323f, 32f),
 
     val double: Double = 21.2,
-    val doubleArray: DoubleArray = doubleArrayOf(12.0),
+    val doublePrimitiveArray: DoubleArray = doubleArrayOf(12.0),
+    val doubleArray: Array<Double> = arrayOf(12.0),
     val doubleList: ArrayList<Double> = arrayListOf(212.3),
 
     val boolean: Boolean = false,
-    val booleanArray: BooleanArray = booleanArrayOf(true, true, false),
+    val booleanPrimitiveArray: BooleanArray = booleanArrayOf(true, true, false),
+    val booleanArray: Array<Boolean> = arrayOf(true, true, false),
     val booleanList: List<Boolean> = listOf(true, false, true),
 
     val byte: Byte = 20,
-    val byteArray: ByteArray = byteArrayOf(21, 23),
+    val bytePrimitiveArray: ByteArray = byteArrayOf(21, 23),
+    val byteArray: Array<Byte> = arrayOf(21, 23),
     val byteList: List<Byte> = listOf(21),
 
     val short: Short = 323,
-    val shortArray: ShortArray = shortArrayOf(2122),
+    val shortPrimitiveArray: ShortArray = shortArrayOf(2122),
+    val shortArray: Array<Short> = arrayOf(2122),
     val shortList: List<Short> = listOf(32, 3211),
 
     val char: Char = '2',
-    val charArray: CharArray = charArrayOf('s'),
+    val charPrimitiveArray: CharArray = charArrayOf('s'),
+    val charArray: Array<Char> = arrayOf('d'),
     val charList: List<Char> = listOf('a', 'b'),
 
     val enum: TestEnum = TestEnum.HALLO,

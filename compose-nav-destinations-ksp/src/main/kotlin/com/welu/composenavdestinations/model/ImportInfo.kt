@@ -1,19 +1,19 @@
 package com.welu.composenavdestinations.model
 
 import com.welu.composenavdestinations.extensions.isOneOf
-import com.welu.composenavdestinations.utils.StandardLibraries
+import com.welu.composenavdestinations.utils.PackageUtils
 
-data class PackageImportInfo(
+data class ImportInfo(
     val simpleName: String,
-    val root: String,
+    val packageDir: String,
     val importedAs: String? = null
 ) {
 
     constructor(qualifiedName: String, importedAs: String? = null): this(getSimpleName(qualifiedName), getRoot(qualifiedName), importedAs)
 
-    val qualifiedName get() = "$root.$simpleName"
+    val qualifiedName get() = "$packageDir.$simpleName"
     val isWholePackageImport get() = simpleName == "*"
-    val isDefaultPackage get(): Boolean = root.isOneOf(*StandardLibraries.KOTLIN_DEFAULT)
+    val isDefaultPackage get(): Boolean = packageDir.isOneOf(*PackageUtils.KOTLIN_DEFAULT_PACKAGES)
     val isNonDefaultPackage get() = !isDefaultPackage
     val asImportLine get() = "import $qualifiedName${importedAs?.let { " as $it" } ?: ""}"
 
@@ -26,15 +26,12 @@ data class PackageImportInfo(
 
         private fun getSimpleName(qualifiedName: String): String = qualifiedName.substring(qualifiedName.indexOfLast{ it == '.' } + 1)
 
-        fun fromImportLine(importLine: String): PackageImportInfo {
+        fun fromImportLine(importLine: String): ImportInfo {
             val importDeclaration = importLine.substring(6).replace("\\s*\\.\\s*".toRegex(),".")
             val indexOfAlias = importDeclaration.indexOf(" as ")
             val importedAs = if(indexOfAlias == -1) null else importDeclaration.substring(indexOfAlias + 4)
-            val qualifiedName = if(indexOfAlias == -1) importDeclaration else importDeclaration.substring(0, indexOfAlias)
-            return PackageImportInfo(
-                qualifiedName= qualifiedName.trim(),
-                importedAs = importedAs?.trim()
-            )
+            val qualifiedName = if(indexOfAlias == -1) importDeclaration else importDeclaration.substring(0, indexOfAlias).trim()
+            return ImportInfo(qualifiedName.trim(), importedAs)
         }
     }
 }
