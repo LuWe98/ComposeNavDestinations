@@ -7,10 +7,10 @@ import com.google.devtools.ksp.symbol.KSValueParameter
 import com.welu.composenavdestinations.annotationinfo.NavArgumentAnnotation
 import com.welu.composenavdestinations.annotationinfo.NavDestinationAnnotation
 
-fun Resolver.getNavDestinations(): Sequence<KSFunctionDeclaration> = getSymbolsWithAnnotation(NavDestinationAnnotation.identifier)
+fun Resolver.getNavDestinations(): Sequence<KSFunctionDeclaration> = getSymbolsWithAnnotation(NavDestinationAnnotation.import.qualifiedName)
     .filterIsInstance<KSFunctionDeclaration>()
 
-fun Resolver.getNavArguments(): Sequence<KSValueParameter> = getSymbolsWithAnnotation(NavArgumentAnnotation.identifier)
+fun Resolver.getNavArguments(): Sequence<KSValueParameter> = getSymbolsWithAnnotation(NavArgumentAnnotation.import.qualifiedName)
     .filterIsInstance<KSValueParameter>()
 
 fun Resolver.getComposables(): Sequence<KSFunctionDeclaration> = getSymbolsWithAnnotation("androidx.compose.runtime.Composable")

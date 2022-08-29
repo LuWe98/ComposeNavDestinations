@@ -8,12 +8,13 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.validate
 import com.welu.composenavdestinations.extensions.ksp.dependencies
-import com.welu.composenavdestinations.extensions.ksp.getComposables
 import com.welu.composenavdestinations.extensions.ksp.getNavArguments
 import com.welu.composenavdestinations.extensions.ksp.getNavDestinations
-import com.welu.composenavdestinations.generation.NavDestinationFileGenerator
+import com.welu.composenavdestinations.extensions.ksp.isAnnotationPresent
+import com.welu.composenavdestinations.generation.NavDestinationCodeGenerator
 import com.welu.composenavdestinations.mapper.NavDestinationMapper
 import com.welu.composenavdestinations.utils.PackageUtils
+import com.welu.composenavdestinations.utils.PackageUtils.COMPOSABLE_IMPORT_INFO
 import java.io.OutputStream
 
 class NavDestinationsProcessor(
@@ -37,9 +38,7 @@ class NavDestinationsProcessor(
             fileName = "LoggingFile"
         )
 
-        val annotatedComposables = resolver.getComposables()
-        if (annotatedNavDestinations.any { !annotatedComposables.contains(it) }) {
-            //TODO -> Nochmal anschauen
+        if (annotatedNavDestinations.any { !it.isAnnotationPresent(COMPOSABLE_IMPORT_INFO)  }) {
             throw IllegalStateException("NavDestination Annotation is only allowed on Composable-Functions")
         }
 
@@ -48,69 +47,13 @@ class NavDestinationsProcessor(
             throw IllegalStateException("NavArgument Annotation is only allowed inside of NavDestination declaration.")
         }
 
-        val mapper = NavDestinationMapper(resolver, logger, navArguments)
-        val generator = NavDestinationFileGenerator(resolver, codeGenerator)
-
-        annotatedNavDestinations
-            .map(mapper::map)
-            .forEach(generator::generate)
+        NavDestinationMapper(resolver, logger, navArguments).let { mapper ->
+            NavDestinationCodeGenerator(resolver, codeGenerator, annotatedNavDestinations.map(mapper::map)).generate()
+        }
 
         _debugFile?.close()
         _debugFile = null
 
-        return annotatedNavDestinations
-            .filterNot(KSFunctionDeclaration::validate)
-            .toList()
+        return annotatedNavDestinations.filterNot(KSFunctionDeclaration::validate).toList()
     }
-
-
-//    //    enum class TestEnumHallo {
-////        ONE,
-////        TWO
-////    }
-////
-////    fun a() {
-////        //val array = asTypeInfo<ArrayList<*>>(asTypeInfo<String>())
-////        val a = ArrayList::class.asTypeInfo(TestEnumHallo::class.asTypeInfo())
-////
-////        debugFile.write(a.toString())
-////    }
-////
-////    //TODO -> Man muss schauen, dass die Arguments hier repräsentiert werden
-////
-////
-//    private fun <T: KClass<T>> T.asTypeInfo(
-//        vararg typeArgs: ParameterTypeInfo,
-//        isNullable: Boolean = false,
-//        isSerializable: Boolean = Serializable::class.java.isAssignableFrom(javaObjectType)
-//    ) = ParameterTypeInfo(
-//        isNullable = isNullable,
-//        type = ParameterType(
-//            import = PackageImportInfo(qualifiedName!!),
-//            typeArguments = typeArgs.map(ParameterTypeArgument::Typed),
-//            isEnum = java.isEnum,
-//            isSerializable = isSerializable
-//        )
-//    )
-//
-////    private inline fun <reified T : Any?> asTypeInfo(
-////        isSerializable: Boolean = false,
-////        vararg typeArgs: ParameterTypeInfo
-////    ) = ParameterTypeInfo(
-////        isNullable = null is T,
-////        type = ParameterType(
-////            import = PackageImport(
-////                T::class.simpleName!!,
-////                T::class.qualifiedName!!
-////            ),
-////            typeArguments = typeArgs.map(ParameterTypeArgument::Typed),
-////            isEnum = T::class.java.isEnum,
-////            isSerializable = isSerializable
-////        )
-////    )
-////
-////    private inline fun <reified T : Any> asTypeInfo(vararg typeArgs: ParameterTypeInfo) = asTypeInfo<T>(
-////        isSerializable = Serializable::class.java.isAssignableFrom(T::class.javaObjectType),
-////        typeArgs = typeArgs
-////    )
 }

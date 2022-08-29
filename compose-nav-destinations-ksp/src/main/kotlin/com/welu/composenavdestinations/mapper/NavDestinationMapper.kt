@@ -20,7 +20,7 @@ class NavDestinationMapper(
 
     private val ksFileContentMap by lazy { mutableMapOf<KSFile, KSFileContent>() }
 
-    private val parcelableType: KSType by lazy { resolver.getTypeWithClassName(PackageUtils.PARCELABLE_QUALIFIED_NAME) }
+    private val parcelableType: KSType by lazy { resolver.getTypeWithClassName(PackageUtils.PARCELABLE_IMPORT_INFO.qualifiedName) }
 
     private val KSType?.isParcelable get() = this?.let(parcelableType::isAssignableFrom) ?: false
 
@@ -125,11 +125,8 @@ class NavDestinationMapper(
 
             val classDeclaration: KSClassDeclaration = (getTypeAliasDeclaration() ?: declaration) as KSClassDeclaration
             val classDeclarationType: KSType = classDeclaration.asType
-
+            val importInfo = ImportInfo(classDeclaration.qualifiedName?.asString() ?: declaration.qualifiedName!!.asString())
             //simpleName = classDeclaration.simpleName.asString(),
-            val importInfo = ImportInfo(
-                qualifiedName = classDeclaration.qualifiedName?.asString() ?: declaration.qualifiedName!!.asString()
-            )
 
             return ParameterTypeInfo(
                 isNullable = isMarkedNullable,

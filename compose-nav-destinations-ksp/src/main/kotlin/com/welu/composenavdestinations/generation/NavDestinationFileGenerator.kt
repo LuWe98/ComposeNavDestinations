@@ -40,7 +40,7 @@ class NavDestinationFileGenerator(
         )
 
         fos.writeLine("package ${instance.packageName}", 2)
-        //writeImports(fos, instance)
+        writeImports(fos, instance)
 
         instance.parameters.forEach {
             NavDestinationsProcessor.debugFile.writeComment("${it.navArgInfo}", 1)

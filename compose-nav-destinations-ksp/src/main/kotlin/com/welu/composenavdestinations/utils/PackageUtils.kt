@@ -10,6 +10,10 @@ object PackageUtils {
 
     const val PACKAGE_NAME = "com.welu.composenavdestinations"
 
+    val PARCELABLE_IMPORT_INFO = ImportInfo("Parcelable", "android.os")
+
+    val COMPOSABLE_IMPORT_INFO = ImportInfo("Composable", "androidx.compose.runtime")
+
     val KOTLIN_DEFAULT_PACKAGES = arrayOf(
         "kotlin",
         "kotlin.annotation",
@@ -46,73 +50,74 @@ object PackageUtils {
     val VALID_SET_IMPORT_INFOS = VALID_SET_QUALIFIERS.map(::ImportInfo)
 
 
-    const val ANNOTATION_NAV_DESTINATION = "$PACKAGE_NAME.annotations.NavDestination"
-
-    const val PARCELABLE_QUALIFIED_NAME = "android.os.Parcelable"
-
     const val NAV_ARGS_PACKAGE = "$PACKAGE_NAME.navargs"
+    const val CUSTOM_NAV_ARGS_FILE = "CustomNavArguments"
 
-    const val NAV_ARGS_PREFIX = "NavArg"
-    const val NAV_ARGS_SUFFIX = "Type"
-    const val NAV_ARGS_PRIMITIVE_ARRAY_PREFIX = NAV_ARGS_PREFIX + "Primitive"
-    const val NAV_ARGS_ARRAY_SUFFIX = "Array$NAV_ARGS_SUFFIX"
-    const val NAV_ARGS_LIST_SUFFIX = "List$NAV_ARGS_SUFFIX"
-    const val NAV_ARGS_SET_SUFFIX = "Set$NAV_ARGS_SUFFIX"
+    val NAV_ARG_STRING_TYPE = ImportInfo("NavArgStringType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_STRING_ARRAY_TYPE = ImportInfo("NavArgStringArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_STRING_LIST_TYPE = ImportInfo("NavArgStringListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_STRING_SET_TYPE = ImportInfo("NavArgStringSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_STRING_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgStringType")
-    val NAV_ARG_STRING_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgStringArrayType")
-    val NAV_ARG_STRING_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgStringListType")
-    val NAV_ARG_STRING_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgStringSetType")
+    val NAV_ARG_CHAR_TYPE = ImportInfo("NavArgCharType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PRIMITIVE_CHAR_ARRAY_TYPE = ImportInfo("NavArgPrimitiveCharArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_CHAR_ARRAY_TYPE = ImportInfo("NavArgCharArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_CHAR_LIST_TYPE = ImportInfo("NavArgCharListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_CHAR_SET_TYPE = ImportInfo("NavArgCharSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_CHAR_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgCharType")
-    val NAV_ARG_PRIMITIVE_CHAR_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgPrimitiveCharArrayType")
-    val NAV_ARG_CHAR_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgCharArrayType")
-    val NAV_ARG_CHAR_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgCharListType")
-    val NAV_ARG_CHAR_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgCharSetType")
+    val NAV_ARG_LONG_TYPE = ImportInfo("NavArgLongType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PRIMITIVE_LONG_ARRAY_TYPE = ImportInfo("NavArgPrimitiveLongArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_LONG_ARRAY_TYPE = ImportInfo("NavArgLongArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_LONG_LIST_TYPE = ImportInfo("NavArgLongListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_LONG_SET_TYPE = ImportInfo("NavArgLongSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_LONG_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgLongType")
-    val NAV_ARG_PRIMITIVE_LONG_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgPrimitiveLongArrayType")
-    val NAV_ARG_LONG_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgLongArrayType")
-    val NAV_ARG_LONG_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgLongListType")
-    val NAV_ARG_LONG_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgLongSetType")
+    val NAV_ARG_INT_TYPE = ImportInfo("NavArgIntType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PRIMITIVE_INT_ARRAY_TYPE = ImportInfo("NavArgPrimitiveIntArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_INT_ARRAY_TYPE = ImportInfo("NavArgIntArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_INT_LIST_TYPE = ImportInfo("NavArgIntListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_INT_SET_TYPE = ImportInfo("NavArgIntSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_INT_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgIntType")
-    val NAV_ARG_PRIMITIVE_INT_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgPrimitiveIntArrayType")
-    val NAV_ARG_INT_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgIntArrayType")
-    val NAV_ARG_INT_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgIntListType")
-    val NAV_ARG_INT_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgIntSetType")
+    val NAV_ARG_SHORT_TYPE = ImportInfo("NavArgShortType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PRIMITIVE_SHORT_ARRAY_TYPE = ImportInfo("NavArgPrimitiveShortArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_SHORT_ARRAY_TYPE = ImportInfo("NavArgShortArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_SHORT_LIST_TYPE = ImportInfo("NavArgShortListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_SHORT_SET_TYPE = ImportInfo("NavArgShortSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_SHORT_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgShortType")
-    val NAV_ARG_PRIMITIVE_SHORT_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgPrimitiveShortArrayType")
-    val NAV_ARG_SHORT_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgShortArrayType")
-    val NAV_ARG_SHORT_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgShortListType")
-    val NAV_ARG_SHORT_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgShortSetType")
+    val NAV_ARG_BYTE_TYPE = ImportInfo("NavArgByteType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PRIMITIVE_BYTE_ARRAY_TYPE = ImportInfo("NavArgPrimitiveByteArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_BYTE_ARRAY_TYPE = ImportInfo("NavArgByteArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_BYTE_LIST_TYPE = ImportInfo("NavArgByteListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_BYTE_SET_TYPE = ImportInfo("NavArgByteSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_BYTE_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgByteType")
-    val NAV_ARG_PRIMITIVE_BYTE_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgPrimitiveByteArrayType")
-    val NAV_ARG_BYTE_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgByteArrayType")
-    val NAV_ARG_BYTE_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgByteListType")
-    val NAV_ARG_BYTE_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgByteSetType")
+    val NAV_ARG_BOOLEAN_TYPE = ImportInfo("NavArgBooleanType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PRIMITIVE_BOOLEAN_ARRAY_TYPE = ImportInfo("NavArgPrimitiveBooleanArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_BOOLEAN_ARRAY_TYPE = ImportInfo("NavArgBooleanArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_BOOLEAN_LIST_TYPE = ImportInfo("NavArgBooleanListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_BOOLEAN_SET_TYPE = ImportInfo("NavArgBooleanSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_BOOLEAN_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgBooleanType")
-    val NAV_ARG_PRIMITIVE_BOOLEAN_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgPrimitiveBooleanArrayType")
-    val NAV_ARG_BOOLEAN_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgBooleanArrayType")
-    val NAV_ARG_BOOLEAN_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgBooleanListType")
-    val NAV_ARG_BOOLEAN_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgBooleanSetType")
+    val NAV_ARG_FLOAT_TYPE = ImportInfo("NavArgFloatType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PRIMITIVE_FLOAT_ARRAY_TYPE = ImportInfo("NavArgPrimitiveFloatArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_FLOAT_ARRAY_TYPE = ImportInfo("NavArgFloatArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_FLOAT_LIST_TYPE = ImportInfo("NavArgFloatListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_FLOAT_SET_TYPE = ImportInfo("NavArgFloatSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_FLOAT_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgFloatType")
-    val NAV_ARG_PRIMITIVE_FLOAT_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgPrimitiveFloatArrayType")
-    val NAV_ARG_FLOAT_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgFloatArrayType")
-    val NAV_ARG_FLOAT_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgFloatListType")
-    val NAV_ARG_FLOAT_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgFloatSetType")
+    val NAV_ARG_DOUBLE_TYPE = ImportInfo("NavArgDoubleType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PRIMITIVE_DOUBLE_ARRAY_TYPE = ImportInfo("NavArgPrimitiveDoubleArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_DOUBLE_ARRAY_TYPE = ImportInfo("NavArgDoubleArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_DOUBLE_LIST_TYPE = ImportInfo("NavArgDoubleListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_DOUBLE_SET_TYPE = ImportInfo("NavArgDoubleSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_DOUBLE_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgDoubleType")
-    val NAV_ARG_PRIMITIVE_DOUBLE_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgPrimitiveDoubleArrayType")
-    val NAV_ARG_DOUBLE_ARRAY_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgDoubleArrayType")
-    val NAV_ARG_DOUBLE_LIST_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgDoubleListType")
-    val NAV_ARG_DOUBLE_SET_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgDoubleSetType")
+    val NAV_ARG_PARCELABLE_TYPE = ImportInfo("NavArgParcelableType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PARCELABLE_ARRAY_TYPE = ImportInfo("NavArgParcelableArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PARCELABLE_LIST_TYPE = ImportInfo("NavArgParcelableListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_PARCELABLE_SET_TYPE = ImportInfo("NavArgParcelableSetType", NAV_ARGS_PACKAGE)
 
-    val NAV_ARG_SERIALIZABLE_TYPE = ImportInfo("$NAV_ARGS_PACKAGE.NavArgSerializableType")
+    val NAV_ARG_ENUM_TYPE = ImportInfo("NavArgEnumType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_ENUM_ARRAY_TYPE = ImportInfo("NavArgEnumArrayType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_ENUM_LIST_TYPE = ImportInfo("NavArgEnumListType", NAV_ARGS_PACKAGE)
+    val NAV_ARG_ENUM_SET_TYPE = ImportInfo("NavArgEnumSetType", NAV_ARGS_PACKAGE)
+
+    val NAV_ARG_SERIALIZABLE_TYPE = ImportInfo("NavArgSerializableType", NAV_ARGS_PACKAGE)
+
 
     val BASIC_NAV_ARG_TYPES = setOf(
         NAV_ARG_STRING_TYPE, NAV_ARG_STRING_ARRAY_TYPE, NAV_ARG_STRING_LIST_TYPE, NAV_ARG_STRING_SET_TYPE,
@@ -138,53 +143,33 @@ object PackageUtils {
         generateBasicNavArgsForClass(Double::class, DoubleArray::class),
     ).flatten()
 
-    private fun navArgOfSimpleName(simpleName: String): ImportInfo? = BASIC_NAV_ARG_TYPES.firstOrNull { it.simpleName == simpleName }
+    private fun findBasicNavArgWith(simpleName: String): ImportInfo? = BASIC_NAV_ARG_TYPES.firstOrNull { it.simpleName == simpleName }
+
+    const val NAV_ARGS_PREFIX = "NavArg"
+    const val NAV_ARGS_SUFFIX = "Type"
+    const val NAV_ARGS_PRIMITIVE_ARRAY_PREFIX = NAV_ARGS_PREFIX + "Primitive"
+    const val NAV_ARGS_ARRAY_SUFFIX = "Array$NAV_ARGS_SUFFIX"
+    const val NAV_ARGS_LIST_SUFFIX = "List$NAV_ARGS_SUFFIX"
+    const val NAV_ARGS_SET_SUFFIX = "Set$NAV_ARGS_SUFFIX"
 
     private fun generateBasicNavArgsForClass(
         clazz: KClass<*>,
         primitiveArrayClazz: KClass<*>? = null,
         name: String = clazz.simpleName!!
     ): List<Pair<ParameterTypeInfo, ImportInfo>> {
-        val listType = navArgOfSimpleName(NAV_ARGS_PREFIX + name + NAV_ARGS_LIST_SUFFIX)!!
-        val setType = navArgOfSimpleName(NAV_ARGS_PREFIX + name + NAV_ARGS_SET_SUFFIX)!!
+        val listType = findBasicNavArgWith(NAV_ARGS_PREFIX + name + NAV_ARGS_LIST_SUFFIX)!!
+        val setType = findBasicNavArgWith(NAV_ARGS_PREFIX + name + NAV_ARGS_SET_SUFFIX)!!
         val listImports = VALID_LIST_IMPORT_INFOS.map { it.asParamTypeInfo(clazz) to listType }
         val setImports = VALID_SET_IMPORT_INFOS.map { it.asParamTypeInfo(clazz) to setType }
 
         return mutableListOf<Pair<ParameterTypeInfo, ImportInfo>>().apply {
-            add(clazz.asParamTypeInfo() to navArgOfSimpleName(NAV_ARGS_PREFIX + name + NAV_ARGS_SUFFIX)!!)
+            add(clazz.asParamTypeInfo() to findBasicNavArgWith(NAV_ARGS_PREFIX + name + NAV_ARGS_SUFFIX)!!)
+            add(Array::class.asParamTypeInfo(clazz) to findBasicNavArgWith(NAV_ARGS_PREFIX + name + NAV_ARGS_ARRAY_SUFFIX)!!)
             addAll(listImports)
             addAll(setImports)
-            add(Array::class.asParamTypeInfo(clazz) to navArgOfSimpleName(NAV_ARGS_PREFIX + name + NAV_ARGS_ARRAY_SUFFIX)!!)
             primitiveArrayClazz?.let {
-                add(it.asParameterTypeInfo() to navArgOfSimpleName(NAV_ARGS_PRIMITIVE_ARRAY_PREFIX + name + NAV_ARGS_ARRAY_SUFFIX)!!)
+                add(it.asParameterTypeInfo() to findBasicNavArgWith(NAV_ARGS_PRIMITIVE_ARRAY_PREFIX + name + NAV_ARGS_ARRAY_SUFFIX)!!)
             }
         }
     }
-
-    /*
-            return mutableListOf(
-            clazz.asParamTypeInfo() to navArgOfSimpleName(NAV_ARGS_PREFIX + name + NAV_ARGS_SUFFIX)!!,
-            List::class.asParamTypeInfo(clazz) to listType,
-            java.util.List::class.asParamTypeInfo(clazz) to listType,
-            ArrayList::class.asParamTypeInfo(clazz) to listType,
-            java.util.ArrayList::class.asParamTypeInfo(clazz) to listType,
-            AbstractList::class.asParamTypeInfo(clazz) to listType,
-            java.util.AbstractList::class.asParamTypeInfo(clazz) to listType,
-            MutableList::class.asParamTypeInfo(clazz) to listType,
-            Set::class.asParamTypeInfo(clazz) to setType,
-            java.util.Set::class.asParamTypeInfo(clazz) to setType,
-            HashSet::class.asParamTypeInfo(clazz) to setType,
-            java.util.HashSet::class.asParamTypeInfo(clazz) to setType,
-            AbstractSet::class.asParamTypeInfo(clazz) to setType,
-            java.util.AbstractSet::class.asParamTypeInfo(clazz) to setType,
-            MutableSet::class.asParamTypeInfo(clazz) to setType,
-        ).apply {
-            if (includeNullableArray) {
-                add(Array::class.asParamTypeInfo(clazz) to navArgOfSimpleName(NAV_ARGS_PREFIX + name + NAV_ARGS_ARRAY_SUFFIX)!!)
-            }
-            primitiveArrayClazz?.let {
-                add(it.asParameterTypeInfo() to navArgOfSimpleName(NAV_ARGS_PREFIX + primitiveArrayName + NAV_ARGS_ARRAY_SUFFIX)!!)
-            }
-        }
-     */
 }
