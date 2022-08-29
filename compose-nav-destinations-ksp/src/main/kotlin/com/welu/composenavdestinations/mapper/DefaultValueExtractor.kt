@@ -12,12 +12,6 @@ import com.welu.composenavdestinations.model.ImportInfo
 
 object DefaultValueExtractor {
 
-    //val qualifiedRegexToFind = Regex("^$argName\\s*:\\s*$argQualifiedType\\s*\\??\\s*=\\s*")
-
-    private const val TRUE = "true"
-    private const val FALSE = "false"
-    private const val NULL = "null"
-
     private const val NO_DOT_DIGIT_CRITERIA = "(\\d(\\d|_)*)?"
     private const val DOT_DIGIT_CRITERIA = "(\\d((\\d|_)*\\d)?)?\\.(\\d(\\d|_)*)?"
     private const val ENDS_WITH_CRITERIA = "\\d[d|f|F]?"
@@ -26,7 +20,6 @@ object DefaultValueExtractor {
     fun KSValueParameter.getDefaultValue(
         resolver: Resolver,
         fileContent: KSFileContent,
-        //TODO -> can probably be removed - Falls jemand den qualified Name hinschreibt, statt den simple Name -> Sonst kann es nicht gefunden werden
         argQualifiedType: String,
     ): DefaultValue? {
         if (!hasDefault) return null
@@ -34,17 +27,17 @@ object DefaultValueExtractor {
         val argLineNumber = (location as FileLocation).lineNumber - 1
         val argType: String = type.toString()
 
-        val anchorMatcher = Regex("${name!!.asString()}\\s*:\\s*$argType\\s*(<(\\*|,|<|>|\\w|\\?)+>\\s*)?\\??\\s*=.*")
+        val anchorMatcher = Regex("${name!!.asString()}\\s*:\\s*($argType|$argQualifiedType)\\s*(<(,|<|>|\\w|\\s|\\*|\\?)+>\\s*)?\\??\\s*=.*")
         val accumulatedLineBuilder = StringBuilder("")
 
         for (index in argLineNumber until fileContent.lines.size) {
             accumulatedLineBuilder.append(fileContent.lines[index])
-            val match = anchorMatcher.find(accumulatedLineBuilder) ?: continue
-            val matchedRange = accumulatedLineBuilder.substring(match.range)
+            val findResult = anchorMatcher.find(accumulatedLineBuilder) ?: continue
+            val matchedRange = accumulatedLineBuilder.substring(findResult.range)
             val defaultValueString = findDefaultValueSubString(matchedRange, argType) ?: continue
 
             // Es handelt sich um Boolean, Null oder eine Zahl
-            if (defaultValueString.isOneOf(TRUE, FALSE, NULL) || defaultValueString.matches(NUMBER_REGEX)) {
+            if (defaultValueString.isOneOf("true", "false", "null") || defaultValueString.matches(NUMBER_REGEX)) {
                 return DefaultValue(defaultValueString)
             }
 
@@ -65,7 +58,7 @@ object DefaultValueExtractor {
         val indexOfParameterDeclarationEnd = findIndexOfParameterDeclarationEnd(matchedRange)
         if (indexOfParameterDeclarationEnd == -1) return null
 
-        val indexOfParameterDefaultValueDeclaration = matchedRange.indexOfFirst { it == '=' }
+        val indexOfParameterDefaultValueDeclaration = matchedRange.indexOfFirst('=')
         val subMatchedRange = matchedRange.substring(indexOfParameterDefaultValueDeclaration + 1, indexOfParameterDeclarationEnd)
 
         if (subMatchedRange.isBlank()) return null
@@ -138,7 +131,7 @@ object DefaultValueExtractor {
             lastChar = currentChar
         }
 
-        return reformatBuilder.toString().trim()
+        return reformatBuilder.trim().toString()
     }
 
     //TODO -> Bei allen isInsideString muss man prüfen, ob $ oder ${} vorhanden ist, das sind dann auch Deklarationen
@@ -217,18 +210,14 @@ object DefaultValueExtractor {
         fileImportInfos: List<ImportInfo>,
         resolver: Resolver
     ): List<ImportInfo> {
-        // Imported As wird noch genommen, da die Declaration auch als der Wert angesprochen werden kann
-        val filtered = fileImportInfos.filter {
-            declaration.name.isOneOf(it.simpleName, it.importedAs)
-        }
-
+        val filtered = fileImportInfos.filter { declaration.name.isOneOf(it.simpleName, it.importedAs) }
         if (filtered.isNotEmpty()) return filtered
 
         return fileImportInfos.filter { import ->
             import.isWholePackageImport && resolver.isImportNameContainedInPackage(import.packageDir, declaration.name)
         }.map { import ->
             //TODO -> Überprüfen ob das Mapping sinnvoll ist oder nicht
-            import.withSimpleName(declaration.name)
+            import.copy(simpleName = declaration.name)
         }
     }
 }

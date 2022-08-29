@@ -1,6 +1,7 @@
 package com.welu.composenavdestinations.extensions
 
 import com.google.devtools.ksp.symbol.FileLocation
+import com.welu.composenavdestinations.model.FileContentInfo
 import java.io.*
 
 fun OutputStream.write(str: String, lineBreaks: Int = 0): OutputStream = apply {

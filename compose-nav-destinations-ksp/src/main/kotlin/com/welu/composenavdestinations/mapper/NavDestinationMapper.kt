@@ -3,7 +3,9 @@ package com.welu.composenavdestinations.mapper
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
-import com.welu.composenavdestinations.annotationinfo.NavDestinationAnnotation
+import com.welu.composenavdestinations.annotations.NavDestinationAnnotation
+import com.welu.composenavdestinations.exceptions.TypeResolveException
+import com.welu.composenavdestinations.exceptions.UnsupportedTypeException
 import com.welu.composenavdestinations.extensions.isOneOf
 import com.welu.composenavdestinations.extensions.ksp.*
 import com.welu.composenavdestinations.mapper.DefaultValueExtractor.getDefaultValue
@@ -20,7 +22,7 @@ class NavDestinationMapper(
 
     private val ksFileContentMap by lazy { mutableMapOf<KSFile, KSFileContent>() }
 
-    private val parcelableType: KSType by lazy { resolver.getTypeWithClassName(PackageUtils.PARCELABLE_IMPORT_INFO.qualifiedName) }
+    private val parcelableType: KSType by lazy { resolver.getTypeWithClassName(PackageUtils.PARCELABLE_IMPORT.qualifiedName) }
 
     private val KSType?.isParcelable get() = this?.let(parcelableType::isAssignableFrom) ?: false
 
@@ -36,7 +38,7 @@ class NavDestinationMapper(
     private val KSType?.isList
         get() = this?.let(listType::isAssignableFrom)?.also {
             if (it && !isValidList) {
-                throw IllegalArgumentException("Used List Subtype: ${declaration.qualifiedName?.asString()}, is not supported, use List, MutableList, AbstractList or ArrayList")
+                throw UnsupportedTypeException("Used List Subtype: ${declaration.qualifiedName?.asString()} is not supported. Use List, MutableList, AbstractList or ArrayList instead.")
             }
         } ?: false
 
@@ -48,7 +50,7 @@ class NavDestinationMapper(
     private val KSType?.isSet
         get() = this?.let(setType::isAssignableFrom)?.also {
             if (it && !isValidSet) {
-                throw IllegalArgumentException("Used Set Subtype: ${declaration.qualifiedName?.asString()}, is not supported, use Set, MutableSet, AbstractSet or HashSet")
+                throw UnsupportedTypeException("Used Set Subtype: ${declaration.qualifiedName?.asString()} is not supported. Use Set, MutableSet, AbstractSet or HashSet instead")
             }
         } ?: false
 
@@ -56,7 +58,7 @@ class NavDestinationMapper(
     override fun map(declaration: KSFunctionDeclaration): NavDestinationInfo {
 
         var destinationInfo = NavDestinationInfo(
-            name = declaration.simpleName.asString() + "NavDestination",
+            name = declaration.simpleName.asString() + PackageUtils.NAV_DESTINATION_SUFFIX,
             route = declaration.getRouteName(),
             functionDeclaration = declaration
         )
@@ -68,7 +70,7 @@ class NavDestinationMapper(
         if (navArgsClass.qualifiedName?.asString() == Unit::class.qualifiedName) {
             validParameters = declaration.parameters.filter(navArguments::contains)
         } else {
-            validParameters = navArgsClass.primaryConstructor?.validParameters ?: throw IllegalStateException("")
+            validParameters = navArgsClass.primaryConstructor?.validParameters ?: throw IllegalStateException("Could not get primary constructor Params")
             destinationInfo = destinationInfo.copy(navArgsClass = navArgsClass)
         }
 
@@ -149,7 +151,7 @@ class NavDestinationMapper(
             val resolvedType = arg.type?.resolve() ?: return@mapNotNull null
 
             // Alternativ einfach null zurückgeben
-            if (resolvedType.isError) throw IllegalArgumentException("Resolved type contains errors: $resolvedType")
+            if (resolvedType.isError) throw TypeResolveException("Resolved type contains errors: $resolvedType")
 
             ParameterTypeArgument.Typed(
                 typeInfo = resolvedType.asParameterTypeInfo ?: return@mapNotNull null,
@@ -158,7 +160,9 @@ class NavDestinationMapper(
         }
 
     private fun KSFunctionDeclaration.getRouteName() =
-        getAnnotationArgument<String>(NavDestinationAnnotation.ROUTE_ARG, NavDestinationAnnotation).ifBlank(simpleName::asString)
+        getAnnotationArgument<String>(NavDestinationAnnotation.ROUTE_ARG, NavDestinationAnnotation).ifBlank {
+            simpleName.asString() + "Route"
+        }
 
     private fun KSFunctionDeclaration.getNavArgsClass(): KSClassDeclaration =
         (getAnnotationArgument<KSType>(NavDestinationAnnotation.NAV_ARGS_ARG, NavDestinationAnnotation).declaration as KSClassDeclaration)

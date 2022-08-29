@@ -4,8 +4,8 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSValueParameter
-import com.welu.composenavdestinations.annotationinfo.NavArgumentAnnotation
-import com.welu.composenavdestinations.annotationinfo.NavDestinationAnnotation
+import com.welu.composenavdestinations.annotations.NavArgumentAnnotation
+import com.welu.composenavdestinations.annotations.NavDestinationAnnotation
 
 fun Resolver.getNavDestinations(): Sequence<KSFunctionDeclaration> = getSymbolsWithAnnotation(NavDestinationAnnotation.import.qualifiedName)
     .filterIsInstance<KSFunctionDeclaration>()

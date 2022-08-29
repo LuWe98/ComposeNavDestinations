@@ -1,5 +1,5 @@
 package com.welu.composenavdestinations.generation
 
-interface FileGenerator <T> {
+interface FileContentGenerator <T> {
     fun generate(instance: T)
 }

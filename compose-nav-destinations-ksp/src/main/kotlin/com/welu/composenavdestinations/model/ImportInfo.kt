@@ -17,8 +17,6 @@ data class ImportInfo(
     val isNonDefaultPackage get() = !isDefaultPackage
     val asImportLine get() = "import $qualifiedName${importedAs?.let { " as $it" } ?: ""}"
 
-    fun withSimpleName(otherSimpleName: String) = copy(simpleName = otherSimpleName)
-
     companion object {
         val FILE_IMPORT_REGEX = Regex("(import)\\s+\\w+(\\s*\\.\\s*\\w+)*(\\s*\\.\\s*(\\w+|\\*))?\\s*(as\\s+\\w*)?")
 

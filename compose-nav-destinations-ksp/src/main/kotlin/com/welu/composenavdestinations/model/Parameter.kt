@@ -15,8 +15,8 @@ data class Parameter(
     val hasDefaultValue get() = defaultValue != null
     val fullTypeName get() = typeInfo.definition
     val fullName get() = "$name: $fullTypeName"
-    val fullDeclarationName get() = fullName + defaultValue?.let { " = " + it.value }
-    val isCustomNavArgType get() = navArgInfo.customNavArgType != null
+    val fullDeclarationName get() = fullName + (defaultValue?.let { " = " + it.value } ?: "")
+    val isCustomNavArgType get() = navArgInfo.customNavArgInfo != null
 
     val imports
         get(): List<ImportInfo> = typeInfo.type.typeArguments

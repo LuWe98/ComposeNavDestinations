@@ -5,7 +5,7 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.validate
-import com.welu.composenavdestinations.annotationinfo.AnnotationDeclaration
+import com.welu.composenavdestinations.annotations.AnnotationDeclaration
 
 fun KSClassDeclaration.getAnnotationWith(annotationName: String): KSAnnotation? = annotations.firstOrNull {
     it.shortName.asString() == annotationName

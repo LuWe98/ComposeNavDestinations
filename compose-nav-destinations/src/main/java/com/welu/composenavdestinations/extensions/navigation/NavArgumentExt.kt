@@ -6,7 +6,7 @@ import androidx.navigation.NavType
 fun <T> navArgument(
     name: String,
     type: NavType<T>,
-    defaultValue: T,
+    defaultValue: Any?,
     nullable: Boolean = false
 ): NamedNavArgument = androidx.navigation.navArgument(name) {
     this.type = type

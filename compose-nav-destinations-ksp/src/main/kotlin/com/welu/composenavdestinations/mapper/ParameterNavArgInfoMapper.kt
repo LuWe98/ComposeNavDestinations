@@ -1,6 +1,7 @@
 package com.welu.composenavdestinations.mapper
 
 import com.welu.composenavdestinations.model.*
+import com.welu.composenavdestinations.model.ParameterTypeArgument.*
 import com.welu.composenavdestinations.utils.PackageUtils
 import com.welu.composenavdestinations.utils.PackageUtils.BASIC_NAV_ARGS
 import com.welu.composenavdestinations.utils.PackageUtils.NAV_ARG_SERIALIZABLE_TYPE
@@ -8,15 +9,7 @@ import com.welu.composenavdestinations.utils.PackageUtils.NAV_ARG_SERIALIZABLE_T
 object ParameterNavArgInfoMapper {
 
     fun ParameterTypeInfo.extractParameterNavArgInfo(): ParameterNavArgInfo {
-        BASIC_NAV_ARGS.firstOrNull { (otherType, _) ->
-            qualifiedName == otherType.qualifiedName
-                    && type.typeArguments.size == otherType.type.typeArguments.size
-                    && type.typeArguments.zip(otherType.type.typeArguments).all {
-                it.first is ParameterTypeArgument.Typed
-                        && it.second is ParameterTypeArgument.Typed
-                        && (it.first as ParameterTypeArgument.Typed).typeInfo.qualifiedName == (it.second as ParameterTypeArgument.Typed).typeInfo.qualifiedName
-            }
-        }?.second?.let {
+        BASIC_NAV_ARGS.firstOrNull { this.isSame(it.first) }?.second?.let {
             return ParameterNavArgInfo(it)
         }
 
@@ -31,7 +24,7 @@ object ParameterNavArgInfoMapper {
         if (type.typeArguments.size == 1) {
             val firstTypeArg = type.typeArguments.first()
 
-            if (firstTypeArg is ParameterTypeArgument.Typed) {
+            if (firstTypeArg is Typed) {
                 val navArgType: ImportInfo? = when {
                     type.isList -> when {
                         firstTypeArg.typeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_LIST_TYPE
@@ -68,12 +61,11 @@ object ParameterNavArgInfoMapper {
         throw IllegalArgumentException("Cannot map the following Parameter: ${type.import.qualifiedName}")
     }
 
-    /*
-fun isSame(otherInfo: ParameterTypeInfo): Boolean = qualifiedName == otherInfo.qualifiedName
-        && type.typeArguments.size == otherInfo.type.typeArguments.size
-        && type.typeArguments.zip(otherInfo.type.typeArguments).all {
-    it.first is Typed && it.second is Typed && (it.first as Typed).typeInfo.qualifiedName == (it.second as Typed).typeInfo.qualifiedName
-}
- */
+
+    private fun ParameterTypeInfo.isSame(otherInfo: ParameterTypeInfo): Boolean = qualifiedName == otherInfo.qualifiedName
+            && type.typeArguments.size == otherInfo.type.typeArguments.size
+            && type.typeArguments.zip(otherInfo.type.typeArguments).all {
+        it.first is Typed && it.second is Typed && (it.first as Typed).typeInfo.qualifiedName == (it.second as Typed).typeInfo.qualifiedName
+    }
 
 }
