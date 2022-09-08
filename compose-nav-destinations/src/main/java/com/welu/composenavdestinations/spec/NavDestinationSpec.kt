@@ -2,7 +2,9 @@ package com.welu.composenavdestinations.spec
 
 import androidx.navigation.NavDeepLink
 
-sealed interface NavDestinationSpec: Route {
+sealed interface NavDestinationSpec {
+
+    val route: String
 
     val baseRoute: String
 

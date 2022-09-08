@@ -10,12 +10,16 @@ internal object PackageUtils {
 
     const val PACKAGE_NAME = "com.welu.composenavdestinations"
     const val NAV_ARGS_PACKAGE = "$PACKAGE_NAME.navargs"
-    private const val NAV_DESTINATION_SPEC_PACKAGE = "$PACKAGE_NAME.spec"
+    const val NAV_ARGS_UTILS_PACKAGE = "$PACKAGE_NAME.utils"
     val PARCELABLE_IMPORT = ImportInfo("Parcelable","android.os")
     val COMPOSABLE_IMPORT = ImportInfo("Composable","androidx.compose.runtime")
+
+    private const val NAV_DESTINATION_SPEC_PACKAGE = "$PACKAGE_NAME.spec"
+    val NAV_DESTINATION_SPEC_IMPORT = ImportInfo("NavDestinationSpec", NAV_DESTINATION_SPEC_PACKAGE)
     val NAV_DESTINATION_PLAIN_SPEC_IMPORT= ImportInfo("NavDestinationPlainSpec", NAV_DESTINATION_SPEC_PACKAGE)
     val NAV_DESTINATION_ARG_SPEC_IMPORT = ImportInfo("NavDestinationArgSpec", NAV_DESTINATION_SPEC_PACKAGE)
-    val NAV_DESTINATION_ROUTABLE_IMPORT = ImportInfo("Routable", NAV_DESTINATION_SPEC_PACKAGE)
+    val NAV_DESTINATION_ROUTE_IMPORT = ImportInfo("NavDestinationRoute", NAV_DESTINATION_SPEC_PACKAGE)
+
     val NAV_DEEP_LINK_IMPORT = ImportInfo("NavDeepLink","androidx.navigation")
     val NAV_BACK_STACK_ENTRY_IMPORT = ImportInfo("NavBackStackEntry","androidx.navigation")
     val SAVED_STATE_HANDLE_IMPORT = ImportInfo("SavedStateHandle","androidx.lifecycle")
@@ -58,7 +62,8 @@ internal object PackageUtils {
     private val VALID_SET_IMPORT_INFOS = VALID_SET_QUALIFIERS.map(::ImportInfo)
 
 
-    const val CUSTOM_NAV_ARGS_FILE = "CustomNavArguments"
+    const val CUSTOM_NAV_ARGS_FILE_NAME = "CustomNavArguments"
+    const val NAV_DESTINATION_UTILS_FILE_NAME = "NavDestinationUtils"
     const val NAV_DESTINATION_SUFFIX = "NavDestination"
 
     private val NAV_ARG_STRING_TYPE = ImportInfo("NavArgStringType", NAV_ARGS_PACKAGE)

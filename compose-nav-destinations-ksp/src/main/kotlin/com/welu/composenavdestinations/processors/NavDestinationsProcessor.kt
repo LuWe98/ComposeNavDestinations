@@ -7,6 +7,8 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.validate
+import com.welu.composenavdestinations.exceptions.NavArgumentAnnotationException
+import com.welu.composenavdestinations.exceptions.NavDestinationAnnotationException
 import com.welu.composenavdestinations.extensions.ksp.getNavArguments
 import com.welu.composenavdestinations.extensions.ksp.getNavDestinations
 import com.welu.composenavdestinations.extensions.ksp.isAnnotationPresent
@@ -38,13 +40,13 @@ class NavDestinationsProcessor(
 //        )
 
         if (annotatedNavDestinations.any { !it.isAnnotationPresent(COMPOSABLE_IMPORT)  }) {
-            throw IllegalStateException("NavDestination Annotation is only allowed on Composable-Functions")
+            throw NavDestinationAnnotationException
         }
 
         val navArguments = resolver.getNavArguments()
 
         if (!navArguments.all { arg -> annotatedNavDestinations.any { arg.parent == it } }) {
-            throw IllegalStateException("NavArgument Annotation is only allowed inside of NavDestination declaration.")
+            throw NavArgumentAnnotationException
         }
 
         val mapper = NavDestinationMapper(resolver, logger, navArguments)

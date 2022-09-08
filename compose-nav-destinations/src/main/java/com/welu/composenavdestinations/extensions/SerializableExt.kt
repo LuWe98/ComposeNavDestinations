@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 
-fun <T: Serializable> T.serialize(): String {
+internal fun <T: Serializable> T.serialize(): String {
     ByteArrayOutputStream().use { byteStream ->
         ObjectOutputStream(byteStream).use {
             it.writeObject(this)

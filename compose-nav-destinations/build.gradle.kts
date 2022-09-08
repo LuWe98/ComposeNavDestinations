@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
+    //TODO -> Entfernen und Selbst schreiben
+    id("kotlin-parcelize")
 }
 
 android {
@@ -40,5 +42,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":compose-nav-destinations-shared"))
+
     api("androidx.navigation:navigation-compose:2.5.1")
 }

@@ -7,16 +7,12 @@ import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.model.ParameterTypeInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-class NavDestinationFileGenerator(
-    private val fileOutputWriter: FileOutputWriter
-) : FileContentGenerator<NavDestinationInfo> {
+object FileGeneratorNavDestination : FileContentInfoGenerator<NavDestinationInfo> {
 
-    override fun generate(instance: NavDestinationInfo) {
-        if (instance.parameters.isEmpty()) {
-            generatePlainSpecFileContentInfo(instance)
-        } else {
-            generateArgSpecFileContentInfo(instance)
-        }.let(fileOutputWriter::writeFile)
+    override fun generate(instance: NavDestinationInfo): FileContentInfo = if (instance.parameters.isEmpty()) {
+        generatePlainSpecFileContentInfo(instance)
+    } else {
+        generateArgSpecFileContentInfo(instance)
     }
 
     private fun generatePlainSpecFileContentInfo(instance: NavDestinationInfo): FileContentInfo = FileContentInfo(
@@ -25,17 +21,17 @@ class NavDestinationFileGenerator(
             PackageUtils.NAV_DEEP_LINK_IMPORT,
             PackageUtils.NAV_DESTINATION_PLAIN_SPEC_IMPORT
         ),
-        code = Templates.NAV_DESTINATION_PLAIN_SPEC_TEMPLATE
-            .replace(Templates.PLACEHOLDER_BASE_ROUTE, instance.route)
-            .replace(Templates.PLACEHOLDER_DESTINATION_NAME, instance.name)
+        code = CodeTemplates.NAV_DESTINATION_PLAIN_SPEC_TEMPLATE
+            .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_BASE_ROUTE, instance.route)
+            .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_DESTINATION_NAME, instance.simpleName)
             //TODO -> Das noch schauen mit deep Links
-            .replace(Templates.PLACEHOLDER_DEEPLINK_VALUE, "emptyList()"),
-        fileName = instance.name
+            .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE, "emptyList()"),
+        fileName = instance.simpleName
     )
 
     private fun generateArgSpecFileContentInfo(instance: NavDestinationInfo): FileContentInfo {
         val sortedParams = instance.parameters.sortedWith(compareBy(Parameter::typeInfo / ParameterTypeInfo::isNullable, Parameter::hasDefaultValue))
-        val navArgsClassName = instance.navArgsClass?.simpleName?.asString() ?: "${instance.name}.NavArgs"
+        val navArgsClassName = instance.navArgsClass?.simpleName?.asString() ?: "${instance.simpleName}.NavArgs"
 
         return FileContentInfo(
             packageDir = instance.packageName,
@@ -46,22 +42,22 @@ class NavDestinationFileGenerator(
                 add(PackageUtils.NAV_ARGUMENT_IMPORT)
                 add(PackageUtils.NAMED_NAV_ARGUMENT_IMPORT)
                 add(PackageUtils.SAVED_STATE_HANDLE_IMPORT)
-                add(PackageUtils.NAV_DESTINATION_ROUTABLE_IMPORT)
+                add(PackageUtils.NAV_DESTINATION_ROUTE_IMPORT)
             },
-            code = Templates.NAV_DESTINATION_ARG_SPEC_TEMPLATE
-                .replace(Templates.PLACEHOLDER_BASE_ROUTE, instance.route)
-                .replace(Templates.PLACEHOLDER_DESTINATION_NAME, instance.name)
-                .replace(Templates.PLACEHOLDER_NAV_ARG_TYPE, navArgsClassName)
-                .replace(Templates.PLACEHOLDER_GENERATED_NAV_ARG_TYPE, generateCustomNavArgClass(instance))
-                .replace(Templates.PLACEHOLDER_ROUTE_ARGS, generateRouteArgs(sortedParams))
-                .replace(Templates.PLACEHOLDER_INVOKE_FUNCTION_PARAMETER, generateInvokeParameters(instance))
-                .replace(Templates.PLACEHOLDER_INVOKE_FUNCTION_BODY, generateInvokeBody(instance.route, sortedParams))
-                .replace(Templates.PLACEHOLDER_NAMED_ARGUMENTS, generateNamedNavArgs(sortedParams))
-                .replace(Templates.PLACEHOLDER_GET_ARGS_BACKSTACK, generateGetArgsBody(instance, true))
-                .replace(Templates.PLACEHOLDER_GET_ARGS_SAVED_STATE, generateGetArgsBody(instance, false))
+            code = CodeTemplates.NAV_DESTINATION_ARG_SPEC_TEMPLATE
+                .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_BASE_ROUTE, instance.route)
+                .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_DESTINATION_NAME, instance.simpleName)
+                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE, navArgsClassName)
+                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GENERATED_NAV_ARG, generateCustomNavArgClass(instance))
+                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_ROUTE_ARGS, generateRouteArgs(sortedParams))
+                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_PARAMETER, generateInvokeParameters(instance))
+                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_BODY, generateInvokeBody(instance.route, sortedParams))
+                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_NAMED_ARGUMENTS, generateNamedNavArgs(sortedParams))
+                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_BACKSTACK, generateGetArgsBody(instance, true))
+                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_SAVED_STATE, generateGetArgsBody(instance, false))
                 //TODO -> Das noch schauen mit deep Links
-                .replace(Templates.PLACEHOLDER_DEEPLINK_VALUE, "emptyList()"),
-            fileName = instance.name
+                .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE, "emptyList()"),
+            fileName = instance.simpleName
         )
     }
 
@@ -108,9 +104,9 @@ class NavDestinationFileGenerator(
     }
 
     private fun generateGetArgsBody(instance: NavDestinationInfo, isBackStackEntry: Boolean): String {
-        val calledOnInstance = if(isBackStackEntry) "navBackStackEntry" else "savedStateHandle"
+        val calledOnInstance = if (isBackStackEntry) "navBackStackEntry" else "savedStateHandle"
         return instance.parameters.joinToString(",\n\t\t") {
-            val nonNullableClaim = if(it.typeInfo.isNullable) "" else "!!"
+            val nonNullableClaim = if (it.typeInfo.isNullable) "" else "!!"
             it.name + " = " + "${it.navArgInfo.simpleName}.getTyped($calledOnInstance, \"${it.name}\")$nonNullableClaim"
         }
     }

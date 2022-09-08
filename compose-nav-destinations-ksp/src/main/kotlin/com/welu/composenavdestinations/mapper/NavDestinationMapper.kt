@@ -58,9 +58,11 @@ class NavDestinationMapper(
     override fun map(declaration: KSFunctionDeclaration): NavDestinationInfo {
 
         var destinationInfo = NavDestinationInfo(
-            name = declaration.simpleName.asString() + PackageUtils.NAV_DESTINATION_SUFFIX,
-            route = declaration.getRouteName(),
-            functionDeclaration = declaration
+            import = ImportInfo(
+                simpleName = declaration.simpleName.asString() + PackageUtils.NAV_DESTINATION_SUFFIX,
+                packageDir = declaration.packageName.asString()
+            ),
+            route = declaration.getRouteName()
         )
 
         // Die NavArgs Klasse wird verwendet, wenn man eine angibt, ansonsten wird eine generiert mit @NavArgument annotierten Parametern

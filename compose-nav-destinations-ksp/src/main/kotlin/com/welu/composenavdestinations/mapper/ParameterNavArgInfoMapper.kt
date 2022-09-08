@@ -58,6 +58,15 @@ object ParameterNavArgInfoMapper {
             //TODO -> KTX Serializable NavArg -> Hier muss dann auch auf den Serializer Referenziert werden, also für jeden Typen ein eigenes --> CustomNavArgType wie Enum
         }
 
+        //TODO -> Noch custom Serializer einbauen, dass man das für die Navigation auch verwenden kann
+        /*
+        @NavTypeSerializer
+        class ColorTypeSerializer : DestinationsNavTypeSerializer<Color> {
+            override fun toRouteString(value: Color): String
+            override fun fromRouteString(routeStr: String): Color
+        }
+         */
+
         throw IllegalArgumentException("Cannot map the following Parameter: ${type.import.qualifiedName}")
     }
 

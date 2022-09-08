@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
-    <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="com.welu.composenavdestinations.annotations.NavDestination" />
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="androidx.compose.runtime.Composable" />
+      <item index="1" class="java.lang.String" itemvalue="com.welu.composenavdestinations.annotations.NavDestination" />
     </list>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">

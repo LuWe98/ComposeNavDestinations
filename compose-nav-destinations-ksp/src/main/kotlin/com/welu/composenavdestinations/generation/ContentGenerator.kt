@@ -9,15 +9,14 @@ class ContentGenerator(
     private val codeGenerator: CodeGenerator
 ) {
 
-    private val fileOutputWriter: FileOutputWriter by lazy {
-        FileOutputWriter(codeGenerator, resolver)
+    private val fileContentInfoOutputWriter: FileContentInfoOutputWriter by lazy {
+        FileContentInfoOutputWriter(codeGenerator, resolver)
     }
 
     fun generate(destinations: Sequence<NavDestinationInfo>) {
-        CustomNavArgsFileContentGenerator(fileOutputWriter).generate(destinations)
-        NavDestinationFileGenerator(fileOutputWriter).let { generator ->
-            destinations.forEach(generator::generate)
-        }
+        FileGeneratorCustomNavArgs.generate(destinations)?.let(fileContentInfoOutputWriter::writeFile)
+        destinations.map(FileGeneratorNavDestination::generate).forEach(fileContentInfoOutputWriter::writeFile)
+        FileGeneratorNavDestinationUtils.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
     }
 
 }
