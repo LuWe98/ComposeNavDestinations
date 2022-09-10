@@ -15,7 +15,7 @@ fun KClass<*>.asParameterTypeInfo(
     isNullable = isNullable,
     type = ParameterType(
         import = ImportInfo(qualifiedName!!),
-        typeArguments = typeArgs.map(ParameterTypeArgument::Typed),
+        typeArguments = typeArgs.map(::ParameterTypeArgument),
         isEnum = java.isEnum,
         isSerializable = isSerializable
     )
@@ -26,7 +26,7 @@ fun KClass<*>.asParamTypeInfo(vararg typeArgs: KClass<*>): ParameterTypeInfo = a
 fun KClass<*>.asBasicParameterTypeInfo(vararg typeArgs: ParameterTypeInfo): ParameterTypeInfo = ParameterTypeInfo(
     ParameterType(
         import = ImportInfo(qualifiedName!!),
-        typeArguments = typeArgs.map(ParameterTypeArgument::Typed),
+        typeArguments = typeArgs.map(::ParameterTypeArgument),
     )
 )
 
@@ -35,6 +35,6 @@ fun ImportInfo.asParamTypeInfo(vararg typeArgs: KClass<*>): ParameterTypeInfo = 
 fun ImportInfo.asBasicParameterTypeInfo(vararg typeArgs: ParameterTypeInfo): ParameterTypeInfo = ParameterTypeInfo(
     ParameterType(
         import = this,
-        typeArguments = typeArgs.map(ParameterTypeArgument::Typed),
+        typeArguments = typeArgs.map(::ParameterTypeArgument),
     )
 )

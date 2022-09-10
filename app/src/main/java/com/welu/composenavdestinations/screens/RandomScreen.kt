@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.welu.composenavdestinations.DetailsVm
 import com.welu.composenavdestinations.annotations.NavArgument
 import com.welu.composenavdestinations.annotations.NavDestination
-import com.welu.composenavdestinations.result.sendResult
-import kotlin.random.Random
 
 @NavDestination
 @Composable
@@ -50,4 +50,11 @@ fun RandomScreen(
         }
 
     }
+}
+
+@Composable
+fun RandomScreen2() {
+    val vm = viewModel<DetailsVm>()
+
+
 }

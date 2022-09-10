@@ -109,7 +109,7 @@ class NavDestinationMapper(
         //Das ist der Import Name
         val qualifiedType = resolvedType.declaration.qualifiedName?.asString() ?: resolvedType.declaration.simpleName.asString()
         //Gets the parameter Type Info
-        val parameterTypeInfo = resolvedType.asParameterTypeInfo ?: throw IllegalStateException("Parameter is invalid!")
+        val parameterTypeInfo = resolvedType.toParameterTypeInfo() ?: throw IllegalStateException("Parameter is invalid!")
         //Default Value Check and retrieval
         val parameterDefValue = valueParameter.getDefaultValue(resolver, fileContent, qualifiedType)
         //The NavArgInfo for the according NavType<T>
@@ -123,43 +123,41 @@ class NavDestinationMapper(
         )
     }
 
-    private val KSType.asParameterTypeInfo
-        get(): ParameterTypeInfo? {
-            if (declaration.qualifiedName == null) return null
+    private fun KSType.toParameterTypeInfo(): ParameterTypeInfo? {
+        if (declaration.qualifiedName == null) return null
 
-            val classDeclaration: KSClassDeclaration = (getTypeAliasDeclaration() ?: declaration) as KSClassDeclaration
-            val classDeclarationType: KSType = classDeclaration.asType
-            val importInfo = ImportInfo(classDeclaration.qualifiedName?.asString() ?: declaration.qualifiedName!!.asString())
-            //simpleName = classDeclaration.simpleName.asString(),
+        val classDeclaration: KSClassDeclaration = (getTypeAliasDeclaration() ?: declaration) as KSClassDeclaration
+        val classDeclarationType: KSType = classDeclaration.asType
+        val importInfo = ImportInfo(classDeclaration.qualifiedName?.asString() ?: declaration.qualifiedName!!.asString())
+        //simpleName = classDeclaration.simpleName.asString(),
 
-            return ParameterTypeInfo(
-                isNullable = isMarkedNullable,
-                type = ParameterType(
-                    import = importInfo,
-                    typeArguments = extractedParameterTypeArguments,
-                    isEnum = classDeclaration.isEnum,
-                    isSerializable = classDeclarationType.isSerializable,
-                    isParcelable = classDeclarationType.isParcelable,
-                    isList = classDeclarationType.isList,
-                    isSet = classDeclarationType.isSet
-                )
+        return ParameterTypeInfo(
+            isNullable = isMarkedNullable,
+            type = ParameterType(
+                import = importInfo,
+                typeArguments = extractedParameterTypeArguments(),
+                isEnum = classDeclaration.isEnum,
+                isSerializable = classDeclarationType.isSerializable,
+                isParcelable = classDeclarationType.isParcelable,
+                isList = classDeclarationType.isList,
+                isSet = classDeclarationType.isSet
             )
-        }
+        )
+    }
 
-    private val KSType.extractedParameterTypeArguments
-        get(): List<ParameterTypeArgument> = arguments.mapNotNull { arg ->
-            if (arg.variance == Variance.STAR) return@mapNotNull ParameterTypeArgument.Star
+    private fun KSType.extractedParameterTypeArguments(): List<ParameterTypeArgument> = arguments.mapNotNull { arg ->
+        if (arg.variance == Variance.STAR) return@mapNotNull ParameterTypeArgument.STAR
 
-            val resolvedType = arg.type?.resolve() ?: return@mapNotNull null
+        val resolvedType = arg.type?.resolve() ?: return@mapNotNull null
 
-            // Alternativ einfach null zurückgeben
-            if (resolvedType.isError) throw TypeResolveException("Resolved type contains errors: $resolvedType")
+        // Alternativ einfach null zurückgeben
+        if (resolvedType.isError) throw TypeResolveException("Resolved type contains errors: $resolvedType")
 
-            ParameterTypeArgument.Typed(
-                typeInfo = resolvedType.asParameterTypeInfo ?: return@mapNotNull null,
-                varianceLabel = arg.variance.label
-            )
-        }
+        ParameterTypeArgument(
+            variance = arg.variance,
+            typeInfo = resolvedType.toParameterTypeInfo() ?: return@mapNotNull null
+        )
+    }
 
     private fun KSFunctionDeclaration.getRouteName() =
         getAnnotationArgument<String>(NavDestinationAnnotation.ROUTE_ARG, NavDestinationAnnotation).ifBlank {

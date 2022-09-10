@@ -1,15 +1,15 @@
 package com.welu.composenavdestinations.model
 
-sealed interface ParameterTypeArgument {
+import com.google.devtools.ksp.symbol.Variance
 
-    val varianceLabel: String
+data class ParameterTypeArgument(
+    val typeInfo: ParameterTypeInfo? = null,
+    val variance: Variance = Variance.INVARIANT
+) {
 
-    data class Typed(
-        val typeInfo: ParameterTypeInfo,
-        override val varianceLabel: String = ""
-    ): ParameterTypeArgument
+    val label get() = variance.label
 
-    object Star: ParameterTypeArgument {
-        override val varianceLabel = "*"
+    companion object {
+        val STAR = ParameterTypeArgument(variance = Variance.STAR)
     }
 }

@@ -41,4 +41,3 @@ fun NavGraphBuilder.navDestination(
 ) {
     content(NavDestinationPlainScope(plainSpec, it))
 }
-

@@ -24,7 +24,7 @@ object ParameterNavArgInfoMapper {
         if (type.typeArguments.size == 1) {
             val firstTypeArg = type.typeArguments.first()
 
-            if (firstTypeArg is Typed) {
+            if (firstTypeArg.typeInfo != null) {
                 val navArgType: ImportInfo? = when {
                     type.isList -> when {
                         firstTypeArg.typeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_LIST_TYPE
@@ -71,10 +71,9 @@ object ParameterNavArgInfoMapper {
     }
 
 
-    private fun ParameterTypeInfo.isSame(otherInfo: ParameterTypeInfo): Boolean = qualifiedName == otherInfo.qualifiedName
+    private fun ParameterTypeInfo.isSame(otherInfo: ParameterTypeInfo): Boolean =
+        qualifiedName == otherInfo.qualifiedName
             && type.typeArguments.size == otherInfo.type.typeArguments.size
-            && type.typeArguments.zip(otherInfo.type.typeArguments).all {
-        it.first is Typed && it.second is Typed && (it.first as Typed).typeInfo.qualifiedName == (it.second as Typed).typeInfo.qualifiedName
-    }
+            && type.typeArguments.zip(otherInfo.type.typeArguments).all { it.first.typeInfo?.qualifiedName == it.second.typeInfo?.qualifiedName }
 
 }

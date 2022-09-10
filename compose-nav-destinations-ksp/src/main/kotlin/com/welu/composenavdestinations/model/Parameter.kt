@@ -1,8 +1,6 @@
 package com.welu.composenavdestinations.model
 
-import com.welu.composenavdestinations.extensions.div
-import com.welu.composenavdestinations.model.ParameterTypeArgument.*
-import com.welu.composenavdestinations.utils.PackageUtils
+import com.welu.composenavdestinations.extensions.flattenMutable
 
 data class Parameter(
     val name: String,
@@ -20,9 +18,8 @@ data class Parameter(
 
     val imports
         get(): List<ImportInfo> = typeInfo.type.typeArguments
-            .filterIsInstance<Typed>()
-            .flatMap(Typed::typeInfo / ParameterTypeInfo::allChildImports)
-            .toMutableList().apply {
+            .mapNotNull { it.typeInfo?.allChildImports }
+            .flattenMutable().apply {
                 add(typeInfo.type.import)
                 add(navArgInfo.import)
                 defaultValue?.requiredImports?.let(::addAll)

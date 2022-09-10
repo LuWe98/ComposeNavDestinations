@@ -2,6 +2,7 @@ package com.welu.composenavdestinations.extensions.ksp
 
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.welu.composenavdestinations.annotations.NavArgumentAnnotation
@@ -17,3 +18,7 @@ fun Resolver.getComposables(): Sequence<KSFunctionDeclaration> = getSymbolsWithA
     .filterIsInstance<KSFunctionDeclaration>()
 
 val Resolver.dependencies get() = Dependencies(false, *getAllFiles().toList().toTypedArray())
+
+
+fun Resolver.getNavDestinationDefinitions() : Sequence<KSClassDeclaration> = getSymbolsWithAnnotation("com.welu.composenavdestinations.spec.tests.NavDestinationDefinition")
+    .filterIsInstance<KSClassDeclaration>()

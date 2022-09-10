@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.welu.composenavdestinations.annotations.NavDestination
 
-@NavDestination(route = "home")
+@NavDestination
 @Composable
 fun StartScreen(
     valueOne: Int?,

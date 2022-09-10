@@ -12,3 +12,9 @@ fun KSType.getTypeAlias(): KSType? = declaration.let {
 }
 
 fun KSType.getTypeAliasDeclaration(): KSDeclaration? = getTypeAlias()?.declaration
+
+
+fun KSDeclaration.getTypeAlias(): KSType? = if(this is KSTypeAlias) this.type.resolve() else null
+
+fun KSDeclaration.getTypeAliasDeclaration(): KSDeclaration? = getTypeAlias()?.declaration
+
