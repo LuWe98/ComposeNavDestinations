@@ -7,11 +7,10 @@ import java.io.Serializable
 
 internal fun <T: Serializable> T.serialize(): String {
     ByteArrayOutputStream().use { byteStream ->
-        ObjectOutputStream(byteStream).use {
-            it.writeObject(this)
-            it.flush()
+        ObjectOutputStream(byteStream).use { objectStream ->
+            objectStream.writeObject(this)
+            objectStream.flush()
         }
-        //Base64.encodeToString(byteStream.toByteArray(), Base64Util.BASE_64_CODING_FLAGS)
         return byteStream.toByteArray().asBase64String
     }
 }

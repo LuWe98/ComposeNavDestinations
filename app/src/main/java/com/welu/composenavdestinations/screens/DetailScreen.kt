@@ -8,13 +8,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.welu.composenavdestinations.annotations.NavDestination
 import com.welu.composenavdestinations.model.ParcelableObject
 import com.welu.composenavdestinations.model.TestEnum
 import java.util.*
 
-data class DetailScreenNavArgs(
+class DetailScreenNavArgs(
     val string: String? = "Hallo",
     val stringArray: Array<String?> = arrayOf("hallo", "tschau"),
     val stringList: List<String> = listOf("Hallo", "Bernd"),
@@ -84,6 +86,8 @@ fun DetailScreen(
 ) {
     args.apply {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+
+            Text(text = "Strings:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "String: $string")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "StringArray: ${stringArray.joinToString()}")
@@ -93,6 +97,7 @@ fun DetailScreen(
             Text(text = "StringSet: ${stringSet?.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Ints:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Int: $int")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "IntPrimitiveArray: ${intPrimitiveArray.joinToString()}")
@@ -102,6 +107,7 @@ fun DetailScreen(
             Text(text = "IntList: ${intList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Longs:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Long: $long")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "LongPrimitiveArray: ${longPrimitiveArray.joinToString()}")
@@ -111,6 +117,7 @@ fun DetailScreen(
             Text(text = "LongList: ${longList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Floats:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Float: $float")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "FloatPrimitiveArray: ${floatPrimitiveArray.joinToString()}")
@@ -120,6 +127,7 @@ fun DetailScreen(
             Text(text = "FloatList: ${floatList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Doubles:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Double: $double")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "DoublePrimitiveArray: ${doublePrimitiveArray.joinToString()}")
@@ -129,6 +137,7 @@ fun DetailScreen(
             Text(text = "DoubleList: ${doubleList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Booleans:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Boolean: $boolean")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "BooleanPrimitiveArray: ${booleanPrimitiveArray.joinToString()}")
@@ -138,6 +147,7 @@ fun DetailScreen(
             Text(text = "BooleanList: ${booleanList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Bytes:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Byte: $byte")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "BytePrimitiveArray: ${bytePrimitiveArray.joinToString()}")
@@ -147,6 +157,7 @@ fun DetailScreen(
             Text(text = "ByteList: ${byteList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Shorts:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Short: $short")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "ShortPrimitiveArray: ${shortPrimitiveArray.joinToString()}")
@@ -156,6 +167,7 @@ fun DetailScreen(
             Text(text = "ShortList: ${shortList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Chars:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Char: $char")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "CharPrimitiveArray: ${charPrimitiveArray.joinToString()}")
@@ -165,6 +177,7 @@ fun DetailScreen(
             Text(text = "CharList: ${charList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Enums:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Enum: ${enum.name}")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "EnumArray: ${enumArray.joinToString()}")
@@ -172,6 +185,7 @@ fun DetailScreen(
             Text(text = "EnumList: ${enumList.joinToString()}")
             Spacer(modifier = Modifier.height(20.dp))
 
+            Text(text = "Parcelables:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Parcelable: $parcelable")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "ParcelableArray: ${parcelableArray.joinToString()}")
@@ -179,9 +193,9 @@ fun DetailScreen(
             Text(text = "ParcelableList: ${parcelableList.joinToString()}")
             Spacer(modifier = Modifier.height(25.dp))
 
+            Text(text = "Serializables:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Serializable: $serializable")
-            Spacer(modifier = Modifier.height(25.dp))
-
+            Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Map: $map")
             Spacer(modifier = Modifier.height(25.dp))
         }

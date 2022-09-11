@@ -1,6 +1,6 @@
 package com.welu.composenavdestinations.model
 
-data class CustomParameterNavArgInfo(
+data class ParameterCustomNavArgInfo(
     val parameterTypeImport: ImportInfo,
     val navArgTypeImport: ImportInfo
 ) {

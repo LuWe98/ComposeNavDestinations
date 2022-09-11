@@ -12,19 +12,19 @@ object FileGeneratorCustomNavArgs : FileContentInfoGenerator<Sequence<NavDestina
         ?.let(::generateFileContent)
 
     private fun generateFileContent(parameters: Sequence<Parameter>) = FileContentInfo(
-        packageDir = PackageUtils.NAV_ARGS_PACKAGE,
+        fileImportInfo = PackageUtils.NAV_DESTINATION_CUSTOM_NAV_ARGS_FILE_IMPORT,
         imports = parameters.flatMap { it.navArgInfo.customNavArgInfo!!.allImports }.toSet(),
         code = parameters.joinToString("\n") {
             val navArgTypeName = it.navArgInfo.customNavArgInfo!!.navArgTypeImport.simpleName
             val parameterTypeName = it.navArgInfo.customNavArgInfo.parameterTypeImport.simpleName
             "val ${it.navArgInfo.import.simpleName} = $navArgTypeName($parameterTypeName::class)"
-        },
-        fileName = PackageUtils.CUSTOM_NAV_ARGS_FILE_NAME
+        }
     )
 
     private fun extractCustomNavArgParameters(navDestinationInfos: Sequence<NavDestinationInfo>) = navDestinationInfos.flatMap { info ->
-        info.parameters.filter { it.navArgInfo.customNavArgInfo != null }
+        info.parameters.filter(Parameter::isCustomNavArgType)
     }.distinctBy {
         it.navArgInfo.import.simpleName
     }
+
 }

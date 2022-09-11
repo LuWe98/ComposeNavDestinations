@@ -14,9 +14,21 @@ class ContentGenerator(
     }
 
     fun generate(destinations: Sequence<NavDestinationInfo>) {
+
+        //Generates the custom NavArgs needed for Navigation
         FileGeneratorCustomNavArgs.generate(destinations)?.let(fileContentInfoOutputWriter::writeFile)
-        destinations.map(FileGeneratorNavDestination::generate).forEach(fileContentInfoOutputWriter::writeFile)
+
+        //Generates the NavDestinationUtils File
         FileGeneratorNavDestinationUtils.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
+
+        //Generates the NavDestinationsExt File
+        FileGeneratorDestinationExt.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
+
+        //Generates the NavDestinationsResultExt File
+        FileGeneratorResultExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
+
+        //Generates the DestinationSpecs for all annotated destinations
+        destinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
     }
 
 }

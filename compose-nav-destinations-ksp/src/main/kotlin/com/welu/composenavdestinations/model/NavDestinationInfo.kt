@@ -1,21 +1,22 @@
 package com.welu.composenavdestinations.model
 
-import com.google.devtools.ksp.symbol.KSClassDeclaration
-
 data class NavDestinationInfo(
-    val import: ImportInfo,
+    val destinationImport: ImportInfo,
+    val destinationSpecImport: ImportInfo,
     val route: String,
     // Wenn das null ist, muss mit den Parametern eine neue klasse generiert werden, sonst einfach diese Klasse importieren
-    val navArgsClass: KSClassDeclaration? = null,
+    val navArgsTypeInfo: ParameterTypeInfo? = null,
     val parameters: List<Parameter> = emptyList()
 ) {
 
-    val packageName get() = import.packageDir
-    val simpleName get() = import.simpleName
+    val packageName get() = destinationSpecImport.packageDir
+    val simpleName get() = destinationSpecImport.simpleName
+    val isArgDestination get() = navArgsTypeInfo != null
 
-    val allImports get() = parameters
-        .flatMap(Parameter::imports)
-        .filter(ImportInfo::isNonDefaultPackage)
-        .distinctBy(ImportInfo::qualifiedName)
+    val allImports: Set<ImportInfo> get() = mutableSetOf<ImportInfo>().apply {
+        addAll(parameters.flatMap(Parameter::imports).filter(ImportInfo::isNonDefaultPackage))
+        add(destinationImport)
+        navArgsTypeInfo?.allChildImports?.let(::addAll)
+    }
 
 }

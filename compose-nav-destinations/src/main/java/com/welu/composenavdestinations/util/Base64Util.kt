@@ -13,9 +13,7 @@ internal object Base64Util {
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Serializable> deserialize(base64String: String): T {
-        //Base64.decode(base64String, BASE_64_CODING_FLAGS)
-        val decoded = base64String.fromBase64ToByteArray
-        ObjectInputStream(ByteArrayInputStream(decoded)).use { inputStream ->
+        ObjectInputStream(ByteArrayInputStream(base64String.fromBase64ToByteArray)).use { inputStream ->
             return inputStream.readObject() as T
         }
     }
@@ -28,7 +26,6 @@ internal val ByteArray.asBase64String get(): String = Base64.encodeToString(this
 //val String.asBase64 get(): String = Base64.encodeToString(toByteArray(), BASE_64_CODING_FLAGS)
 //
 //val String.fromBase64 get(): String = String(fromBase64ToByteArray)
-
 
 internal val String.asBase64 get(): String = Base64.encodeToString(toByteArray(), BASE_64_CODING_FLAGS)
 

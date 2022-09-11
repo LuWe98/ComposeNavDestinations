@@ -7,48 +7,49 @@ import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.model.ParameterTypeInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-object FileGeneratorNavDestination : FileContentInfoGenerator<NavDestinationInfo> {
+object FileGeneratorDestinationSpec : FileContentInfoGenerator<NavDestinationInfo> {
 
-    override fun generate(instance: NavDestinationInfo): FileContentInfo = if (instance.parameters.isEmpty()) {
-        generatePlainSpecFileContentInfo(instance)
-    } else {
+    override fun generate(instance: NavDestinationInfo): FileContentInfo = if (instance.isArgDestination) {
         generateArgSpecFileContentInfo(instance)
+    } else {
+        generatePlainSpecFileContentInfo(instance)
     }
 
     private fun generatePlainSpecFileContentInfo(instance: NavDestinationInfo): FileContentInfo = FileContentInfo(
+        fileName = instance.simpleName,
         packageDir = instance.packageName,
         imports = listOf(
-            PackageUtils.NAV_DEEP_LINK_IMPORT,
+            instance.destinationImport,
+            PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT,
             PackageUtils.NAV_DESTINATION_PLAIN_SPEC_IMPORT
         ),
         code = CodeTemplates.NAV_DESTINATION_PLAIN_SPEC_TEMPLATE
             .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_BASE_ROUTE, instance.route)
             .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_DESTINATION_NAME, instance.simpleName)
             //TODO -> Das noch schauen mit deep Links
-            .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE, "emptyList()"),
-        fileName = instance.simpleName
+            .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE, "emptyList()")
     )
 
     private fun generateArgSpecFileContentInfo(instance: NavDestinationInfo): FileContentInfo {
         val sortedParams = instance.parameters.sortedWith(compareBy(Parameter::typeInfo / ParameterTypeInfo::isNullable, Parameter::hasDefaultValue))
-        val navArgsClassName = instance.navArgsClass?.simpleName?.asString() ?: "${instance.simpleName}.NavArgs"
+        val navArgsClassName = instance.navArgsTypeInfo!!.simpledName
+        //?: "${instance.simpleName}.NavArgs"
 
         return FileContentInfo(
             packageDir = instance.packageName,
             imports = instance.allImports.toMutableList().apply {
-                add(PackageUtils.NAV_DEEP_LINK_IMPORT)
+                add(PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT)
                 add(PackageUtils.NAV_DESTINATION_ARG_SPEC_IMPORT)
-                add(PackageUtils.NAV_BACK_STACK_ENTRY_IMPORT)
+                add(PackageUtils.ANDROID_NAVIGATION_NAV_BACK_STACK_ENTRY_IMPORT)
                 add(PackageUtils.NAV_ARGUMENT_IMPORT)
-                add(PackageUtils.NAMED_NAV_ARGUMENT_IMPORT)
+                add(PackageUtils.ANDROID_NAVIGATION_NAMED_NAV_ARGUMENT_IMPORT)
                 add(PackageUtils.SAVED_STATE_HANDLE_IMPORT)
-                add(PackageUtils.NAV_DESTINATION_ROUTE_IMPORT)
+                add(PackageUtils.ROUTABLE_IMPORT)
             },
             code = CodeTemplates.NAV_DESTINATION_ARG_SPEC_TEMPLATE
                 .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_BASE_ROUTE, instance.route)
                 .replace(CodeTemplates.PLACEHOLDER_NAV_SPEC_DESTINATION_NAME, instance.simpleName)
                 .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE, navArgsClassName)
-                .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GENERATED_NAV_ARG, generateCustomNavArgClass(instance))
                 .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_ROUTE_ARGS, generateRouteArgs(sortedParams))
                 .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_PARAMETER, generateInvokeParameters(instance))
                 .replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_BODY, generateInvokeBody(instance.route, sortedParams))
@@ -61,8 +62,9 @@ object FileGeneratorNavDestination : FileContentInfoGenerator<NavDestinationInfo
         )
     }
 
+    //.replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GENERATED_NAV_ARG, generateCustomNavArgClass(instance))
     private fun generateCustomNavArgClass(instance: NavDestinationInfo): String {
-        if (instance.navArgsClass != null) return ""
+        if (instance.navArgsTypeInfo != null) return ""
         val args = instance.parameters.joinToString(",\n\t\t") {
             "val " + it.fullDeclarationName
         }

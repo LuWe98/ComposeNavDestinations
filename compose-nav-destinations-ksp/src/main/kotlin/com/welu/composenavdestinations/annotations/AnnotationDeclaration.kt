@@ -5,5 +5,5 @@ import com.welu.composenavdestinations.utils.PackageUtils
 
 sealed class AnnotationDeclaration(
     val name: String,
-    val import: ImportInfo =  ImportInfo(name,"${PackageUtils.PACKAGE_NAME}.annotations")
+    val import: ImportInfo = ImportInfo(name, PackageUtils.ANNOTATIONS_PACKAGE)
 )

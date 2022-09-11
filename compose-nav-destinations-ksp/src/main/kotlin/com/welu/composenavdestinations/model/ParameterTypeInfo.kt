@@ -14,6 +14,7 @@ data class ParameterTypeInfo(
     val qualifiedName get() = type.import.qualifiedName
     val simpledName get() = type.import.simpleName
 
+
     val allChildImports
         get(): List<ImportInfo> = type.typeArguments.mapNotNull { it.typeInfo?.allChildImports }.flatten() + type.import
 
@@ -26,10 +27,9 @@ data class ParameterTypeInfo(
             } + ">"
         }
 
-
-
 //                when (type) {
 //                    Star -> type.varianceLabel
 //                    is Typed -> type.varianceLabel.ifNotBlank { "$it " } + type.typeInfo.definition + if (type.typeInfo.isNullable) "?" else ""
 //                }
+
 }

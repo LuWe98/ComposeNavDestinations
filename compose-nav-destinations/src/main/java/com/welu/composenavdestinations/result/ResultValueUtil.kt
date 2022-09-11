@@ -1,6 +1,5 @@
 package com.welu.composenavdestinations.result
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -9,9 +8,9 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.welu.composenavdestinations.destinations.scope.DestinationScope
+import com.welu.composenavdestinations.destinations.spec.DestinationSpec
 import com.welu.composenavdestinations.extensions.collectOnLifecycle
-import com.welu.composenavdestinations.spec.NavDestinationScope
-import com.welu.composenavdestinations.spec.NavDestinationSpec
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -21,37 +20,58 @@ internal class ResultWrapper<T>(
     val value: @RawValue T
 ) : Parcelable
 
+@PublishedApi
+internal fun NavController.getBackStackEntry(spec: DestinationSpec): NavBackStackEntry? {
+    runCatching {
+        getBackStackEntry(spec.route)
+    }.onSuccess {
+        return it
+    }
 
-inline fun <reified T> NavController.sendDestinationResult(
-    toScope: NavDestinationScope,
+//    for (i in backQueue.lastIndex downTo 0) {
+//        if (backQueue[i].destination.route == spec.route) {
+//            return backQueue[i]
+//        }
+//    }
+
+    return null
+}
+
+@PublishedApi
+internal inline fun <reified T> resultKey(
+    forSpec: DestinationSpec,
+    keySpecification: String? = null
+): String = forSpec.baseRoute + T::class.qualifiedName + keySpecification
+
+
+inline fun <reified T> DestinationScope.sendDestinationResultTo(
+    spec: DestinationSpec,
     value: T?,
     keySpecification: String? = null
-) = sendDestinationResult(
-    toSpec = toScope.spec,
+): Unit = navController.sendDestinationResultTo(
+    spec = spec,
     value = value,
     keySpecification = keySpecification
 )
 
-inline fun <reified T> NavController.sendDestinationResult(
-    toSpec: NavDestinationSpec,
+inline fun <reified T> NavController.sendDestinationResultTo(
+    spec: DestinationSpec,
     value: T?,
     keySpecification: String? = null
 ) {
-    getBackStackEntry(toSpec)?.let { entry ->
-        entry.savedStateHandle[resultKey<T>(toSpec, keySpecification)] = ResultWrapper(value)
+    getBackStackEntry(spec)?.let { entry ->
+        entry.savedStateHandle[resultKey<T>(spec, keySpecification)] = ResultWrapper(value)
     } ?: throw IllegalStateException("Could not find the BackStackEntry for the specified NavDestinationSpec")
 }
 
-
 @Composable
-@SuppressLint("ComposableNaming")
-inline fun <reified T> NavController.destinationResultListener(
-    forScope: NavDestinationScope,
+inline fun <reified T> DestinationScope.DestinationResultListener(
+    forSpec: DestinationSpec = relatedSpec,
     keySpecification: String? = null,
     withLifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     crossinline callback: (T) -> Unit
-) = destinationResultListener(
-    forSpec = forScope.spec,
+) = navController.DestinationResultListener(
+    forSpec = forSpec,
     keySpecification = keySpecification,
     withLifecycleState = withLifecycleState,
     callback = callback
@@ -62,9 +82,8 @@ inline fun <reified T> NavController.destinationResultListener(
  * It is therefore possible for a Screen to send itself results or react to them as long as the screen is in the started State.
  */
 @Composable
-@SuppressLint("ComposableNaming")
-inline fun <reified T> NavController.destinationResultListener(
-    forSpec: NavDestinationSpec,
+inline fun <reified T> NavController.DestinationResultListener(
+    forSpec: DestinationSpec,
     keySpecification: String? = null,
     withLifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     crossinline callback: (T) -> Unit
@@ -84,14 +103,14 @@ inline fun <reified T> NavController.destinationResultListener(
         }
 }
 
+
 @Composable
-@SuppressLint("ComposableNaming")
-inline fun <reified T> NavController.lifecycleDestinationResultListener(
-    forScope: NavDestinationScope,
+inline fun <reified T> DestinationScope.LifecycleDestinationResultListener(
+    forSpec: DestinationSpec = relatedSpec,
     keySpecification: String? = null,
     crossinline callback: (T) -> Unit
-) = lifecycleDestinationResultListener(
-    forSpec = forScope.spec,
+) = navController.LifecycleDestinationResultListener(
+    forSpec = forSpec,
     keySpecification = keySpecification,
     callback = callback
 )
@@ -101,9 +120,8 @@ inline fun <reified T> NavController.lifecycleDestinationResultListener(
  * Only an Lifecycle Observer is needed and the key/value will be removed from the saveStateHandle once collected.
  */
 @Composable
-@SuppressLint("ComposableNaming")
-inline fun <reified T> NavController.lifecycleDestinationResultListener(
-    forSpec: NavDestinationSpec,
+inline fun <reified T> NavController.LifecycleDestinationResultListener(
+    forSpec: DestinationSpec,
     keySpecification: String? = null,
     crossinline callback: (T) -> Unit
 ) {
@@ -133,33 +151,3 @@ inline fun <reified T> NavController.lifecycleDestinationResultListener(
         }
     }
 }
-
-@PublishedApi
-internal fun NavController.getBackStackEntry(spec: NavDestinationSpec): NavBackStackEntry? {
-    runCatching {
-        getBackStackEntry(spec.route)
-    }.onSuccess {
-        return it
-    }
-
-//    for (i in backQueue.lastIndex downTo 0) {
-//        if (backQueue[i].destination.route == spec.route) {
-//            return backQueue[i]
-//        }
-//    }
-
-    return null
-}
-
-@PublishedApi
-internal inline fun <reified T> resultKey(
-    forSpec: NavDestinationSpec,
-    keySpecification: String? = null
-): String = forSpec.baseRoute + T::class.qualifiedName + keySpecification
-
-
-//@Parcelize
-//data class ResultWrapperTest(
-//    val key: String
-//): Parcelable
-

@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations.spec
+package com.welu.composenavdestinations.destinations
 //
 //import androidx.lifecycle.SavedStateHandle
 //import androidx.navigation.NamedNavArgument

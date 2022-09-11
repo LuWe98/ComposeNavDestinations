@@ -42,7 +42,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":compose-nav-destinations-shared"))
-
-    api("androidx.navigation:navigation-compose:2.5.1")
+    api(project(":compose-nav-destinations-shared"))
+    api("androidx.navigation:navigation-compose:2.5.2")
 }

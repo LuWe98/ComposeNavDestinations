@@ -7,7 +7,7 @@ data class Parameter(
     val typeInfo: ParameterTypeInfo,
     //Das ist der NavArgImport Name -> bsp. NavArgByteSetType
     val navArgInfo: ParameterNavArgInfo,
-    val defaultValue: DefaultValue? = null
+    val defaultValue: ParameterDefaultValue? = null
 ) {
 
     val hasDefaultValue get() = defaultValue != null

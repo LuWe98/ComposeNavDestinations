@@ -3,6 +3,7 @@ package com.welu.composenavdestinations.extensions.ksp
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.welu.composenavdestinations.model.ImportInfo
+import kotlin.math.min
 
 val KSFile.firstDeclaration get(): KSDeclaration? = declarations.firstOrNull()
 
@@ -11,8 +12,9 @@ fun KSFile.extractImports(
     lines: List<String> = firstNFileLines(firstDeclarationRow)
 ): List<ImportInfo> {
 
+    val maxLength = min(lines.size, firstDeclarationRow)
     var joined = ""
-    for (index in 0..firstDeclarationRow) {
+    for (index in 0..maxLength) {
         joined += lines[index] + " "
     }
 

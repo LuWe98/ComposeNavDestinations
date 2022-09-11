@@ -2,14 +2,8 @@ package com.welu.composenavdestinations.extensions.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
-import com.welu.composenavdestinations.spec.NavDestinationRoute
-import com.welu.composenavdestinations.spec.tests.DestinationScope
-import com.welu.composenavdestinations.spec.tests.Routable
-
-fun NavController.navigate(
-    navDestinationRoute: NavDestinationRoute,
-    builder: NavOptionsBuilder.() -> Unit = {}
-) = navigate(navDestinationRoute.parameterizedRoute, builder)
+import com.welu.composenavdestinations.destinations.Routable
+import com.welu.composenavdestinations.destinations.scope.DestinationScope
 
 fun NavController.navigate(
     routable: Routable,

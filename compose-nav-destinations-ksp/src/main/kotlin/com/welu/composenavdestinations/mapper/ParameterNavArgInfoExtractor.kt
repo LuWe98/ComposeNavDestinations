@@ -1,12 +1,11 @@
 package com.welu.composenavdestinations.mapper
 
 import com.welu.composenavdestinations.model.*
-import com.welu.composenavdestinations.model.ParameterTypeArgument.*
 import com.welu.composenavdestinations.utils.PackageUtils
 import com.welu.composenavdestinations.utils.PackageUtils.BASIC_NAV_ARGS
 import com.welu.composenavdestinations.utils.PackageUtils.NAV_ARG_SERIALIZABLE_TYPE
 
-object ParameterNavArgInfoMapper {
+object ParameterNavArgInfoExtractor {
 
     fun ParameterTypeInfo.extractParameterNavArgInfo(): ParameterNavArgInfo {
         BASIC_NAV_ARGS.firstOrNull { this.isSame(it.first) }?.second?.let {
@@ -22,30 +21,28 @@ object ParameterNavArgInfoMapper {
         }
 
         if (type.typeArguments.size == 1) {
-            val firstTypeArg = type.typeArguments.first()
+            val argTypeInfo = type.typeArguments.first().typeInfo
 
-            if (firstTypeArg.typeInfo != null) {
-                val navArgType: ImportInfo? = when {
+            if (argTypeInfo != null) {
+                when {
                     type.isList -> when {
-                        firstTypeArg.typeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_LIST_TYPE
-                        firstTypeArg.typeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_LIST_TYPE
+                        argTypeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_LIST_TYPE
+                        argTypeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_LIST_TYPE
                         else -> null
                     }
                     type.isSet -> when {
-                        firstTypeArg.typeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_SET_TYPE
-                        firstTypeArg.typeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_SET_TYPE
+                        argTypeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_SET_TYPE
+                        argTypeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_SET_TYPE
                         else -> null
                     }
                     type.isArray -> when {
-                        firstTypeArg.typeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_ARRAY_TYPE
-                        firstTypeArg.typeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_ARRAY_TYPE
+                        argTypeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_ARRAY_TYPE
+                        argTypeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_ARRAY_TYPE
                         else -> null
                     }
                     else -> null
-                }
-
-                navArgType?.let {
-                    return ParameterNavArgInfo(firstTypeArg.typeInfo, it)
+                }?.let {
+                    return ParameterNavArgInfo(argTypeInfo, it)
                 }
             }
         }

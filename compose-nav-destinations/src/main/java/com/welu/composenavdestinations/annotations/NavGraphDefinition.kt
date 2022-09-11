@@ -1,0 +1,4 @@
+package com.welu.composenavdestinations.annotations
+
+@Target(AnnotationTarget.ANNOTATION_CLASS)
+annotation class NavGraphDefinition

@@ -1,6 +1,6 @@
 package com.welu.composenavdestinations.model
 
-import com.welu.composenavdestinations.extensions.isOneOf
+import com.welu.composenavdestinations.extensions.isNoneOf
 import com.welu.composenavdestinations.utils.PackageUtils
 
 data class ImportInfo(
@@ -13,8 +13,7 @@ data class ImportInfo(
 
     val qualifiedName get() = "$packageDir.$simpleName"
     val isWholePackageImport get() = simpleName == "*"
-    val isDefaultPackage get(): Boolean = packageDir.isOneOf(*PackageUtils.KOTLIN_DEFAULT_PACKAGES)
-    val isNonDefaultPackage get() = !isDefaultPackage
+    val isNonDefaultPackage get() = packageDir.isNoneOf(*PackageUtils.KOTLIN_DEFAULT_PACKAGES)
     val asImportLine get() = "import $qualifiedName${importedAs?.let { " as $it" } ?: ""}"
 
     companion object {

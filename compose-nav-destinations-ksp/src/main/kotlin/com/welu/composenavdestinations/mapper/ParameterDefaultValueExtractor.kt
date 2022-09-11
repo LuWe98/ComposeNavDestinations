@@ -5,23 +5,23 @@ import com.google.devtools.ksp.symbol.FileLocation
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.welu.composenavdestinations.extensions.*
 import com.welu.composenavdestinations.extensions.ksp.isImportNameContainedInPackage
-import com.welu.composenavdestinations.model.DefaultValue
-import com.welu.composenavdestinations.model.DefaultValueDeclaration
+import com.welu.composenavdestinations.model.ParameterDefaultValue
+import com.welu.composenavdestinations.model.ParameterDefaultValueDeclaration
 import com.welu.composenavdestinations.model.KSFileContent
 import com.welu.composenavdestinations.model.ImportInfo
 
-object DefaultValueExtractor {
+object ParameterDefaultValueExtractor {
 
     private const val NO_DOT_DIGIT_CRITERIA = "(\\d(\\d|_)*)?"
     private const val DOT_DIGIT_CRITERIA = "(\\d((\\d|_)*\\d)?)?\\.(\\d(\\d|_)*)?"
     private const val ENDS_WITH_CRITERIA = "\\d[d|f|F]?"
     private val NUMBER_REGEX = Regex("^(($NO_DOT_DIGIT_CRITERIA|$DOT_DIGIT_CRITERIA)$ENDS_WITH_CRITERIA)\$")
 
-    fun KSValueParameter.getDefaultValue(
+    fun KSValueParameter.extractDefaultValue(
         resolver: Resolver,
         fileContent: KSFileContent,
         argQualifiedType: String,
-    ): DefaultValue? {
+    ): ParameterDefaultValue? {
         if (!hasDefault) return null
 
         val argLineNumber = (location as FileLocation).lineNumber - 1
@@ -38,7 +38,7 @@ object DefaultValueExtractor {
 
             // Es handelt sich um Boolean, Null oder eine Zahl
             if (defaultValueString.isOneOf("true", "false", "null") || defaultValueString.matches(NUMBER_REGEX)) {
-                return DefaultValue(defaultValueString)
+                return ParameterDefaultValue(defaultValueString)
             }
 
             // Es handelt sich um ein Objekt, Funktion oder String.
@@ -46,7 +46,7 @@ object DefaultValueExtractor {
                 findRelevantImportsForDeclaration(it, fileContent.importInfos, resolver)
             }.distinctBy(ImportInfo::qualifiedName)
 
-            return DefaultValue(defaultValueString, imports)
+            return ParameterDefaultValue(defaultValueString, imports)
         }
 
         return null
@@ -136,15 +136,15 @@ object DefaultValueExtractor {
 
     //TODO -> Bei allen isInsideString muss man prüfen, ob $ oder ${} vorhanden ist, das sind dann auch Deklarationen
     // Operator Functions erkennen und adden
-    private fun extractDefaultValueDeclarations(defaultValueString: String): List<DefaultValueDeclaration> {
+    private fun extractDefaultValueDeclarations(defaultValueString: String): List<ParameterDefaultValueDeclaration> {
         val declarationBuilder = StringBuilder()
         var isInsideString = false
         var currentChar: Char
         var lastSeparatorCharacter: Char? = null
-        val defaultValueDeclarations = mutableListOf<DefaultValueDeclaration>()
-        var futureCallingDeclaration: DefaultValueDeclaration? = null
+        val defaultValueDeclarations = mutableListOf<ParameterDefaultValueDeclaration>()
+        var futureCallingDeclaration: ParameterDefaultValueDeclaration? = null
 
-        fun currentPotentialDeclaration(charIndex: Int) = DefaultValueDeclaration(
+        fun currentPotentialDeclaration(charIndex: Int) = ParameterDefaultValueDeclaration(
             name = declarationBuilder.toString(),
             range = IntRange(charIndex - declarationBuilder.length, charIndex),
             callingDeclaration = futureCallingDeclaration
@@ -206,7 +206,7 @@ object DefaultValueExtractor {
     }
 
     private fun findRelevantImportsForDeclaration(
-        declaration: DefaultValueDeclaration,
+        declaration: ParameterDefaultValueDeclaration,
         fileImportInfos: List<ImportInfo>,
         resolver: Resolver
     ): List<ImportInfo> {
