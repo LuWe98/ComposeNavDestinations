@@ -40,7 +40,7 @@ object FileGeneratorDestinationExt : FileContentInfoGenerator<Sequence<NavDestin
         )
     }
 
-    private fun generateArgsFromFunctions(destinations: Sequence<NavDestinationInfo>): String = destinations.joinToString("\n\n") {
+    private fun generateArgsFromFunctions(argDestinations: Sequence<NavDestinationInfo>): String = argDestinations.joinToString("\n\n") {
         """
         | fun ${it.destinationImport.simpleName}.argsFrom(savedStateHandle: SavedStateHandle) = ${it.destinationSpecImport.simpleName}.argsFrom(savedStateHandle)
         | 
@@ -48,12 +48,12 @@ object FileGeneratorDestinationExt : FileContentInfoGenerator<Sequence<NavDestin
         """.trimMargin("| ")
     }
 
-    private fun generateArgsInvokeFunction(destinations: Sequence<NavDestinationInfo>): String = destinations.joinToString("\n\n") {
+    private fun generateArgsInvokeFunction(argDestinations: Sequence<NavDestinationInfo>): String = argDestinations.joinToString("\n\n") {
         """
         | operator fun ${it.destinationImport.simpleName}.invoke(
-        |     ${it.parameters.joinToString(",\n\t\t| \t", transform = Parameter::fullDeclarationName)}
+        |     ${it.navArgsInfo!!.parameters.joinToString(",\n\t\t| \t", transform = Parameter::fullDeclarationName)}
         | ) = ${it.destinationSpecImport.simpleName}(
-        |     ${it.parameters.joinToString(",\n\t\t| \t") { parameter -> "${parameter.name} = ${parameter.name}" }}
+        |     ${it.navArgsInfo.parameters.joinToString(",\n\t\t| \t") { parameter -> "${parameter.name} = ${parameter.name}" }}
         | )
         """.trimMargin("| ")
     }

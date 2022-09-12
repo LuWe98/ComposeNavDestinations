@@ -1,29 +1,31 @@
 package com.welu.composenavdestinations.screens.tests
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import androidx.navigation.navigation
 import com.welu.composenavdestinations.DetailsVm
 import com.welu.composenavdestinations.annotations.NavDestinationDefinition
 import com.welu.composenavdestinations.annotations.NavGraphDefinition
-import com.welu.composenavdestinations.destinations.ArgDestination
-import com.welu.composenavdestinations.destinations.PlainDestination
-import com.welu.composenavdestinations.destinations.scope.ArgCompositionScope
-import com.welu.composenavdestinations.destinations.scope.ArgDestinationScope
-import com.welu.composenavdestinations.destinations.scope.PlainCompositionScope
-import com.welu.composenavdestinations.destinations.scope.PlainDestinationScope
-import com.welu.composenavdestinations.extensions.argsFrom
+import com.welu.composenavdestinations.extensions.findArgSpec
+import com.welu.composenavdestinations.navigation.destinations.ArgDestination
+import com.welu.composenavdestinations.navigation.destinations.PlainDestination
+import com.welu.composenavdestinations.navigation.ArgCompositionScope
+import com.welu.composenavdestinations.navigation.scope.ArgDestinationScope
+import com.welu.composenavdestinations.navigation.PlainCompositionScope
+import com.welu.composenavdestinations.navigation.scope.PlainDestinationScope
 import com.welu.composenavdestinations.extensions.invoke
+import com.welu.composenavdestinations.extensions.navigation.navArgument
 import com.welu.composenavdestinations.extensions.navigation.navigate
 import com.welu.composenavdestinations.extensions.sendDestinationResultTo
 import com.welu.composenavdestinations.result.DestinationResultListener
@@ -34,6 +36,10 @@ import kotlin.random.Random
 
 //TODO -> Destinations müssen innerhalb eines solchen NavGraphs eingebaut werden, sonst gehts nicht
 // -> Es wird auch ein NavGraphSpec (Bspw. ExampleNavGraphSpec) erstellt, zu welchem man auch navigieren kann, da es Routable ist
+
+//TODO -> https://medium.com/mobile-app-development-publication/making-custom-lint-for-kotlin-code-8a6c203bf474
+// Um eigenes Linting zu erstellen. Damit kann man bspw checken ob eine Flasse die mit @NavDestinationDefinition Annotiert ist auch das Destination Interface implementiert.
+// Beispiel kann unten gesehen werden mit -> NoParcelableSupertype, wenn man nicht Parcelable Implementiert.
 
 @Parcelize
 data class User(
@@ -55,61 +61,27 @@ annotation class FirstNavGraph(
 //    val start: Boolean = false
 //)
 
-
+@FirstNavGraph
 @NavGraphDefinition
 annotation class SecondNavGraph(
     val isStart: Boolean = false
 )
 
+@SecondNavGraph
+@NavGraphDefinition
+annotation class ThirdNavGraph(
+    val isStart: Boolean = false
+)
 
-@FirstNavGraph
-@NavDestinationDefinition
-object FirstDestination : PlainDestination {
+@NavGraphDefinition
+annotation class FourthNavGraph(
+    val isStart: Boolean = false
+)
 
-    override val content: PlainCompositionScope = {
-        var parsedValue: Int? by rememberSaveable { mutableStateOf(null) }
-
-        DestinationResultListener<Int> {
-            println("RESULT RECEIVED: $it")
-            parsedValue = it
-        }
-
-        StartDestinationComposable(parsedValue) {
-            navigate(SecondDestination(User("111", "LOL", 212)))
-        }
-    }
-}
-
-@NavDestinationDefinition
-object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
-
-    data class NavArgs(
-        val user: User? = User("123", "Sasi", 23),
-    )
-
-    override val content: ArgCompositionScope<NavArgs> = {
-        TestDestinationComposable(
-            user = args.user,
-            navigateBack = navController::navigateUp,
-            navigateToThirdScreen = {
-                navigate(ThirdDestination())
-            },
-            sendResult = {
-                sendDestinationResultTo(FirstDestination, Random.nextInt())
-            }
-        )
-    }
-}
-
-
-@NavDestinationDefinition
-object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
-    override val content: ArgCompositionScope<DetailScreenNavArgs> = {
-        val vm = viewModel<DetailsVm>()
-        DetailScreen(args = vm.args)
-    }
-}
-
+@NavGraphDefinition
+annotation class FithNavGraph(
+    val isStart: Boolean = false
+)
 
 @Composable
 fun StartDestinationComposable(
@@ -147,12 +119,60 @@ fun TestDestinationComposable(
 
 
 
+@FirstNavGraph
+@NavDestinationDefinition
+object FirstDestination : PlainDestination {
 
+    override val content: PlainCompositionScope = {
+        var parsedValue: Int? by rememberSaveable { mutableStateOf(null) }
+
+        DestinationResultListener<Int> {
+            println("RESULT RECEIVED: $it")
+            parsedValue = it
+        }
+
+        StartDestinationComposable(parsedValue) {
+            //navigate(SecondDestination(User("111", "LOL", 212)))
+            navController.navigate("comp2/Hans")
+        }
+    }
+}
+
+@SecondNavGraph
+@NavDestinationDefinition
+object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
+
+    data class NavArgs(
+        val user: User? = User("123", "Sasi", 23),
+    )
+
+    override val content: ArgCompositionScope<NavArgs> = {
+        TestDestinationComposable(
+            user = args.user,
+            navigateBack = navController::navigateUp,
+            navigateToThirdScreen = {
+                navigate(ThirdDestination())
+            },
+            sendResult = {
+                sendDestinationResultTo(FirstDestination, Random.nextInt())
+            }
+        )
+    }
+}
+
+@NavDestinationDefinition
+object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
+    override val content: ArgCompositionScope<DetailScreenNavArgs> = {
+        val vm = viewModel<DetailsVm>()
+        DetailScreen(args = vm.args)
+    }
+}
 
 
 //--------------------------------------------------------------------------
 // GENERATED
 //
+@SuppressLint("UnrememberedGetBackStackEntry")
 fun NavGraphBuilder.initDestinations(navController: NavHostController) {
     composable(route = FirstDestinationSpec.route) {
         FirstDestination.content(
@@ -190,6 +210,92 @@ fun NavGraphBuilder.initDestinations(navController: NavHostController) {
                 lazy { ThirdDestinationSpec.argsFrom(it) }
             )
         )
+    }
+
+    //TODO -> Schauen wie das genau funktioniert mit den Argumenten bei den Navigations -> Es ist durchaus sinnvoll das auf NavigationGraph zu scopen, damit es jeder nutzen kann
+    // ArgsFrom sollte auch funktionieren, man muss halt nur den richtigen BackStackEntry mitgeben
+    navigation(
+        route = "nav/{age}",
+        startDestination = "nav2",
+        arguments = listOf(
+            navArgument("age", NavType.StringType)
+        ),
+        deepLinks = emptyList()
+    ) {
+        navigation(
+            route = "nav2",
+            startDestination = "comp/{age}"
+        ) {
+            composable(
+                route = "comp/{age}",
+                arguments = listOf(
+                    navArgument("age", NavType.StringType)
+                )
+            ) {
+
+                val nav1Entry = remember {
+                    navController.getBackStackEntry("nav/{age}")
+                }
+
+                val nav2Entry = remember {
+                    navController.getBackStackEntry("nav2")
+                }
+
+                val ageArgParent1 = nav1Entry.arguments?.getString("age")
+                val ageArgParent2 = nav2Entry.arguments?.getString("age")
+                val ageArg = it.arguments?.getString("age")
+
+                Column {
+                    Text(text = "DESTINATION 1")
+                    Text(text = "Parsed Nav1: $ageArgParent1")
+                    Text(text = "Parsed Nav2: $ageArgParent2")
+                    Text(text = "Parsed Comp1: $ageArg")
+                    Text(text = "Entry Nav1: $nav1Entry")
+                    Text(text = "Entry Nav2: $nav2Entry")
+                    Text(text = "Entry Comp1: $it")
+                    Button(onClick = { navController.navigate("comp2/132323")}) {
+                        Text(text = "Navigate")
+                    }
+                }
+            }
+
+            composable(
+                route = "comp2/{age}",
+                arguments = listOf(
+                    navArgument("age", NavType.StringType)
+                )
+            ) {
+
+                val nav1Entry = remember {
+                    navController.getBackStackEntry("nav/{age}")
+                }
+
+                val nav2Entry = remember {
+                    navController.getBackStackEntry("nav2")
+                }
+
+                val comp12Entry = remember {
+                    navController.getBackStackEntry("nav/{age}")
+                }
+
+                val ageArgParent1 = nav1Entry.arguments?.getString("age")
+                val ageArgParent2 = nav2Entry.arguments?.getString("age")
+                val ageArgComp1 = comp12Entry.arguments?.getString("age")
+                val ageArg = it.arguments?.getString("age")
+
+                Column {
+                    Text(text = "DESTINATION 2")
+                    Text(text = "Parsed Nav1: $ageArgParent1")
+                    Text(text = "Parsed Nav2: $ageArgParent2")
+                    Text(text = "Parsed Comp1: $ageArgComp1")
+                    Text(text = "Parsed Comp2: $ageArg")
+                    Text(text = "Entry Nav1: $nav1Entry")
+                    Text(text = "Entry Nav2: $nav2Entry")
+                    Text(text = "Entry Comp1: $comp12Entry")
+                    Text(text = "Entry Comp2: $it")
+                }
+            }
+        }
     }
 }
 

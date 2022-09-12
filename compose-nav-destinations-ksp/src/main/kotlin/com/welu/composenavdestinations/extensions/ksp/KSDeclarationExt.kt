@@ -2,20 +2,11 @@ package com.welu.composenavdestinations.extensions.ksp
 
 import com.google.devtools.ksp.isInternal
 import com.google.devtools.ksp.isPublic
-import com.google.devtools.ksp.symbol.FileLocation
-import com.google.devtools.ksp.symbol.KSDeclaration
-import com.google.devtools.ksp.symbol.KSFile
-
-val KSDeclaration.rootKSFile get(): KSFile = containingFile ?: parentDeclaration?.rootKSFile ?: throw IllegalStateException()
-
-val KSDeclaration.lineNumber get(): Int = (location as FileLocation).lineNumber - 1
+import com.google.devtools.ksp.symbol.*
 
 val KSDeclaration.isAccessible get() = isPublic() || isInternal()
 
-fun Sequence<KSDeclaration>.forEachWithIterator(action: (KSDeclaration) -> Unit) {
-    iterator().let {
-        while (it.hasNext()) {
-            action(it.next())
-        }
-    }
-}
+//fun KSDeclaration.getRootKSFile(): KSFile = containingFile
+//    ?: parentDeclaration?.getRootKSFile()
+//    ?: throw IllegalStateException("Could not load the file for the following Declaration: ${this.qualifiedName?.asString()} - ${this.simpleName.asString()}")
+

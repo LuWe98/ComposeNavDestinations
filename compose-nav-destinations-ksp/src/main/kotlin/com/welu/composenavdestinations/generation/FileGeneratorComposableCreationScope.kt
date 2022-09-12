@@ -3,7 +3,6 @@ package com.welu.composenavdestinations.generation
 import com.welu.composenavdestinations.model.FileContentInfo
 import com.welu.composenavdestinations.model.ImportInfo
 import com.welu.composenavdestinations.model.NavDestinationInfo
-import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.utils.PackageUtils
 
 object FileGeneratorComposableCreationScope : FileContentInfoGenerator<Sequence<NavDestinationInfo>> {

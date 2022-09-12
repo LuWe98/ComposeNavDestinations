@@ -2,12 +2,8 @@ package com.welu.composenavdestinations.extensions.ksp
 
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.google.devtools.ksp.symbol.KSValueParameter
-import com.welu.composenavdestinations.annotations.NavArgumentAnnotation
-import com.welu.composenavdestinations.annotations.NavDestinationAnnotation
+import com.google.devtools.ksp.symbol.KSNode
 import com.welu.composenavdestinations.annotations.NavDestinationDefinitionAnnotation
 import com.welu.composenavdestinations.annotations.NavGraphDefinitionAnnotation
 
@@ -19,11 +15,11 @@ import com.welu.composenavdestinations.annotations.NavGraphDefinitionAnnotation
 
 val Resolver.dependencies get() = Dependencies(false, *getAllFiles().toList().toTypedArray())
 
-fun Resolver.getNavDestinationDefinitions() : Sequence<KSClassDeclaration> = getSymbolsWithAnnotation(NavDestinationDefinitionAnnotation.import.qualifiedName)
-    .filterIsInstance<KSClassDeclaration>()
+inline fun <reified NodeType: KSNode> Resolver.findAnnotatedNodesWith(annotationQualifiedName: String): Sequence<NodeType> =
+    getSymbolsWithAnnotation(annotationQualifiedName).filterIsInstance<NodeType>()
 
-fun Resolver.getNavGraphDefinitions(): Sequence<KSClassDeclaration> = getSymbolsWithAnnotation(NavGraphDefinitionAnnotation.import.qualifiedName)
-    .filterIsInstance<KSClassDeclaration>()
+fun Resolver.getNavDestinationDefinitions() = findAnnotatedNodesWith<KSClassDeclaration>(NavDestinationDefinitionAnnotation.import.qualifiedName)
 
-fun Resolver.getNavDestinationDefinitionsOfNavGraph(graphQualifiedName: String): Sequence<KSClassDeclaration> = getSymbolsWithAnnotation(graphQualifiedName)
-    .filterIsInstance<KSClassDeclaration>()
+fun Resolver.getNavGraphDefinitions() = findAnnotatedNodesWith<KSClassDeclaration>(NavGraphDefinitionAnnotation.import.qualifiedName)
+
+fun Resolver.findAnnotatedClassesWith(annotationQualifiedName: String) = findAnnotatedNodesWith<KSClassDeclaration>(annotationQualifiedName)

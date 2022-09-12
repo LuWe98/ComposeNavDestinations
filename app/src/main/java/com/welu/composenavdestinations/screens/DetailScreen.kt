@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.welu.composenavdestinations.annotations.NavDestination
 import com.welu.composenavdestinations.model.ParcelableObject
 import com.welu.composenavdestinations.model.TestEnum
 import java.util.*
@@ -75,10 +74,7 @@ class DetailScreenNavArgs(
     val map: HashMap<String, Int> = hashMapOf("dsd" to 212)
 )
 
-@NavDestination(
-    route = "details",
-    navArgs = DetailScreenNavArgs::class
-)
+
 @Composable
 fun DetailScreen(
     s: String = "Test",

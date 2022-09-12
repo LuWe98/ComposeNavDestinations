@@ -7,17 +7,17 @@ import com.welu.composenavdestinations.utils.PackageUtils.NAV_ARG_SERIALIZABLE_T
 
 object ParameterNavArgInfoExtractor {
 
-    fun ParameterTypeInfo.extractParameterNavArgInfo(): ParameterNavArgInfo {
+    fun ParameterTypeInfo.extractParameterNavArgInfo(): ParameterNavTypeInfo {
         BASIC_NAV_ARGS.firstOrNull { this.isSame(it.first) }?.second?.let {
-            return ParameterNavArgInfo(it)
+            return ParameterNavTypeInfo(it)
         }
 
         if (isParcelable) {
-            return ParameterNavArgInfo(this, PackageUtils.NAV_ARG_PARCELABLE_TYPE)
+            return ParameterNavTypeInfo(this, PackageUtils.NAV_ARG_PARCELABLE_TYPE)
         }
 
         if (isEnum) {
-            return ParameterNavArgInfo(this, PackageUtils.NAV_ARG_ENUM_TYPE)
+            return ParameterNavTypeInfo(this, PackageUtils.NAV_ARG_ENUM_TYPE)
         }
 
         if (type.typeArguments.size == 1) {
@@ -42,13 +42,13 @@ object ParameterNavArgInfoExtractor {
                     }
                     else -> null
                 }?.let {
-                    return ParameterNavArgInfo(argTypeInfo, it)
+                    return ParameterNavTypeInfo(argTypeInfo, it)
                 }
             }
         }
 
         if (isSerializable) {
-            return ParameterNavArgInfo(NAV_ARG_SERIALIZABLE_TYPE)
+            return ParameterNavTypeInfo(NAV_ARG_SERIALIZABLE_TYPE)
         }
 
         if (isKtxSerializable) {

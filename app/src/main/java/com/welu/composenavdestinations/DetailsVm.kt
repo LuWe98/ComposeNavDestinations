@@ -11,6 +11,8 @@ class DetailsVm(
     private val safeStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    val args by lazy { ThirdDestination.argsFrom(safeStateHandle) }
+    val args by lazy {
+        ThirdDestination.argsFrom(safeStateHandle)
+    }
 
 }

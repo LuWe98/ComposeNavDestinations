@@ -12,13 +12,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.welu.composenavdestinations.DetailsVm
-import com.welu.composenavdestinations.annotations.NavArgument
-import com.welu.composenavdestinations.annotations.NavDestination
 
-@NavDestination
 @Composable
 fun RandomScreen(
-    @NavArgument
     name: String = "Hans",
     valueTest: Any?,
     onCLick: () -> Unit

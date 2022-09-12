@@ -21,8 +21,6 @@ fun Resolver.isImportNameContainedInPackage(packageName: String, importName: Str
 
 fun Resolver.isImportNameContainedInPackage(importInfo: ImportInfo, importName: String) = isImportNameContainedInPackage(importInfo.packageDir, importName)
 
-
-
 fun Resolver.getTypeWithClassName(name: String) = getClassDeclarationByName(name)!!.asType
 
 fun Resolver.getTypeWithImportInfo(importInfo: ImportInfo) = getClassDeclarationByName(importInfo.qualifiedName)!!.asType

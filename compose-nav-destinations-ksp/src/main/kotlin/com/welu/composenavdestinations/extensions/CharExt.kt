@@ -2,7 +2,7 @@ package com.welu.composenavdestinations.extensions
 
 fun Char?.isWhitespace() = this == ' '
 
-fun Char.isDot() = this == '.'
+fun Char?.isDot() = this == '.'
 
-fun Char.isLetterDigitOrUnderscore() = isLetterOrDigit() || this == '_'
+fun Char?.isLetterOrDigitOrUnderscore() = this?.isLetterOrDigit() == true || this == '_'
 

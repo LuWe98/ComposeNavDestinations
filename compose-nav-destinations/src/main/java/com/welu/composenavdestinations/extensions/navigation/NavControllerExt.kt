@@ -2,8 +2,8 @@ package com.welu.composenavdestinations.extensions.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
-import com.welu.composenavdestinations.destinations.Routable
-import com.welu.composenavdestinations.destinations.scope.DestinationScope
+import com.welu.composenavdestinations.navigation.Routable
+import com.welu.composenavdestinations.navigation.scope.DestinationScope
 
 fun NavController.navigate(
     routable: Routable,

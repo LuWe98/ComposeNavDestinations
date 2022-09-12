@@ -22,6 +22,8 @@ object ParameterDefaultValueExtractor {
         fileContent: KSFileContent,
         argQualifiedType: String,
     ): ParameterDefaultValue? {
+
+
         if (!hasDefault) return null
 
         val argLineNumber = (location as FileLocation).lineNumber - 1
@@ -169,7 +171,7 @@ object ParameterDefaultValueExtractor {
                 continue
             }
 
-            if (currentChar.isLetterDigitOrUnderscore()) {
+            if (currentChar.isLetterOrDigitOrUnderscore()) {
                 declarationBuilder.append(currentChar)
 
                 if (charIndex == defaultValueString.lastIndex && lastSeparatorCharacter == '.') {

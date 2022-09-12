@@ -8,8 +8,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.welu.composenavdestinations.destinations.scope.DestinationScope
-import com.welu.composenavdestinations.destinations.spec.DestinationSpec
+import com.welu.composenavdestinations.navigation.scope.DestinationScope
+import com.welu.composenavdestinations.navigation.spec.DestinationSpec
 import com.welu.composenavdestinations.extensions.collectOnLifecycle
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
@@ -21,7 +21,7 @@ internal class ResultWrapper<T>(
 ) : Parcelable
 
 @PublishedApi
-internal fun NavController.getBackStackEntry(spec: DestinationSpec): NavBackStackEntry? {
+internal fun NavController.getBackStackEntry(spec: DestinationSpec<*>): NavBackStackEntry? {
     runCatching {
         getBackStackEntry(spec.route)
     }.onSuccess {
@@ -39,13 +39,13 @@ internal fun NavController.getBackStackEntry(spec: DestinationSpec): NavBackStac
 
 @PublishedApi
 internal inline fun <reified T> resultKey(
-    forSpec: DestinationSpec,
+    forSpec: DestinationSpec<*>,
     keySpecification: String? = null
 ): String = forSpec.baseRoute + T::class.qualifiedName + keySpecification
 
 
 inline fun <reified T> DestinationScope.sendDestinationResultTo(
-    spec: DestinationSpec,
+    spec: DestinationSpec<*>,
     value: T?,
     keySpecification: String? = null
 ): Unit = navController.sendDestinationResultTo(
@@ -55,7 +55,7 @@ inline fun <reified T> DestinationScope.sendDestinationResultTo(
 )
 
 inline fun <reified T> NavController.sendDestinationResultTo(
-    spec: DestinationSpec,
+    spec: DestinationSpec<*>,
     value: T?,
     keySpecification: String? = null
 ) {
@@ -66,7 +66,7 @@ inline fun <reified T> NavController.sendDestinationResultTo(
 
 @Composable
 inline fun <reified T> DestinationScope.DestinationResultListener(
-    forSpec: DestinationSpec = relatedSpec,
+    forSpec: DestinationSpec<*> = relatedSpec,
     keySpecification: String? = null,
     withLifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     crossinline callback: (T) -> Unit
@@ -83,7 +83,7 @@ inline fun <reified T> DestinationScope.DestinationResultListener(
  */
 @Composable
 inline fun <reified T> NavController.DestinationResultListener(
-    forSpec: DestinationSpec,
+    forSpec: DestinationSpec<*>,
     keySpecification: String? = null,
     withLifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     crossinline callback: (T) -> Unit
@@ -106,7 +106,7 @@ inline fun <reified T> NavController.DestinationResultListener(
 
 @Composable
 inline fun <reified T> DestinationScope.LifecycleDestinationResultListener(
-    forSpec: DestinationSpec = relatedSpec,
+    forSpec: DestinationSpec<*> = relatedSpec,
     keySpecification: String? = null,
     crossinline callback: (T) -> Unit
 ) = navController.LifecycleDestinationResultListener(
@@ -121,7 +121,7 @@ inline fun <reified T> DestinationScope.LifecycleDestinationResultListener(
  */
 @Composable
 inline fun <reified T> NavController.LifecycleDestinationResultListener(
-    forSpec: DestinationSpec,
+    forSpec: DestinationSpec<*>,
     keySpecification: String? = null,
     crossinline callback: (T) -> Unit
 ) {

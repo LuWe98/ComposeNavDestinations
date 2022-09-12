@@ -5,6 +5,8 @@ import com.welu.composenavdestinations.utils.PackageUtils.NAV_DESTINATION_UTILS_
 
 internal object CodeTemplates {
 
+    const val PLACEHOLDER_NAV_DESTINATION_NAME = "PLACEHOLDER_NAV_DESTINATION_NAME"
+
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Template for DestinationPlainSpec
 
@@ -16,6 +18,8 @@ internal object CodeTemplates {
     val NAV_DESTINATION_PLAIN_SPEC_TEMPLATE =
     """
     | object $PLACEHOLDER_NAV_SPEC_DESTINATION_NAME: ${PackageUtils.NAV_DESTINATION_PLAIN_SPEC_IMPORT.simpleName} {
+    | 
+    |     override val destination get() = $PLACEHOLDER_NAV_DESTINATION_NAME
     | 
     |     override val baseRoute = "$PLACEHOLDER_NAV_SPEC_BASE_ROUTE"
     |     
@@ -41,6 +45,8 @@ internal object CodeTemplates {
     val NAV_DESTINATION_ARG_SPEC_TEMPLATE =
     """
     | object $PLACEHOLDER_NAV_SPEC_DESTINATION_NAME: ${PackageUtils.NAV_DESTINATION_ARG_SPEC_IMPORT.simpleName}<$PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE> {
+    |     
+    |     override val destination get() = $PLACEHOLDER_NAV_DESTINATION_NAME
     |     
     |     override val baseRoute: String = "$PLACEHOLDER_NAV_SPEC_BASE_ROUTE"
     |     
@@ -99,7 +105,7 @@ internal object CodeTemplates {
 
     private val DESTINATION_FIND_SPEC_EXTENSION_FUNCTIONS =
     """
-    | fun Destination<out DestinationScope>.findSpec(): DestinationSpec = ${NAV_DESTINATION_UTILS_FILE_IMPORT.simpleName}.allSpecs[this] 
+    | fun Destination<out DestinationScope>.findSpec(): DestinationSpec<*> = ${NAV_DESTINATION_UTILS_FILE_IMPORT.simpleName}.allSpecs[this] 
     |     ?: throw IllegalArgumentException("Destination is not annotated with NavDestinationDefinition")
     | 
     | @Suppress("UNCHECKED_CAST")

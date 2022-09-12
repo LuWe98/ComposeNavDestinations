@@ -27,9 +27,4 @@ data class ParameterTypeInfo(
             } + ">"
         }
 
-//                when (type) {
-//                    Star -> type.varianceLabel
-//                    is Typed -> type.varianceLabel.ifNotBlank { "$it " } + type.typeInfo.definition + if (type.typeInfo.isNullable) "?" else ""
-//                }
-
 }
