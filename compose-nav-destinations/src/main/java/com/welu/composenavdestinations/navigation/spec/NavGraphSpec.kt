@@ -14,13 +14,11 @@ import com.welu.composenavdestinations.navigation.destinations.Destination
 //    --> Deshalb vllt dem NavGraph die Argumente von der StartDestination übergeben?
 
 // TODO -> Standardmäßig alle Destinations zu einem Default NavGraph hinzufügen -> Dieser kann dann verwendet werden um einen NavHost() zu erstellen / zu bekommen (Composable)
-//  ->
-
 
 /**
  * Defines a NavGraph with associated Destinations
  */
-interface NavGraphSpec: NavGraphBuilderComponent {
+interface NavGraphSpec: NavigationComponent {
 
     /**
      * This is the start of the NavGraph. Can either be a [DestinationSpec] or [NavGraphSpec].
@@ -35,7 +33,7 @@ interface NavGraphSpec: NavGraphBuilderComponent {
      *          }
      *     }
      */
-    val startComponent: NavGraphBuilderComponent
+    val startComponent: NavigationComponent
 
     /**
      * This is the parent [NavGraphSpec] of this [NavGraphSpec]. Can be null when this [NavGraphSpec] is in the root of the NavHost.

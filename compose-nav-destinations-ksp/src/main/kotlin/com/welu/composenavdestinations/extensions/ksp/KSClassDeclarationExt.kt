@@ -8,3 +8,6 @@ val KSClassDeclaration.asType get(): KSType = asType(emptyList())
 
 val KSClassDeclaration?.isEnum get() = this?.classKind == ClassKind.ENUM_CLASS
 
+fun  KSClassDeclaration.isParameterPresent(parameterName: String) = primaryConstructor?.parameters?.any { parameter ->
+    parameter.name?.asString() == parameterName
+} ?: false

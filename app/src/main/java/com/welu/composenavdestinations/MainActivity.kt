@@ -15,6 +15,9 @@ import com.welu.composenavdestinations.screens.tests.FirstDestinationSpec
 import com.welu.composenavdestinations.screens.tests.initDestinations
 import com.welu.composenavdestinations.ui.theme.ComposeNavDestinationsTheme
 
+// TODO -> https://proandroiddev.com/implementing-your-first-android-lint-rule-6e572383b292
+//  LINT checks in einem separaten Modul erstellen, dass bspw. eine Destination Klasse auch die @NavDestination Annotation besitzt und umgekehrt
+
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

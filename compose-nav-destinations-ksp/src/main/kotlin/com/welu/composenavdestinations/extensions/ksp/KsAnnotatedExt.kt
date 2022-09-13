@@ -12,5 +12,6 @@ fun KSAnnotated.requireAnnotationWith(annotationName: String): KSAnnotation = ge
 
 fun KSAnnotated.requireAnnotationWith(annotationDeclaration: AnnotationDeclaration): KSAnnotation = getAnnotationWith(annotationDeclaration) ?: throw IllegalStateException()
 
-inline fun <reified T> KSAnnotated.getAnnotationArgument(argName: String, annotation: AnnotationDeclaration): T =
-    requireAnnotationWith(annotation).requireValueArgument(argName).typedValue()
+inline fun <reified T> KSAnnotated.getAnnotationArgument(annotation: AnnotationDeclaration, argName: String): T = getAnnotationArgument(annotation.name, argName)
+
+inline fun <reified T> KSAnnotated.getAnnotationArgument(annotationName: String, argName: String): T = requireAnnotationWith(annotationName).requireValueArgument(argName).typedValue()

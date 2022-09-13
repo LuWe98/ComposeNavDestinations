@@ -54,7 +54,7 @@ class NavDestinationsProcessor(
         )
 
         //Das holt die Struktur raus aus von dem Navigation -> Bezieht sich auf NavGraphSpec, NavDestinationSpec
-        MapperNavigationStructure().annotationTests(resolver, definitions)
+        MapperNavigationStructure(resolver).extractNavigationStructure(definitions)
 
         _debugFile?.close()
         _debugFile = null

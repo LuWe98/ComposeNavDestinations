@@ -8,7 +8,7 @@ import com.welu.composenavdestinations.navigation.scope.DestinationScope
 /**
  * Defines generated arguments of an annotated Destination
  */
-sealed interface DestinationSpec<D: Destination<out DestinationScope>>: NavGraphBuilderComponent {
+sealed interface DestinationSpec<D: Destination<out DestinationScope>>: NavigationComponent {
 
     /**
      * The [NavGraphSpec] this [DestinationSpec] is contained in.

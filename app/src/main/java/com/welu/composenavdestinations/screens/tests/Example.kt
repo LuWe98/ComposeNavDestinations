@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navigation
 import com.welu.composenavdestinations.DetailsVm
+import com.welu.composenavdestinations.annotations.DefaultNavGraph
 import com.welu.composenavdestinations.annotations.NavDestinationDefinition
 import com.welu.composenavdestinations.annotations.NavGraphDefinition
 import com.welu.composenavdestinations.extensions.findArgSpec
@@ -48,11 +49,10 @@ data class User(
     val age: Int
 ) : Parcelable
 
-
-@NavGraphDefinition
-annotation class FirstNavGraph(
-    val isStart: Boolean = false
-)
+//@NavGraphDefinition
+//annotation class FirstNavGraph(
+//    val isStart: Boolean = false
+//)
 
 // Mit einer anderen Annotation annotieren, wenn man das als parent nehmen will
 //@RootNavGraph(start = true)
@@ -61,27 +61,28 @@ annotation class FirstNavGraph(
 //    val start: Boolean = false
 //)
 
-@FirstNavGraph
-@NavGraphDefinition
-annotation class SecondNavGraph(
-    val isStart: Boolean = false
-)
+//@NavGraphDefinition(route = "TolleRoute", isDefaultNavGraph = true)
+//annotation class SecondNavGraph(
+//    val isStart: Boolean = false
+//)
 
-@SecondNavGraph
-@NavGraphDefinition
-annotation class ThirdNavGraph(
-    val isStart: Boolean = false
-)
+//@NavGraphDefinition
+//annotation class ThirdNavGraph(
+//    val isStart: Boolean = false
+//)
+//
+//@ThirdNavGraph(true)
+//@NavGraphDefinition
+//annotation class FourthNavGraph(
+//    val isStart: Boolean = false
+//)
+//
+//@FourthNavGraph(true)
+//@NavGraphDefinition
+//annotation class FithNavGraph(
+//    val isStart: Boolean = false
+//)
 
-@NavGraphDefinition
-annotation class FourthNavGraph(
-    val isStart: Boolean = false
-)
-
-@NavGraphDefinition
-annotation class FithNavGraph(
-    val isStart: Boolean = false
-)
 
 @Composable
 fun StartDestinationComposable(
@@ -117,9 +118,7 @@ fun TestDestinationComposable(
     }
 }
 
-
-
-@FirstNavGraph
+@DefaultNavGraph(isStart = true)
 @NavDestinationDefinition
 object FirstDestination : PlainDestination {
 
@@ -138,7 +137,6 @@ object FirstDestination : PlainDestination {
     }
 }
 
-@SecondNavGraph
 @NavDestinationDefinition
 object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
 
