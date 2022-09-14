@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations.mapper
+package com.welu.composenavdestinations.extractor
 
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.FileLocation

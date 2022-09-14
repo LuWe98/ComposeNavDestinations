@@ -8,7 +8,7 @@ import kotlin.math.min
 val KSFile.firstDeclaration get(): KSDeclaration? = declarations.firstOrNull()
 
 fun KSFile.extractImports(
-    firstDeclarationRow: Int = firstDeclaration?.lineNumber ?: 0,
+    firstDeclarationRow: Int = firstDeclaration?.codeLineNumber ?: 0,
     lines: List<String> = firstNFileLines(firstDeclarationRow)
 ): List<ImportInfo> {
 

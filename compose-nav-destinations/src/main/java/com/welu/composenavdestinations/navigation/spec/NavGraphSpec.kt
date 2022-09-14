@@ -43,11 +43,11 @@ interface NavGraphSpec: NavigationComponent {
     /**
      * This list contains all nested [NavGraphSpec]s inside this [NavGraphSpec].
      */
-    val containedNavGraphSpecs: List<NavGraphSpec>
+    val childNavGraphSpecs: List<NavGraphSpec>
 
     /**
      * This list contains all [DestinationSpec]s inside this [NavGraphSpec].
      */
-    val containedDestinationSpecs: List<DestinationSpec<out Destination<*>>>
+    val childDestinationSpecs: List<DestinationSpec<out Destination<*>>>
 
 }

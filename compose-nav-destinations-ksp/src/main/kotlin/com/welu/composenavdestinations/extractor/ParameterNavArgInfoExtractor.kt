@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations.mapper
+package com.welu.composenavdestinations.extractor
 
 import com.welu.composenavdestinations.model.*
 import com.welu.composenavdestinations.utils.PackageUtils

@@ -1,6 +1,6 @@
 package com.welu.composenavdestinations.annotations
 
-object NavGraphDefinitionAnnotation: AnnotationDeclaration("NavGraphDefinition") {
+object NavGraphDefinitionAnnotation : AnnotationDeclaration("NavGraphDefinition") {
     const val ROUTE_ARG = "route"
     const val IS_DEFAULT_NAV_GRAPH = "isDefaultNavGraph"
     const val ARGS_CLASS_ARG = "argsClass"

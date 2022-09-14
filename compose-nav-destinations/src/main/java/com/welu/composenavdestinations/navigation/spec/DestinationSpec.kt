@@ -21,11 +21,6 @@ sealed interface DestinationSpec<D: Destination<out DestinationScope>>: Navigati
     val destination: D
 
     /**
-     * This is the [route] without any argument definitions
-     */
-    val baseRoute: String
-
-    /**
      * Contains the [NavDeepLink] to this Destination
      */
     val deepLinks: List<NavDeepLink> get() = emptyList()

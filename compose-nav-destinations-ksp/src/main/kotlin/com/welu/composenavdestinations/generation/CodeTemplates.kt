@@ -88,7 +88,7 @@ internal object CodeTemplates {
     """
     | object ${NAV_DESTINATION_UTILS_FILE_IMPORT.simpleName} {
     |     
-    |     val allSpecs: Map<Destination<out DestinationScope>, DestinationSpec> = mapOf(
+    |     val allSpecs: Map<Destination<out DestinationScope>, DestinationSpec<*>> = mapOf(
     |         $PLACEHOLDER_NAV_UTILS_DESTINATION_SPEC_MAP
     |     )
     |    

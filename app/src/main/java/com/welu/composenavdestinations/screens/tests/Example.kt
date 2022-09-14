@@ -29,6 +29,10 @@ import com.welu.composenavdestinations.extensions.invoke
 import com.welu.composenavdestinations.extensions.navigation.navArgument
 import com.welu.composenavdestinations.extensions.navigation.navigate
 import com.welu.composenavdestinations.extensions.sendDestinationResultTo
+import com.welu.composenavdestinations.navigation.destinations.Destination
+import com.welu.composenavdestinations.navigation.spec.DestinationSpec
+import com.welu.composenavdestinations.navigation.spec.NavGraphSpec
+import com.welu.composenavdestinations.navigation.spec.NavigationComponent
 import com.welu.composenavdestinations.result.DestinationResultListener
 import com.welu.composenavdestinations.screens.DetailScreen
 import com.welu.composenavdestinations.screens.DetailScreenNavArgs
@@ -49,10 +53,11 @@ data class User(
     val age: Int
 ) : Parcelable
 
-//@NavGraphDefinition
-//annotation class FirstNavGraph(
-//    val isStart: Boolean = false
-//)
+@DefaultNavGraph
+@NavGraphDefinition
+annotation class FirstNavGraph(
+    val isStart: Boolean = false
+)
 
 // Mit einer anderen Annotation annotieren, wenn man das als parent nehmen will
 //@RootNavGraph(start = true)
@@ -61,28 +66,31 @@ data class User(
 //    val start: Boolean = false
 //)
 
-//@NavGraphDefinition(route = "TolleRoute", isDefaultNavGraph = true)
-//annotation class SecondNavGraph(
-//    val isStart: Boolean = false
-//)
+@FirstNavGraph
+@NavGraphDefinition(route = "Gr8Route")
+annotation class SecondNavGraph(
+    val isStart: Boolean = false
+)
 
+//@FourthNavGraph(true)
 //@NavGraphDefinition
 //annotation class ThirdNavGraph(
 //    val isStart: Boolean = false
 //)
+//
 //
 //@ThirdNavGraph(true)
 //@NavGraphDefinition
 //annotation class FourthNavGraph(
 //    val isStart: Boolean = false
 //)
+
 //
 //@FourthNavGraph(true)
 //@NavGraphDefinition
 //annotation class FithNavGraph(
 //    val isStart: Boolean = false
 //)
-
 
 @Composable
 fun StartDestinationComposable(
@@ -96,6 +104,26 @@ fun StartDestinationComposable(
         }
     }
 }
+
+
+object DefaultNavGraphSpec: NavGraphSpec {
+
+    override val startComponent: NavigationComponent get() = FirstDestinationSpec
+
+    override val parentNavGraphSpec: NavGraphSpec? = null
+
+    override val childNavGraphSpecs: List<NavGraphSpec> = emptyList()
+
+    override val childDestinationSpecs: List<DestinationSpec<out Destination<*>>> get() = listOf(
+        FirstDestinationSpec,
+        SecondDestinationSpec
+    )
+
+    override val baseRoute: String = ""
+
+    override val route: String = ""
+}
+
 
 @Composable
 fun TestDestinationComposable(
@@ -137,6 +165,7 @@ object FirstDestination : PlainDestination {
     }
 }
 
+@FirstNavGraph(true)
 @NavDestinationDefinition
 object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
 
@@ -158,6 +187,7 @@ object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
     }
 }
 
+@SecondNavGraph(true)
 @NavDestinationDefinition
 object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
     override val content: ArgCompositionScope<DetailScreenNavArgs> = {

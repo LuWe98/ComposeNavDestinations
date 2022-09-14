@@ -8,14 +8,11 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
-import com.welu.composenavdestinations.extensions.ksp.dependencies
 import com.welu.composenavdestinations.extensions.ksp.getNavDestinationDefinitions
+import com.welu.composenavdestinations.extractor.NavComponentsExtractor
 import com.welu.composenavdestinations.generation.ContentGenerator
 import com.welu.composenavdestinations.mapper.MapperNavDestinations
-import com.welu.composenavdestinations.mapper.MapperNavigationStructure
-import com.welu.composenavdestinations.utils.PackageUtils
 import com.welu.composenavdestinations.validation.NavDestinationValidator
-import java.io.OutputStream
 
 class NavDestinationsProcessor(
     private val codeGenerator: CodeGenerator,
@@ -23,13 +20,7 @@ class NavDestinationsProcessor(
     private val options: Map<String, String>
 ) : SymbolProcessor {
 
-    companion object {
-        private var _debugFile: OutputStream? = null
-        val debugFile get(): OutputStream = _debugFile!!
-    }
-
     override fun process(resolver: Resolver): List<KSAnnotated> {
-
         val definitions = resolver.getNavDestinationDefinitions()
         if (definitions.none()) return emptyList()
         if (definitions.any { it.classKind != ClassKind.OBJECT }) {
@@ -47,17 +38,19 @@ class NavDestinationsProcessor(
             destinations = navDestinationInfos
         )
 
-        _debugFile = codeGenerator.createNewFile(
-            dependencies = resolver.dependencies,
-            packageName = PackageUtils.PACKAGE_NAME,
-            fileName = "LoggingFile"
-        )
 
-        //Das holt die Struktur raus aus von dem Navigation -> Bezieht sich auf NavGraphSpec, NavDestinationSpec
-        MapperNavigationStructure(resolver).extractNavigationStructure(definitions)
+        val rawNavComponents = NavComponentsExtractor(resolver, logger).extractAll(definitions)
 
-        _debugFile?.close()
-        _debugFile = null
+        rawNavComponents.rawNavDestinationInfos.forEach {
+            //GENERATE Destinations
+            logger.warn("Destination: $it")
+        }
+
+        rawNavComponents.rawNavGraphInfos.forEach {
+            //GENERATE NavGraphs
+            logger.warn("NavGraph: $it")
+        }
+
 
         return definitions.filterNot(KSClassDeclaration::validate).toList()
     }

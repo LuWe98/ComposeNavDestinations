@@ -16,7 +16,7 @@ private val mapField = lazy {
     }
 }
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "DEPRECATION")
 internal fun <T> Bundle.getTyped(key: String): T? = get(key) as T?
 
 //@Suppress("UNCHECKED_CAST")

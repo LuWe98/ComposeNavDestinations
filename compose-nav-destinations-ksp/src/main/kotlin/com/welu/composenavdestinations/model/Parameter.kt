@@ -15,7 +15,7 @@ data class Parameter(
 
     val imports
         get(): List<ImportInfo> = typeInfo.type.typeArguments
-            .mapNotNull { it.typeInfo?.allChildImports }
+            .mapNotNull { it.typeInfo?.allImports }
             .flattenMutable().apply {
                 add(typeInfo.type.import)
                 add(navArgTypeInfo.import)

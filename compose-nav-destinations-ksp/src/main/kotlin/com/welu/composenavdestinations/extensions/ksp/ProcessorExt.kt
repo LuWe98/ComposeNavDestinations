@@ -17,15 +17,17 @@ import com.welu.composenavdestinations.model.ImportInfo
 
 val Resolver.dependencies get() = Dependencies(false, *getAllFiles().toList().toTypedArray())
 
-inline fun <reified NodeType: KSNode> Resolver.findAnnotatedNodesWith(importInfo: ImportInfo): Sequence<NodeType> = findAnnotatedNodesWith(importInfo.qualifiedName)
+fun Resolver.findAnnotatedNodesWith(annotationQualifiedName: String): Sequence<KSNode> = getSymbolsWithAnnotation(annotationQualifiedName)
 
-inline fun <reified NodeType: KSNode> Resolver.findAnnotatedNodesWith(annotationQualifiedName: String): Sequence<NodeType> =
-    getSymbolsWithAnnotation(annotationQualifiedName).filterIsInstance<NodeType>()
+inline fun <reified NodeType: KSNode> Resolver.findAnnotatedNodesTyped(annotationQualifiedName: String): Sequence<NodeType> = findAnnotatedNodesWith(annotationQualifiedName).filterIsInstance<NodeType>()
 
-fun Resolver.getNavDestinationDefinitions() = findAnnotatedNodesWith<KSClassDeclaration>(NavDestinationDefinitionAnnotation.import)
+inline fun <reified NodeType: KSNode> Resolver.findAnnotatedNodesTyped(importInfo: ImportInfo): Sequence<NodeType> = findAnnotatedNodesTyped(importInfo.qualifiedName)
 
-fun Resolver.getNavGraphDefinitions() = findAnnotatedNodesWith<KSClassDeclaration>(NavGraphDefinitionAnnotation.import)
 
-fun Resolver.getDefinitionsWithDefaultNavGraphAnnotation() = findAnnotatedNodesWith<KSClassDeclaration>(NavGraphDefaultDefinitionAnnotation.import)
+fun Resolver.findAnnotatedClassesWith(annotationQualifiedName: String) = findAnnotatedNodesTyped<KSClassDeclaration>(annotationQualifiedName)
 
-fun Resolver.findAnnotatedClassesWith(annotationQualifiedName: String) = findAnnotatedNodesWith<KSClassDeclaration>(annotationQualifiedName)
+fun Resolver.getNavDestinationDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(NavDestinationDefinitionAnnotation.import)
+
+fun Resolver.getNavGraphDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(NavGraphDefinitionAnnotation.import)
+
+fun Resolver.getDefinitionsWithDefaultNavGraphAnnotation() = findAnnotatedNodesTyped<KSClassDeclaration>(NavGraphDefaultDefinitionAnnotation.import)

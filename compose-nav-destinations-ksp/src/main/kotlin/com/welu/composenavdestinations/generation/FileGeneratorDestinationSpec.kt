@@ -17,7 +17,7 @@ object FileGeneratorDestinationSpec : FileContentInfoGenerator<NavDestinationInf
 
     private fun generatePlainSpecFileContentInfo(plainDestinationInfo: NavDestinationInfo): FileContentInfo = FileContentInfo(
         fileName = plainDestinationInfo.simpleName,
-        packageDir = plainDestinationInfo.packageName,
+        packageDir = plainDestinationInfo.packageDir,
         imports = listOf(
             plainDestinationInfo.destinationImport,
             PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT,
@@ -35,7 +35,7 @@ object FileGeneratorDestinationSpec : FileContentInfoGenerator<NavDestinationInf
         val sortedParams = argDestinationInfo.navArgsInfo!!.parameters.sortedWith(compareBy(Parameter::typeInfo / ParameterTypeInfo::isNullable, Parameter::hasDefaultValue))
 
         return FileContentInfo(
-            packageDir = argDestinationInfo.packageName,
+            packageDir = argDestinationInfo.packageDir,
             imports = argDestinationInfo.allImports.toMutableList().apply {
                 add(PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT)
                 add(PackageUtils.NAV_DESTINATION_ARG_SPEC_IMPORT)

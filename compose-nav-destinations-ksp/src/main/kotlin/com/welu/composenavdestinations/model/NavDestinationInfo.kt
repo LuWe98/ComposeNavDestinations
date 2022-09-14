@@ -10,10 +10,12 @@ data class NavDestinationInfo(
     val route: String,
     val destinationImport: ImportInfo,
     val destinationSpecImport: ImportInfo,
+    // TODO -> Das noch einfügen. Damit kann man dann den notwendigen NavGraphSpec importieren
+    //val parentNavGraphSpecImport: ImportInfo
     val navArgsInfo: NavArgsInfo? = null
 ) {
 
-    val packageName get() = destinationSpecImport.packageDir
+    val packageDir get() = destinationSpecImport.packageDir
     val simpleName get() = destinationSpecImport.simpleName
     val isArgDestination get() = navArgsInfo != null
 
@@ -21,9 +23,8 @@ data class NavDestinationInfo(
         add(destinationImport)
         navArgsInfo?.let {
             addAll(it.parameters.flatMap(Parameter::imports).filter(ImportInfo::isNonDefaultPackage))
-            addAll(it.typeInfo.allChildImports)
+            addAll(it.typeInfo.allImports)
 
         }
     }
-
 }
