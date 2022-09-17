@@ -51,6 +51,7 @@ android {
         resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
     }
 
+    //Das ist nötig um die generated KSP files zu sehen
     applicationVariants.all {
         kotlin.sourceSets {
             getByName(name) {
@@ -58,14 +59,24 @@ android {
             }
         }
     }
+
+
+    lint {
+        checkDependencies = true
+        textReport = true
+        // Produce report for CI:
+        // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
+        sarifOutput = file("../lint-results.sarif")
+    }
 }
 
 dependencies {
     val composeVersion = "1.1.0-beta01"
 
     //Eigene Module
-    api(project(":compose-nav-destinations"))
+    implementation(project(":compose-nav-destinations"))
     ksp(project(":compose-nav-destinations-ksp"))
+
 
 
     implementation("androidx.core:core-ktx:1.9.0")

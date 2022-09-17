@@ -5,9 +5,13 @@ import com.welu.composenavdestinations.utils.PackageUtils
 import com.welu.composenavdestinations.utils.PackageUtils.BASIC_NAV_ARGS
 import com.welu.composenavdestinations.utils.PackageUtils.NAV_ARG_SERIALIZABLE_TYPE
 
-object ParameterNavArgInfoExtractor {
 
-    fun ParameterTypeInfo.extractParameterNavArgInfo(): ParameterNavTypeInfo {
+object NavArgTypeInfoExtractor {
+
+    /**
+     * Extracts the NavArgType which is used to parse and serialize this parameter.
+     */
+    fun ParameterTypeInfo.extractParameterNavArgTypeInfo(): ParameterNavTypeInfo {
         BASIC_NAV_ARGS.firstOrNull { this.isSame(it.first) }?.second?.let {
             return ParameterNavTypeInfo(it)
         }

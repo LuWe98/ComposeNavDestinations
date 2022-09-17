@@ -6,11 +6,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.welu.composenavdestinations.extensions.collectOnLifecycle
+import com.welu.composenavdestinations.extensions.navigation.getBackStackEntry
 import com.welu.composenavdestinations.navigation.scope.DestinationScope
 import com.welu.composenavdestinations.navigation.spec.DestinationSpec
-import com.welu.composenavdestinations.extensions.collectOnLifecycle
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -20,22 +20,6 @@ internal class ResultWrapper<T>(
     val value: @RawValue T
 ) : Parcelable
 
-@PublishedApi
-internal fun NavController.getBackStackEntry(spec: DestinationSpec<*>): NavBackStackEntry? {
-    runCatching {
-        getBackStackEntry(spec.route)
-    }.onSuccess {
-        return it
-    }
-
-//    for (i in backQueue.lastIndex downTo 0) {
-//        if (backQueue[i].destination.route == spec.route) {
-//            return backQueue[i]
-//        }
-//    }
-
-    return null
-}
 
 @PublishedApi
 internal inline fun <reified T> resultKey(

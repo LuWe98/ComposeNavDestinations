@@ -26,8 +26,8 @@ inline fun <reified NodeType: KSNode> Resolver.findAnnotatedNodesTyped(importInf
 
 fun Resolver.findAnnotatedClassesWith(annotationQualifiedName: String) = findAnnotatedNodesTyped<KSClassDeclaration>(annotationQualifiedName)
 
-fun Resolver.getNavDestinationDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(NavDestinationDefinitionAnnotation.import)
+fun Resolver.findNavDestinationDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(NavDestinationDefinitionAnnotation.import)
 
-fun Resolver.getNavGraphDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(NavGraphDefinitionAnnotation.import)
+fun Resolver.findNavGraphDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(NavGraphDefinitionAnnotation.import)
 
 fun Resolver.getDefinitionsWithDefaultNavGraphAnnotation() = findAnnotatedNodesTyped<KSClassDeclaration>(NavGraphDefaultDefinitionAnnotation.import)

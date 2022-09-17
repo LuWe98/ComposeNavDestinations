@@ -1,8 +1,9 @@
-package com.welu.composenavdestinations.model.structure
+package com.welu.composenavdestinations.model.rawcomponents
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 
-sealed interface RawComponentInfo {
+sealed interface RawNavComponentInfo {
     val isStart: Boolean
     val classDeclaration: KSClassDeclaration
+    val baseRoute: String
 }

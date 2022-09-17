@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -78,10 +79,15 @@ class DetailScreenNavArgs(
 @Composable
 fun DetailScreen(
     s: String = "Test",
-    args: DetailScreenNavArgs
+    args: DetailScreenNavArgs,
+    onNavigate: () -> Unit
 ) {
     args.apply {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+
+            Button(onClick = onNavigate) {
+                Text(text = "Navigate to second again")
+            }
 
             Text(text = "Strings:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "String: $string")

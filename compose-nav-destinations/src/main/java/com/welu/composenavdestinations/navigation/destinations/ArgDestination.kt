@@ -11,6 +11,6 @@ interface ArgDestination<Arg : Any> : Destination<ArgDestinationScope<Arg>> {
     /**
      * Composables can be written inside of this typealias Scope Definition. It is easy to get hold of the parsed Arg of the Destination
      */
-    override val content: ArgCompositionScope<Arg>
+    override val Content: ArgCompositionScope<Arg>
 
 }

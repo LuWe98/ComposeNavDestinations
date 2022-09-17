@@ -1,6 +1,6 @@
 package com.welu.composenavdestinations.navigation.spec
 
-import com.welu.composenavdestinations.navigation.destinations.Destination
+import androidx.navigation.NavDeepLink
 
 //TODO -> Eigenschafften von so nem NavGraph hinschreiben, so wie bei Destinations
 // -> Ein NavGraph beitzt referenzen auf die zugehörigen DestinationSpecs und auf den ParentNavGraphen.
@@ -15,15 +15,16 @@ import com.welu.composenavdestinations.navigation.destinations.Destination
 
 // TODO -> Standardmäßig alle Destinations zu einem Default NavGraph hinzufügen -> Dieser kann dann verwendet werden um einen NavHost() zu erstellen / zu bekommen (Composable)
 
+
+//TODO -> noch als Sealed Klasse umbauen
 /**
  * Defines a NavGraph with associated Destinations
  */
-interface NavGraphSpec: NavigationComponent {
+interface NavGraphSpec: NavComponentSpec {
 
     /**
      * This is the start of the NavGraph. Can either be a [DestinationSpec] or [NavGraphSpec].
-     * It is not nullable since a startDestination has to be defined in order to navigate there.
-     * Should there be an [NavGraphSpec] without root, then an exception is thrown at compile time instead of runtime.
+     * It is not nullable since a startDestination has to be defined in order to navigate to a [NavGraphSpec].
      *
      * Example:
      *
@@ -33,21 +34,26 @@ interface NavGraphSpec: NavigationComponent {
      *          }
      *     }
      */
-    val startComponent: NavigationComponent
+    val startComponentSpec: NavComponentSpec
 
     /**
-     * This is the parent [NavGraphSpec] of this [NavGraphSpec]. Can be null when this [NavGraphSpec] is in the root of the NavHost.
+     * Returns if this [NavGraphSpec] is a root
      */
-    val parentNavGraphSpec: NavGraphSpec?
+    val isRoot: Boolean get() = parentNavGraphSpec == null
+
+    /**
+     * This list contains all nested [NavComponentSpec]s inside this [NavGraphSpec]
+     */
+    val childNavComponentSpecs: List<NavComponentSpec>
 
     /**
      * This list contains all nested [NavGraphSpec]s inside this [NavGraphSpec].
      */
-    val childNavGraphSpecs: List<NavGraphSpec>
+    val childNavGraphSpecs: List<NavGraphSpec> get() = childNavComponentSpecs.filterIsInstance<NavGraphSpec>()
 
     /**
      * This list contains all [DestinationSpec]s inside this [NavGraphSpec].
      */
-    val childDestinationSpecs: List<DestinationSpec<out Destination<*>>>
+    val childDestinationSpecs: List<DestinationSpec<*>> get() = childNavComponentSpecs.filterIsInstance<DestinationSpec<*>>()
 
 }

@@ -1,8 +1,9 @@
-package com.welu.composenavdestinations.generation
+package com.welu.composenavdestinations.generation.general
 
+import com.welu.composenavdestinations.generation.FileContentInfoGenerator
 import com.welu.composenavdestinations.model.FileContentInfo
 import com.welu.composenavdestinations.model.ImportInfo
-import com.welu.composenavdestinations.model.NavDestinationInfo
+import com.welu.composenavdestinations.model.components.NavDestinationInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
 object FileGeneratorResultExtensions : FileContentInfoGenerator<Sequence<NavDestinationInfo>> {
@@ -21,7 +22,7 @@ object FileGeneratorResultExtensions : FileContentInfoGenerator<Sequence<NavDest
                 add(PackageUtils.NAV_DESTINATION_RESULT_LISTENER_IMPORT)
                 add(PackageUtils.NAV_DESTINATION_LIFECYCLE_RESULT_LISTENER_IMPORT)
             },
-            code = CodeTemplates.NAV_DESTINATION_RESULT_EXTENSIONS_TEMPLATE
+            code = GeneralCodeTemplates.NAV_DESTINATION_RESULT_EXTENSIONS_TEMPLATE
         )
     }
 }

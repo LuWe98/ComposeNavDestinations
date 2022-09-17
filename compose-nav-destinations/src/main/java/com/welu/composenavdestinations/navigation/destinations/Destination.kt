@@ -4,5 +4,5 @@ import androidx.compose.runtime.Composable
 import com.welu.composenavdestinations.navigation.scope.DestinationScope
 
 sealed interface Destination <Scope: DestinationScope> {
-    val content : @Composable Scope.() -> Unit
+    val Content : @Composable Scope.() -> Unit
 }

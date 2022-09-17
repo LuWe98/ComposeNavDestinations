@@ -1,8 +1,9 @@
-package com.welu.composenavdestinations.generation
+package com.welu.composenavdestinations.generation.general
 
 import com.welu.composenavdestinations.extensions.div
+import com.welu.composenavdestinations.generation.FileContentInfoGenerator
 import com.welu.composenavdestinations.model.FileContentInfo
-import com.welu.composenavdestinations.model.NavDestinationInfo
+import com.welu.composenavdestinations.model.components.NavDestinationInfo
 import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.model.ParameterNavTypeInfo
 import com.welu.composenavdestinations.utils.PackageUtils
@@ -11,7 +12,7 @@ object FileGeneratorCustomNavArgs : FileContentInfoGenerator<Sequence<NavDestina
 
     override fun generate(instance: Sequence<NavDestinationInfo>): FileContentInfo? = extractCustomNavArgParameters(instance)
         .takeIf(Sequence<Parameter>::any)
-        ?.let(::generateFileContent)
+        ?.let(FileGeneratorCustomNavArgs::generateFileContent)
 
     private fun generateFileContent(parameters: Sequence<Parameter>) = FileContentInfo(
         fileImportInfo = PackageUtils.NAV_DESTINATION_CUSTOM_NAV_ARGS_FILE_IMPORT,

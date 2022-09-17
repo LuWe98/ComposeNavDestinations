@@ -1,22 +1,21 @@
-package com.welu.composenavdestinations.mapper
+package com.welu.composenavdestinations.extractor
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
-import com.welu.composenavdestinations.annotations.NavDestinationDefinitionAnnotation
 import com.welu.composenavdestinations.exceptions.UnsupportedTypeException
 import com.welu.composenavdestinations.extensions.isOneOf
 import com.welu.composenavdestinations.extensions.ksp.*
-import com.welu.composenavdestinations.extractor.ParameterDefaultValueExtractor.extractDefaultValue
-import com.welu.composenavdestinations.extractor.ParameterNavArgInfoExtractor.extractParameterNavArgInfo
+import com.welu.composenavdestinations.extractor.NavArgTypeInfoExtractor.extractParameterNavArgTypeInfo
 import com.welu.composenavdestinations.model.*
 import com.welu.composenavdestinations.utils.PackageUtils
 import java.io.Serializable
 
-class MapperNavDestinations(
+class NavArgsInfoExtractor(
     private val resolver: Resolver,
-    private val logger: KSPLogger
-) : ComponentsMapper<KSClassDeclaration, NavDestinationInfo> {
+    private val logger: KSPLogger,
+    private val defaultValueExtractor: DefaultValueExtractor
+) {
 
     private val ksFileContentMap by lazy { mutableMapOf<KSFile, KSFileContent>() }
 
@@ -56,21 +55,25 @@ class MapperNavDestinations(
             }
         } ?: false
 
-
-    override fun map(declaration: KSClassDeclaration) = NavDestinationInfo(
-        route = declaration.getRouteParameter(),
-        navArgsInfo = declaration.extractNavArgsInfo(),
-        destinationImport = declaration.asImportInfo()!!,
-        destinationSpecImport = declaration.asImportInfo(simpleNameSuffix = PackageUtils.NAV_DESTINATION_SPEC_SUFFIX)!!
+    /**
+     * This method extracts the NavArgsInfo from the given NavArgs ParameterTypeInfoAndDeclaration.
+     *
+     * This is used if the NavArgs type is already known, so it has not to be resolved again.
+     */
+    fun extract(parameterTypeInfoAndDeclaration: ParameterTypeInfoAndDeclaration) = extract(
+        parameterTypeInfoAndDeclaration.classDeclaration,
+        parameterTypeInfoAndDeclaration.typeInfo
     )
 
+    /**
+     * This method extracts the NavArgsInfo from the given NavArgsClassDeclaration
+     */
+    fun extract(
+        navArgsClassDeclaration: KSClassDeclaration,
+        typeInfo: ParameterTypeInfo? = null
+    ): NavArgsInfo {
 
-    private fun KSClassDeclaration.extractNavArgsInfo(): NavArgsInfo? {
-        //Es handelt sich um eine PlainDestination -> Es müssen keine Parameter extrahiert werden
-        val typeInfoWithDeclaration: ParameterTypeInfoAndDeclaration = extractNavArgsTypeInfo() ?: return null
-
-        val validParameters: List<KSValueParameter> = typeInfoWithDeclaration
-            .classDeclaration
+        val validParameters: List<KSValueParameter> = navArgsClassDeclaration
             .primaryConstructor
             ?.validParameters ?: throw IllegalStateException("NavArgs does not have a primary Constructor!")
 
@@ -79,12 +82,28 @@ class MapperNavDestinations(
             throw IllegalStateException("NavArgs ha no Parameters, implement PlainDestination instead!")
         }
 
-        val fileContent: KSFileContent = typeInfoWithDeclaration.classDeclaration.getKSFileContent(validParameters)
+        val fileContent: KSFileContent = navArgsClassDeclaration.getKSFileContent(validParameters)
 
         return NavArgsInfo(
-            typeInfo = typeInfoWithDeclaration.typeInfo,
+            typeInfo = typeInfo ?: navArgsClassDeclaration.asType.toParameterTypeInfo()!!,
             parameters = validParameters.map { mapToParameter(it, fileContent) }
         )
+    }
+
+    /**
+     * This method extracts the NavArgsClassDeclaration from from a NavDestinationClassDeclaration
+     */
+    fun extractNavArgsClassDeclarationOfNavDestination(navDestinationClassDeclaration: KSClassDeclaration): ParameterTypeInfoAndDeclaration? {
+        //TODO -> Das noch gegebenenfalls umbauen
+        //Gets the resolved supertypes of the NavDestination. If this fails, then the necessary Destination Interfaces are not present
+        val resolvedType = navDestinationClassDeclaration.superTypes.firstOrNull()?.resolve()
+            ?: throw IllegalStateException("Destination does not implement the necessary Destination Interface!")
+
+        return when (resolvedType.declaration.qualifiedName!!.asString()) {
+            PackageUtils.NAV_PLAIN_DESTINATION_IMPORT.qualifiedName -> null
+            PackageUtils.NAV_ARG_DESTINATION_IMPORT.qualifiedName -> resolvedType.arguments.first().toResolvedType()?.toParameterTypeInfoWithClassDeclaration()
+            else -> throw IllegalStateException("Destination does not implement the necessary Destination Interface!")
+        }
     }
 
     /**
@@ -115,13 +134,13 @@ class MapperNavDestinations(
         //Das ist der resolved Type
         val resolvedType = valueParameter.type.resolve()
         //Das ist der Import Name
-        val qualifiedType = resolvedType.declaration.qualifiedName?.asString() ?: resolvedType.declaration.simpleName.asString()
+        val qualifiedTypeName = resolvedType.declaration.qualifiedName?.asString() ?: resolvedType.declaration.simpleName.asString()
         //Gets the parameter Type Info
         val parameterTypeInfo = resolvedType.toParameterTypeInfo() ?: throw IllegalStateException("Parameter is invalid!")
         //Default Value Check and retrieval
-        val parameterDefaultValue = valueParameter.extractDefaultValue(resolver, fileContent, qualifiedType)
+        val parameterDefaultValue = defaultValueExtractor.extract(valueParameter, qualifiedTypeName, fileContent)
         //The NavArgInfo for the according NavType<T>
-        val parameterNavArgInfo = parameterTypeInfo.extractParameterNavArgInfo()
+        val parameterNavArgInfo = parameterTypeInfo.extractParameterNavArgTypeInfo()
 
         return Parameter(
             name = parameterName,
@@ -129,16 +148,6 @@ class MapperNavDestinations(
             navArgTypeInfo = parameterNavArgInfo,
             defaultValue = parameterDefaultValue
         )
-    }
-
-    private fun KSClassDeclaration.extractNavArgsTypeInfo(): ParameterTypeInfoAndDeclaration? {
-        val resolvedType = superTypes.firstOrNull()?.resolve() ?: throw IllegalStateException("Destination does not implement the necessary Destination Interface!")
-
-        return when (resolvedType.declaration.qualifiedName!!.asString()) {
-            PackageUtils.NAV_PLAIN_DESTINATION_IMPORT.qualifiedName -> null
-            PackageUtils.NAV_ARG_DESTINATION_IMPORT.qualifiedName -> resolvedType.extractNavArgsGenericParameterInfo()
-            else -> throw IllegalStateException("Destination does not implement the necessary Destination Interface!")
-        }
     }
 
     private fun KSType.toParameterTypeInfo(): ParameterTypeInfo? = toParameterTypeInfoWithClassDeclaration()?.typeInfo
@@ -166,24 +175,15 @@ class MapperNavDestinations(
         )
     }
 
-    private fun KSType.extractParameterTypeArguments(): List<ParameterTypeArgument> = arguments.mapNotNull { it.extractParameterTypeArgument() }
-
-    private fun KSTypeArgument.extractParameterTypeArgument(): ParameterTypeArgument? {
-        if (variance == Variance.STAR) return ParameterTypeArgument.STAR
-        val typeInfo = toResolvedType()?.toParameterTypeInfo() ?: return null
-        return ParameterTypeArgument(typeInfo, variance)
+    private fun KSType.extractParameterTypeArguments(): List<ParameterTypeArgument> = arguments.mapNotNull {
+        if (it.variance == Variance.STAR) return@mapNotNull ParameterTypeArgument.STAR
+        val typeInfo = it.toResolvedType()?.toParameterTypeInfo() ?: return@mapNotNull null
+        ParameterTypeArgument(typeInfo, it.variance)
     }
 
-    private fun KSType.extractNavArgsGenericParameterInfo(): ParameterTypeInfoAndDeclaration? = arguments
-        .first()
-        .toResolvedType()
-        ?.toParameterTypeInfoWithClassDeclaration()
-
-
-    //TODO -> Annotation universal machen und dann instanzen der Annotationen erstellen -> NavDestinationDefinition("", ""), Würde es deutlich einfacher machen
-    private fun KSClassDeclaration.getRouteParameter(): String = getAnnotationArgument<String>(
-        argName = NavDestinationDefinitionAnnotation.ROUTE_ARG,
-        annotation = NavDestinationDefinitionAnnotation
-    ).ifBlank { simpleName.asString() }
-
+//    private fun KSTypeArgument.extractParameterTypeArgument(): ParameterTypeArgument? {
+//        if (variance == Variance.STAR) return ParameterTypeArgument.STAR
+//        val typeInfo = toResolvedType()?.toParameterTypeInfo() ?: return null
+//        return ParameterTypeArgument(typeInfo, variance)
+//    }
 }

@@ -9,17 +9,18 @@ import kotlin.reflect.KClass
 internal object PackageUtils {
 
     const val FILE_NAME_CUSTOM_NAV_ARGS = "NavDestinationCustomNavArgs"
-    const val NAV_DESTINATION_SPEC_SUFFIX = "Spec"
+    const val NAV_COMPONENT_SPEC_SUFFIX = "Spec"
     const val NAV_DESTINATION_SUFFIX = "NavDestination"
 
     const val PACKAGE_NAME = "com.welu.composenavdestinations"
     const val ANNOTATIONS_PACKAGE = "$PACKAGE_NAME.annotations"
+    const val NAV_GRAPH_SPEC_PACKAGE = "$PACKAGE_NAME.navgraphs"
 
     const val NAV_ARGS_PACKAGE = "$PACKAGE_NAME.navargs"
     val NAV_DESTINATION_CUSTOM_NAV_ARGS_FILE_IMPORT = ImportInfo("NavDestinationCustomNavArgs", NAV_ARGS_PACKAGE)
 
     private const val NAV_DESTINATIONS_UTILS_PACKAGE = "$PACKAGE_NAME.utils"
-    val NAV_DESTINATION_UTILS_FILE_IMPORT = ImportInfo("NavDestinationUtils", NAV_DESTINATIONS_UTILS_PACKAGE)
+    val NAV_COMPONENT_UTILS_FILE_IMPORT = ImportInfo("NavComponentUtils", NAV_DESTINATIONS_UTILS_PACKAGE)
 
     private const val NAV_DESTINATIONS_EXTENSIONS_PACKAGE = "$PACKAGE_NAME.extensions"
     val NAV_DESTINATION_EXTENSIONS_FILE_IMPORT = ImportInfo("NavDestinationExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
@@ -38,10 +39,17 @@ internal object PackageUtils {
     val NAV_ARG_DESTINATION_IMPORT = ImportInfo("ArgDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
     val NAV_PLAIN_DESTINATION_IMPORT = ImportInfo("PlainDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
 
-    private const val NAV_DESTINATION_SPEC_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.spec"
-    val NAV_DESTINATION_SPEC_IMPORT = ImportInfo("DestinationSpec", NAV_DESTINATION_SPEC_PACKAGE)
-    val NAV_DESTINATION_PLAIN_SPEC_IMPORT= ImportInfo("PlainDestinationSpec", NAV_DESTINATION_SPEC_PACKAGE)
-    val NAV_DESTINATION_ARG_SPEC_IMPORT = ImportInfo("ArgDestinationSpec", NAV_DESTINATION_SPEC_PACKAGE)
+    private const val NAV_COMPONENT_SPEC_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.spec"
+    val NAV_COMPONENT_SPEC_IMPORT = ImportInfo("NavComponentSpec", NAV_COMPONENT_SPEC_PACKAGE)
+
+    val NAV_DESTINATION_SPEC_IMPORT = ImportInfo("DestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_DESTINATION_PLAIN_SPEC_IMPORT= ImportInfo("PlainDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_DESTINATION_ARG_SPEC_IMPORT = ImportInfo("ArgDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+
+    val NAV_GRAPH_SPEC_IMPORT = ImportInfo("NavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_GRAPH_PLAIN_SPEC_IMPORT = ImportInfo("PlainNavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_GRAPH_SPEC_ARG_IMPORT = ImportInfo("ArgNavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
+
 
 
     private const val NAV_DESTINATION_SCOPE_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.scope"

@@ -1,35 +1,38 @@
 package com.welu.composenavdestinations.extractor
 
 import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.symbol.FileLocation
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.welu.composenavdestinations.extensions.*
+import com.welu.composenavdestinations.extensions.ksp.findFileLocation
 import com.welu.composenavdestinations.extensions.ksp.isImportNameContainedInPackage
 import com.welu.composenavdestinations.model.ParameterDefaultValue
 import com.welu.composenavdestinations.model.ParameterDefaultValueDeclaration
 import com.welu.composenavdestinations.model.KSFileContent
 import com.welu.composenavdestinations.model.ImportInfo
 
-object ParameterDefaultValueExtractor {
+class DefaultValueExtractor(
+    private val resolver: Resolver
+) {
 
-    private const val NO_DOT_DIGIT_CRITERIA = "(\\d(\\d|_)*)?"
-    private const val DOT_DIGIT_CRITERIA = "(\\d((\\d|_)*\\d)?)?\\.(\\d(\\d|_)*)?"
-    private const val ENDS_WITH_CRITERIA = "\\d[d|f|F]?"
-    private val NUMBER_REGEX = Regex("^(($NO_DOT_DIGIT_CRITERIA|$DOT_DIGIT_CRITERIA)$ENDS_WITH_CRITERIA)\$")
+    companion object {
+        private const val NO_DOT_DIGIT_CRITERIA = "(\\d(\\d|_)*)?"
+        private const val DOT_DIGIT_CRITERIA = "(\\d((\\d|_)*\\d)?)?\\.(\\d(\\d|_)*)?"
+        private const val ENDS_WITH_CRITERIA = "\\d[d|f|F]?"
+        private val NUMBER_REGEX = Regex("^(($NO_DOT_DIGIT_CRITERIA|$DOT_DIGIT_CRITERIA)$ENDS_WITH_CRITERIA)\$")
+    }
 
-    fun KSValueParameter.extractDefaultValue(
-        resolver: Resolver,
-        fileContent: KSFileContent,
-        argQualifiedType: String,
+    fun extract(
+        parameter: KSValueParameter,
+        argQualifiedName: String,
+        fileContent: KSFileContent
     ): ParameterDefaultValue? {
 
+        if (!parameter.hasDefault) return null
 
-        if (!hasDefault) return null
+        val argLineNumber = parameter.findFileLocation()?.lineNumber?.minus(1) ?: 0
+        val argType: String = parameter.type.toString()
 
-        val argLineNumber = (location as FileLocation).lineNumber - 1
-        val argType: String = type.toString()
-
-        val anchorMatcher = Regex("${name!!.asString()}\\s*:\\s*($argType|$argQualifiedType)\\s*(<(,|<|>|\\w|\\s|\\*|\\?)+>\\s*)?\\??\\s*=.*")
+        val anchorMatcher = Regex("${parameter.name!!.asString()}\\s*:\\s*($argType|$argQualifiedName)\\s*(<(,|<|>|\\w|\\s|\\*|\\?)+>\\s*)?\\??\\s*=.*")
         val accumulatedLineBuilder = StringBuilder("")
 
         for (index in argLineNumber until fileContent.lines.size) {

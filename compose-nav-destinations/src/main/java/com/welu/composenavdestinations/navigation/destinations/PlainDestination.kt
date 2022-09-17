@@ -16,6 +16,6 @@ interface PlainDestination: Destination<PlainDestinationScope>, Routable {
     /**
      * Composables can be written inside of this typealias Scope Definition
      */
-    override val content: PlainCompositionScope
+    override val Content: PlainCompositionScope
 
 }

@@ -39,9 +39,20 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+
+//    lint {
+//        checkDependencies = true
+//        textReport = true
+//        // Produce report for CI:
+//        // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
+//        sarifOutput = file("../lint-results.sarif")
+//    }
 }
 
 dependencies {
-    api(project(":compose-nav-destinations-shared"))
+//    api(project(":compose-nav-destinations-lint"))
+//    lintPublish(project(":compose-nav-destinations-lint"))
+
     implementation("androidx.navigation:navigation-compose:2.5.2")
 }

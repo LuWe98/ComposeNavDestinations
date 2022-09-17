@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
-    id("org.jetbrains.kotlin.jvm")
+    id("kotlin")
+    id("com.android.lint")
 }
 
 java {
@@ -9,5 +10,11 @@ java {
 }
 
 dependencies {
-    api(project(":compose-nav-destinations-shared"))
+    compileOnly(project(":compose-nav-destinations-shared"))
+
+    val lintVersion = "30.2.2"
+    compileOnly("com.android.tools.lint:lint-api:$lintVersion")
+    compileOnly("com.android.tools.lint:lint-checks:$lintVersion")
+
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10")
 }

@@ -1,8 +1,10 @@
-package com.welu.composenavdestinations.generation
+package com.welu.composenavdestinations.generation.destinations
 
+import com.welu.composenavdestinations.generation.general.GeneralCodeTemplates
+import com.welu.composenavdestinations.generation.FileContentInfoGenerator
 import com.welu.composenavdestinations.model.FileContentInfo
 import com.welu.composenavdestinations.model.ImportInfo
-import com.welu.composenavdestinations.model.NavDestinationInfo
+import com.welu.composenavdestinations.model.components.NavDestinationInfo
 import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.utils.PackageUtils
 
@@ -16,10 +18,10 @@ object FileGeneratorDestinationExt : FileContentInfoGenerator<Sequence<NavDestin
             fileImportInfo = PackageUtils.NAV_DESTINATION_EXTENSIONS_FILE_IMPORT,
             imports = mutableSetOf<ImportInfo>().apply {
                 addAll(instance.map(NavDestinationInfo::destinationImport))
-                addAll(instance.map(NavDestinationInfo::destinationSpecImport))
+                addAll(instance.map(NavDestinationInfo::specImport))
                 addAll(argDestinations.flatMap(NavDestinationInfo::allImports))
 
-                add(PackageUtils.NAV_DESTINATION_UTILS_FILE_IMPORT)
+                add(PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT)
                 add(PackageUtils.NAV_DESTINATION_SPEC_IMPORT)
                 add(PackageUtils.NAV_DESTINATION_PLAIN_SPEC_IMPORT)
                 add(PackageUtils.NAV_DESTINATION_ARG_SPEC_IMPORT)
@@ -34,17 +36,17 @@ object FileGeneratorDestinationExt : FileContentInfoGenerator<Sequence<NavDestin
                     add(PackageUtils.ANDROID_NAVIGATION_NAV_BACK_STACK_ENTRY_IMPORT)
                 }
             },
-            code = CodeTemplates.DESTINATION_EXT_TEMPLATE
-                .replace(CodeTemplates.PLACEHOLDER_DESTINATION_EXT_ARGS_FROM_METHODS, generateArgsFromFunctions(argDestinations))
-                .replace(CodeTemplates.PLACEHOLDER_DESTINATION_EXT_ARGS_INVOKE_FUNCTION, generateArgsInvokeFunction(argDestinations))
+            code = GeneralCodeTemplates.DESTINATION_EXT_TEMPLATE
+                .replace(GeneralCodeTemplates.PLACEHOLDER_DESTINATION_EXT_ARGS_FROM_METHODS, generateArgsFromFunctions(argDestinations))
+                .replace(GeneralCodeTemplates.PLACEHOLDER_DESTINATION_EXT_ARGS_INVOKE_FUNCTION, generateArgsInvokeFunction(argDestinations))
         )
     }
 
     private fun generateArgsFromFunctions(argDestinations: Sequence<NavDestinationInfo>): String = argDestinations.joinToString("\n\n") {
         """
-        | fun ${it.destinationImport.simpleName}.argsFrom(savedStateHandle: SavedStateHandle) = ${it.destinationSpecImport.simpleName}.argsFrom(savedStateHandle)
+        | fun ${it.destinationImport.simpleName}.argsFrom(savedStateHandle: SavedStateHandle) = ${it.specImport.simpleName}.argsFrom(savedStateHandle)
         | 
-        | fun ${it.destinationImport.simpleName}.argsFrom(navBackStackEntry: NavBackStackEntry) = ${it.destinationSpecImport.simpleName}.argsFrom(navBackStackEntry)
+        | fun ${it.destinationImport.simpleName}.argsFrom(navBackStackEntry: NavBackStackEntry) = ${it.specImport.simpleName}.argsFrom(navBackStackEntry)
         """.trimMargin("| ")
     }
 
@@ -52,7 +54,7 @@ object FileGeneratorDestinationExt : FileContentInfoGenerator<Sequence<NavDestin
         """
         | operator fun ${it.destinationImport.simpleName}.invoke(
         |     ${it.navArgsInfo!!.parameters.joinToString(",\n\t\t| \t", transform = Parameter::fullDeclarationName)}
-        | ) = ${it.destinationSpecImport.simpleName}(
+        | ) = ${it.specImport.simpleName}(
         |     ${it.navArgsInfo.parameters.joinToString(",\n\t\t| \t") { parameter -> "${parameter.name} = ${parameter.name}" }}
         | )
         """.trimMargin("| ")
