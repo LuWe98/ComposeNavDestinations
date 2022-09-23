@@ -1,6 +1,7 @@
 package com.welu.composenavdestinations.generation.general
 
 import com.welu.composenavdestinations.generation.FileContentInfoGenerator
+import com.welu.composenavdestinations.generation.templates.GeneralCodeTemplates
 import com.welu.composenavdestinations.model.FileContentInfo
 import com.welu.composenavdestinations.model.ImportInfo
 import com.welu.composenavdestinations.model.components.NavDestinationInfo

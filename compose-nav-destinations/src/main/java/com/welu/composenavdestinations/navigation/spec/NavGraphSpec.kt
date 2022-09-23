@@ -1,7 +1,5 @@
 package com.welu.composenavdestinations.navigation.spec
 
-import androidx.navigation.NavDeepLink
-
 //TODO -> Eigenschafften von so nem NavGraph hinschreiben, so wie bei Destinations
 // -> Ein NavGraph beitzt referenzen auf die zugehörigen DestinationSpecs und auf den ParentNavGraphen.
 // -> Extension functions implementieren, um auch euf einen bestimmten NavGraph zu navigieren. Ein NavGraph muss deshalb Routable sein.
@@ -20,7 +18,7 @@ import androidx.navigation.NavDeepLink
 /**
  * Defines a NavGraph with associated Destinations
  */
-interface NavGraphSpec: NavComponentSpec {
+sealed interface NavGraphSpec: NavComponentSpec {
 
     /**
      * This is the start of the NavGraph. Can either be a [DestinationSpec] or [NavGraphSpec].

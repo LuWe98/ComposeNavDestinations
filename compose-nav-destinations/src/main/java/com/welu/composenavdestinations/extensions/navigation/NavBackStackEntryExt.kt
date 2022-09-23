@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations.extensions
+package com.welu.composenavdestinations.extensions.navigation
 
 import androidx.navigation.NavBackStackEntry
 

@@ -125,8 +125,13 @@ class NavDestinationsProcessor(
 
     @Throws(IllegalStateException::class)
     private fun checkIfNavDestinationsAreOfTypeObject(navDestinations: Sequence<KSClassDeclaration>) {
-        if (navDestinations.any { it.classKind != ClassKind.OBJECT }) {
-            throw IllegalStateException("Only Destinations of type Object are supported!")
+        val nonObjectNavDestinations = navDestinations.filter { it.classKind != ClassKind.OBJECT }
+        if (nonObjectNavDestinations.any()) {
+            throw IllegalStateException(
+                "Only Destinations of type Object are supported! Non Object NavDestinations: " + nonObjectNavDestinations.joinToString(", ") {
+                    it.getFileReferenceText()
+                }
+            )
         }
     }
 

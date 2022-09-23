@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
-import com.welu.composenavdestinations.extensions.get
+import com.welu.composenavdestinations.extensions.navigation.get
 import com.welu.composenavdestinations.extensions.getTyped
 import com.welu.composenavdestinations.extensions.put
 

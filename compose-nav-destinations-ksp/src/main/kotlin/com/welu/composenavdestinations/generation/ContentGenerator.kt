@@ -2,12 +2,12 @@ package com.welu.composenavdestinations.generation
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Resolver
-import com.welu.composenavdestinations.generation.destinations.FileGeneratorDestinationExt
-import com.welu.composenavdestinations.generation.destinations.FileGeneratorDestinationSpec
+import com.welu.composenavdestinations.generation.component.FileGeneratorDestinationExt
+import com.welu.composenavdestinations.generation.component.FileGeneratorDestinationSpec
 import com.welu.composenavdestinations.generation.general.FileGeneratorCustomNavArgs
 import com.welu.composenavdestinations.generation.general.FileGeneratorNavComponentUtils
 import com.welu.composenavdestinations.generation.general.FileGeneratorResultExtensions
-import com.welu.composenavdestinations.generation.graphs.FileGeneratorNavGraphSpec
+import com.welu.composenavdestinations.generation.component.FileGeneratorNavGraphSpec
 import com.welu.composenavdestinations.model.components.NavDestinationInfo
 import com.welu.composenavdestinations.model.components.NavGraphInfo
 
@@ -26,7 +26,7 @@ class ContentGenerator(
     ) {
 
         //Generates the custom NavArgs needed for Navigation
-        FileGeneratorCustomNavArgs.generate(navDestinations)?.let(fileContentInfoOutputWriter::writeFile)
+        FileGeneratorCustomNavArgs.generate(navDestinations + navGraphs)?.let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavDestinationUtils File
         FileGeneratorNavComponentUtils.generate(navDestinations).let(fileContentInfoOutputWriter::writeFile)
@@ -41,7 +41,7 @@ class ContentGenerator(
         navDestinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavGraphSpecs for all annotated NavGraphs
-        navGraphs.mapNotNull(FileGeneratorNavGraphSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
+        navGraphs.map(FileGeneratorNavGraphSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
 
     }
 }

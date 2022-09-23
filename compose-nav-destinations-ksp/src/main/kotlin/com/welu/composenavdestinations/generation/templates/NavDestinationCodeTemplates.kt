@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations.generation.destinations
+package com.welu.composenavdestinations.generation.templates
 
 import com.welu.composenavdestinations.utils.PackageUtils
 
@@ -54,13 +54,13 @@ object NavDestinationCodeTemplates {
     |     
     |     override val route: String = baseRoute + 
     |         $PLACEHOLDER_NAV_ARG_SPEC_ROUTE_ARGS
-    |         
-    |     operator fun invoke(
-    |         $PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_PARAMETER
-    |     ) = object: Routable {
-    |         override val parameterizedRoute: String = $PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_BODY
-    |     }
-    |         
+    |     
+    |     override val deepLinks: List<NavDeepLink> = emptyList()
+    |      
+    |     override val arguments: List<NamedNavArgument> = listOf(
+    |         $PLACEHOLDER_NAV_ARG_SPEC_NAMED_ARGUMENTS
+    |     )
+    |     
     |     override fun argsFrom(navBackStackEntry: NavBackStackEntry) = $PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE(
     |         $PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_BACKSTACK
     |     )
@@ -68,12 +68,12 @@ object NavDestinationCodeTemplates {
     |     override fun argsFrom(savedStateHandle: SavedStateHandle) = $PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE(
     |         $PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_SAVED_STATE
     |     )
-    | 
-    |     override val arguments: List<NamedNavArgument> = listOf(
-    |         $PLACEHOLDER_NAV_ARG_SPEC_NAMED_ARGUMENTS
-    |     )
-    | 
-    |     override val deepLinks: List<NavDeepLink> = emptyList()
+    |     
+    |     operator fun invoke(
+    |         $PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_PARAMETER
+    |     ) = object: Routable {
+    |         override val parameterizedRoute: String = $PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_BODY
+    |     }
     |           
     | }
     """.trimMargin("| ")

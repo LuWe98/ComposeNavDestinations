@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations.generation.general
+package com.welu.composenavdestinations.generation.templates
 
 import com.welu.composenavdestinations.utils.PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT
 

@@ -33,18 +33,16 @@ class NavGraphsMapper(
     )
 
     private fun mapNavGraphSpecDeclarationToImport(rawNavGraphInfo: RawNavGraphInfo) = ImportInfo(
-        simpleName= rawNavGraphInfo.simpleName + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
+        simpleName = rawNavGraphInfo.simpleName + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
         packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE
     )
 
     private fun mapStartComponentDeclarationToImport(rawNavGraphInfo: RawNavGraphInfo) = rawNavGraphInfo.startComponentDeclaration!!.let { component ->
-        when(component) {
-            is RawNavGraphInfo -> {
-                ImportInfo(
-                    simpleName = component.simpleName + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
-                    packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE
-                )
-            }
+        when (component) {
+            is RawNavGraphInfo -> ImportInfo(
+                simpleName = component.simpleName + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
+                packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE
+            )
             is RawNavDestinationInfo -> {
                 component.classDeclaration.asImportInfo(PackageUtils.NAV_COMPONENT_SPEC_SUFFIX)!!
             }
@@ -64,14 +62,12 @@ class NavGraphsMapper(
     }.toList()
 
 
-    //TODO -> Hier WEITER
-
     //TODO -> Noch einbauen -> NavArgs kommen aus einem Parameter von der NavGraphDefinition Annotation
     // -> Man kann dadurch direkt navArgsInfoExtractor.extract mit der KClassDeclaration aufrufen
     private fun extractNavArgs(component: RawNavGraphInfo): NavArgsInfo? {
-        val navArgsClass = component.classDeclaration.getNavArgsClass()
-        if(navArgsClass.qualifiedName?.asString() == Unit::class.qualifiedName) return null
-        return navArgsInfoExtractor.extract(component.classDeclaration.getNavArgsClass())
+        val navArgsClass = component.classDeclaration.getNavArgsClassDeclaration()
+        if ((navArgsClass.qualifiedName?.asString() ?: Unit::class.qualifiedName) == Unit::class.qualifiedName) return null
+        return navArgsInfoExtractor.extract(navArgsClass)
     }
 
     //TODO -> noch einbauen
@@ -79,7 +75,7 @@ class NavGraphsMapper(
         return emptyList()
     }
 
-    private fun KSClassDeclaration.getNavArgsClass(): KSClassDeclaration = getAnnotationArgument<KSType>(
+    private fun KSClassDeclaration.getNavArgsClassDeclaration() = getAnnotationArgument<KSType>(
         annotation = NavGraphDefinitionAnnotation,
         argName = NavGraphDefinitionAnnotation.ARGS_CLASS_ARG
     ).declaration as KSClassDeclaration

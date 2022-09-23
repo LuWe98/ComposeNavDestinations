@@ -23,6 +23,6 @@ sealed interface DestinationScope {
     /**
      * Generic DestinationSpec which is connected to the Destination of this DestinationScope
      */
-    val relatedSpec: DestinationSpec<out Destination<out DestinationScope>>
+    val relatedSpec: DestinationSpec<*>
 
 }

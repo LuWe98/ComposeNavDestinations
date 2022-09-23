@@ -8,10 +8,18 @@ import com.welu.composenavdestinations.navigation.scope.DestinationScope
 import com.welu.composenavdestinations.navigation.spec.DestinationSpec
 import com.welu.composenavdestinations.navigation.spec.NavComponentSpec
 
-fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? {
-    runCatching { getBackStackEntry(spec.route) }.onSuccess { return it }
-    return null
+fun DestinationScope.getBackStackEntry(spec: NavComponentSpec) = navController.getBackStackEntry(spec)
+
+fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? = try {
+    getBackStackEntry(spec.route)
+} catch (e: IllegalArgumentException) {
+    null
 }
+
+fun DestinationScope.isOnBackStack(spec: NavComponentSpec) = navController.isOnBackStack(spec)
+
+fun NavController.isOnBackStack(spec: NavComponentSpec) = getBackStackEntry(spec) != null
+
 
 //    for (i in backQueue.lastIndex downTo 0) {
 //        if (backQueue[i].destination.route == spec.route) {

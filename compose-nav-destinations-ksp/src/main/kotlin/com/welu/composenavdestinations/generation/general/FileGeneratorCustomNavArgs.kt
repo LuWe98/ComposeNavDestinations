@@ -3,16 +3,21 @@ package com.welu.composenavdestinations.generation.general
 import com.welu.composenavdestinations.extensions.div
 import com.welu.composenavdestinations.generation.FileContentInfoGenerator
 import com.welu.composenavdestinations.model.FileContentInfo
-import com.welu.composenavdestinations.model.components.NavDestinationInfo
 import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.model.ParameterNavTypeInfo
+import com.welu.composenavdestinations.model.components.NavComponentInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-object FileGeneratorCustomNavArgs : FileContentInfoGenerator<Sequence<NavDestinationInfo>> {
+object FileGeneratorCustomNavArgs : FileContentInfoGenerator<Sequence<NavComponentInfo>> {
 
-    override fun generate(instance: Sequence<NavDestinationInfo>): FileContentInfo? = extractCustomNavArgParameters(instance)
+    override fun generate(instance: Sequence<NavComponentInfo>): FileContentInfo? = extractCustomNavArgParameters(instance)
         .takeIf(Sequence<Parameter>::any)
         ?.let(FileGeneratorCustomNavArgs::generateFileContent)
+
+    private fun extractCustomNavArgParameters(navComponents: Sequence<NavComponentInfo>) = navComponents
+        .filter { it.navArgsInfo != null }
+        .flatMap { it.navArgsInfo!!.parameters.filter(Parameter::hasCustomNavArgType) }
+        .distinctBy(Parameter::navArgTypeInfo / ParameterNavTypeInfo::simpleName)
 
     private fun generateFileContent(parameters: Sequence<Parameter>) = FileContentInfo(
         fileImportInfo = PackageUtils.NAV_DESTINATION_CUSTOM_NAV_ARGS_FILE_IMPORT,
@@ -23,10 +28,5 @@ object FileGeneratorCustomNavArgs : FileContentInfoGenerator<Sequence<NavDestina
             "val ${it.navArgTypeInfo.simpleName} = $navArgTypeName($parameterTypeName::class)"
         }
     )
-
-    private fun extractCustomNavArgParameters(navDestinationInfos: Sequence<NavDestinationInfo>) = navDestinationInfos
-        .filter(NavDestinationInfo::isArgDestination)
-        .flatMap { it.navArgsInfo!!.parameters.filter(Parameter::hasCustomNavArgType) }
-        .distinctBy(Parameter::navArgTypeInfo / ParameterNavTypeInfo::simpleName)
 
 }

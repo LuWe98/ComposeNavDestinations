@@ -5,7 +5,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import com.welu.composenavdestinations.navigation.destinations.ArgDestination
 
-//TODO -> Beide Wege (argsFrom) sind für eine Destination eigentlich in Ordnung, da die Argumente immer vorliegen sollten
+//TODO -> Beide Wege (argsFrom) sind für eine Destination eigentlich in Ordnung, da die Argumente immer vorliegen sollten -> Falsch, man kann zu einem Graphen navigieren, welcher automatisch zu startDestination weiterleitet
 // Für NavArgSpecs ist es jedoch nicht in Ordnung, da man direkt zu einer Destination im Graphen navigieren kann und somit keine Args an den NavGraph übergibt.
 
 /**
@@ -17,11 +17,6 @@ interface ArgDestinationSpec<Arg : Any> : DestinationSpec<ArgDestination<Arg>> {
      * Contains the [NamedNavArgument]s needed to instantiate this [NavGraphSpec]
      */
     val arguments: List<NamedNavArgument> get() = listOf()
-
-    /**
-     * Contains only the names of the [NamedNavArgument]s
-     */
-    val argumentNameList get() = arguments.map(NamedNavArgument::name)
 
     /**
      * Retrieves the NavArgs with an [NavBackStackEntry]

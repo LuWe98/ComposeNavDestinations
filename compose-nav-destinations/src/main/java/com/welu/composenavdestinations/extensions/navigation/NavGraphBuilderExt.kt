@@ -9,6 +9,7 @@ import com.welu.composenavdestinations.navigation.scope.ArgDestinationScope
 import com.welu.composenavdestinations.navigation.scope.PlainDestinationScope
 import com.welu.composenavdestinations.navigation.spec.*
 
+//TODO -> Noch einbauen mit Dialog und BottomSheet sowie animation
 @Suppress("UNCHECKED_CAST")
 fun <N : NavGraphSpec> NavGraphBuilder.generateHierarchy(
     navGraphSpec: N,
@@ -63,10 +64,11 @@ private fun NavGraphBuilder.createNavigationComposable(
     route = navGraphSpec.route,
     startDestination = navGraphSpec.startComponentSpec.route,
     deepLinks = navGraphSpec.deepLinks,
-    arguments = if(navGraphSpec is ArgDestinationSpec<*>) navGraphSpec.arguments else emptyList()
+    arguments = if(navGraphSpec is ArgNavGraphSpec<*>) navGraphSpec.arguments else emptyList()
 ) {
     generateHierarchy(navGraphSpec, navController)
 }
+
 
 
 
