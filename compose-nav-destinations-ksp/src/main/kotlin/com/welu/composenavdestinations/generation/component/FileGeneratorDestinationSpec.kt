@@ -1,7 +1,7 @@
 package com.welu.composenavdestinations.generation.component
 
 import com.welu.composenavdestinations.extensions.div
-import com.welu.composenavdestinations.generation.FileContentInfoGenerator
+import com.welu.composenavdestinations.generation.FileContentInfoTypedGenerator
 import com.welu.composenavdestinations.generation.templates.NavDestinationCodeTemplates
 import com.welu.composenavdestinations.model.ArgContainer
 import com.welu.composenavdestinations.model.FileContentInfo
@@ -10,7 +10,7 @@ import com.welu.composenavdestinations.model.ParameterTypeInfo
 import com.welu.composenavdestinations.model.components.NavDestinationInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-object FileGeneratorDestinationSpec : FileContentInfoGenerator<NavDestinationInfo> {
+object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<NavDestinationInfo> {
 
     override fun generate(instance: NavDestinationInfo): FileContentInfo = if (instance.isArgDestination) {
         generateArgSpecFileContentInfo(instance)
@@ -24,25 +24,28 @@ object FileGeneratorDestinationSpec : FileContentInfoGenerator<NavDestinationInf
         imports = setOf(
             plainDestinationInfo.destinationImport,
             plainDestinationInfo.parentNavGraphSpecImport,
-            PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT,
-            PackageUtils.NAV_DESTINATION_PLAIN_SPEC_IMPORT
+            plainDestinationInfo.destinationType.specImportInfo,
+            PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT
         ),
         code = NavDestinationCodeTemplates.NAV_DESTINATION_PLAIN_SPEC_TEMPLATE
             .replace(
-                NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_BASE_ROUTE,
-                plainDestinationInfo.baseRoute
+                oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_BASE_ROUTE,
+                newValue = plainDestinationInfo.baseRoute
             ).replace(
-                NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DESTINATION_NAME,
-                plainDestinationInfo.simpleName
+                oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DESTINATION_NAME,
+                newValue = plainDestinationInfo.simpleName
             ).replace(
-                NavDestinationCodeTemplates.PLACEHOLDER_NAV_DESTINATION_NAME,
-                plainDestinationInfo.destinationImport.simpleName
+                oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_DESTINATION_NAME,
+                newValue = plainDestinationInfo.destinationImport.simpleName
             ).replace(
-                NavDestinationCodeTemplates.PLACEHOLDER_NAV_DESTINATION_NAV_GRAPH,
-                plainDestinationInfo.parentNavGraphSpecImport.simpleName
+                oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_DESTINATION_NAV_GRAPH,
+                newValue = plainDestinationInfo.parentNavGraphSpecImport.simpleName
             ).replace(
-                NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE,
-                "emptyList()"
+                oldValue = NavDestinationCodeTemplates.PLACEHOLDER_DESTINATION_TYPE_SPEC_NAME,
+                newValue = plainDestinationInfo.destinationType.specImportInfo.simpleName
+            ).replace(
+                oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE,
+                newValue = "emptyList()"
             )
     )
 
@@ -57,8 +60,8 @@ object FileGeneratorDestinationSpec : FileContentInfoGenerator<NavDestinationInf
             packageDir = argDestinationInfo.packageDir,
             imports = mutableSetOf(
                 argDestinationInfo.parentNavGraphSpecImport,
+                argDestinationInfo.destinationType.specImportInfo,
                 PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT,
-                PackageUtils.NAV_DESTINATION_ARG_SPEC_IMPORT,
                 PackageUtils.ANDROID_NAVIGATION_NAV_BACK_STACK_ENTRY_IMPORT,
                 PackageUtils.NAV_ARGUMENT_IMPORT,
                 PackageUtils.ANDROID_NAVIGATION_NAMED_NAV_ARGUMENT_IMPORT,
@@ -69,41 +72,44 @@ object FileGeneratorDestinationSpec : FileContentInfoGenerator<NavDestinationInf
             },
             code = NavDestinationCodeTemplates.NAV_DESTINATION_ARG_SPEC_TEMPLATE
                 .replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_BASE_ROUTE,
-                    argDestinationInfo.baseRoute
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_BASE_ROUTE,
+                    newValue = argDestinationInfo.baseRoute
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_DESTINATION_NAME,
-                    argDestinationInfo.destinationImport.simpleName
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_DESTINATION_NAME,
+                    newValue = argDestinationInfo.destinationImport.simpleName
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_DESTINATION_NAV_GRAPH,
-                    argDestinationInfo.parentNavGraphSpecImport.simpleName
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_DESTINATION_NAV_GRAPH,
+                    newValue = argDestinationInfo.parentNavGraphSpecImport.simpleName
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DESTINATION_NAME,
-                    argDestinationInfo.simpleName
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DESTINATION_NAME,
+                    newValue = argDestinationInfo.simpleName
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE,
-                    argDestinationInfo.navArgsInfo.name
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE,
+                    newValue = argDestinationInfo.navArgsInfo.name
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_ROUTE_ARGS,
-                    NavArgsGeneratorUtils.generateRoute(sortedParams)
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_ROUTE_ARGS,
+                    newValue = NavArgsGeneratorUtils.generateRoute(sortedParams)
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_PARAMETER,
-                    NavArgsGeneratorUtils.generateInvokeParameters(argDestinationInfo)
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_PARAMETER,
+                    newValue = NavArgsGeneratorUtils.generateInvokeParameters(argDestinationInfo)
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_BODY,
-                    NavArgsGeneratorUtils.generateInvokeBody(argDestinationInfo.baseRoute, sortedParams)
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_BODY,
+                    newValue = NavArgsGeneratorUtils.generateInvokeBody(argDestinationInfo.baseRoute, sortedParams)
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_NAMED_ARGUMENTS,
-                    NavArgsGeneratorUtils.generateNamedNavArguments(sortedParams)
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_NAMED_ARGUMENTS,
+                    newValue = NavArgsGeneratorUtils.generateNamedNavArguments(sortedParams)
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_BACKSTACK,
-                    NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, ArgContainer.NabBackStackEntry)
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_BACKSTACK,
+                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, ArgContainer.NabBackStackEntry)
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_SAVED_STATE,
-                    NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, ArgContainer.SaveStateHandle)
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_SAVED_STATE,
+                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, ArgContainer.SaveStateHandle)
                 ).replace(
-                    NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE,
-                    "emptyList()"
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_DESTINATION_TYPE_SPEC_NAME,
+                    newValue = argDestinationInfo.destinationType.specImportInfo.simpleName
+                ).replace(
+                    oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE,
+                    newValue = "emptyList()"
                 )
         )
     }

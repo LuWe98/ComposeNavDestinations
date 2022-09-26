@@ -1,106 +1,186 @@
 package com.welu.composenavdestinations.extensions.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import com.welu.composenavdestinations.navigation.scope.ArgDestinationScope
-import com.welu.composenavdestinations.navigation.scope.PlainDestinationScope
+import androidx.navigation.compose.dialog
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.navigation
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.bottomSheet
+import com.welu.composenavdestinations.navigation.scope.*
 import com.welu.composenavdestinations.navigation.spec.*
 
 //TODO -> Noch einbauen mit Dialog und BottomSheet sowie animation
-@Suppress("UNCHECKED_CAST")
-fun <N : NavGraphSpec> NavGraphBuilder.generateHierarchy(
+fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavComponents(
     navGraphSpec: N,
     navController: NavHostController
-): Unit = navGraphSpec.childNavComponentSpecs.forEach { navComponent ->
-    when (navComponent) {
-        is ArgDestinationSpec<*> -> createArgDestinationComposable(navComponent as ArgDestinationSpec<Any>, navController)
-        is PlainDestinationSpec -> createPlainDestinationComposable(navComponent, navController)
-        is NavGraphSpec -> createNavigationComposable(navComponent, navController)
+) {
+    @Suppress("UNCHECKED_CAST")
+    navGraphSpec.childNavComponentSpecs.forEach { navComponent ->
+        when (navComponent) {
+            is DestinationSpec -> addDestinationComposable(navComponent, navController)
+            is ArgDestinationSpec<*> -> addArgDestinationComposable(navComponent as ArgDestinationSpec<Any>, navController)
+            is DialogDestinationSpec -> addDialogDestination(navComponent, navController)
+            is DialogArgDestinationSpec<*> -> addDialogArgDestination(navComponent as DialogArgDestinationSpec<Any>, navController)
+            is BottomSheetDestinationSpec -> addBottomSheetDestination(navComponent, navController)
+            is BottomSheetArgDestinationSpec<*> -> addBottomSheetArgDestination(navComponent as BottomSheetArgDestinationSpec<Any>, navController)
+            is ComposeNavGraphSpec -> addNestedNavigation(navComponent, navController)
+        }
     }
 }
 
-private fun NavGraphBuilder.createArgDestinationComposable(
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addDestinationComposable(
+    destinationSpec: DestinationSpec,
+    navController: NavHostController
+) {
+    composable(
+        route = destinationSpec.route,
+        deepLinks = destinationSpec.deepLinks,
+        enterTransition = destinationSpec.destination.transitions.enterTransition,
+        exitTransition = destinationSpec.destination.transitions.exitTransition,
+        popEnterTransition = destinationSpec.destination.transitions.popEnterTransition,
+        popExitTransition = destinationSpec.destination.transitions.popExitTransition
+    ) { backStackEntry ->
+        val scope = remember {
+            DestinationScope(
+                relatedSpec = destinationSpec,
+                navController = navController,
+                backStackEntry = backStackEntry,
+                animatedVisibilityScope = this
+            )
+        }
+        destinationSpec.destination.Content(scope)
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addArgDestinationComposable(
     argDestinationSpec: ArgDestinationSpec<Any>,
     navController: NavHostController
-) = composable(
-    route = argDestinationSpec.route,
-    arguments = argDestinationSpec.arguments,
-    deepLinks = argDestinationSpec.deepLinks
-) { backStackEntry ->
-    val scope = remember {
-        ArgDestinationScope(
-            relatedSpec = argDestinationSpec,
-            navController = navController,
-            backStackEntry = backStackEntry
-        )
-    }
-    argDestinationSpec.destination.Content(scope)
-}
-
-private fun NavGraphBuilder.createPlainDestinationComposable(
-    plainDestinationSpec: PlainDestinationSpec,
-    navController: NavHostController
-) = composable(
-    route = plainDestinationSpec.route,
-    deepLinks = plainDestinationSpec.deepLinks
-) { backStackEntry ->
-    val scope = remember {
-        PlainDestinationScope(
-            relatedSpec = plainDestinationSpec,
-            navController = navController,
-            backStackEntry = backStackEntry
-        )
-    }
-    plainDestinationSpec.destination.Content(scope)
-}
-
-private fun NavGraphBuilder.createNavigationComposable(
-    navGraphSpec: NavGraphSpec,
-    navController: NavHostController
-) = navigation(
-    route = navGraphSpec.route,
-    startDestination = navGraphSpec.startComponentSpec.route,
-    deepLinks = navGraphSpec.deepLinks,
-    arguments = if(navGraphSpec is ArgNavGraphSpec<*>) navGraphSpec.arguments else emptyList()
 ) {
-    generateHierarchy(navGraphSpec, navController)
+    composable(
+        route = argDestinationSpec.route,
+        arguments = argDestinationSpec.arguments,
+        deepLinks = argDestinationSpec.deepLinks,
+        enterTransition = argDestinationSpec.destination.transitions.enterTransition,
+        exitTransition = argDestinationSpec.destination.transitions.exitTransition,
+        popEnterTransition = argDestinationSpec.destination.transitions.popEnterTransition,
+        popExitTransition = argDestinationSpec.destination.transitions.popExitTransition
+    ) { backStackEntry ->
+        val scope = remember {
+            ArgDestinationScope(
+                relatedSpec = argDestinationSpec,
+                navController = navController,
+                backStackEntry = backStackEntry,
+                animatedVisibilityScope = this
+            )
+        }
+        argDestinationSpec.destination.Content(scope)
+    }
+}
+
+private fun NavGraphBuilder.addDialogDestination(
+    dialogDestinationSpec: DialogDestinationSpec,
+    navController: NavHostController
+) {
+    dialog(
+        route = dialogDestinationSpec.route,
+        deepLinks = dialogDestinationSpec.deepLinks,
+        dialogProperties = dialogDestinationSpec.destination.properties
+    ) { backStackEntry ->
+        val scope = remember {
+            DialogDestinationScope(
+                relatedSpec = dialogDestinationSpec,
+                navController = navController,
+                backStackEntry = backStackEntry
+            )
+        }
+        dialogDestinationSpec.destination.Content(scope)
+    }
+}
+
+private fun NavGraphBuilder.addDialogArgDestination(
+    dialogArgDestinationSpec: DialogArgDestinationSpec<Any>,
+    navController: NavHostController
+) {
+    dialog(
+        route = dialogArgDestinationSpec.route,
+        arguments = dialogArgDestinationSpec.arguments,
+        deepLinks = dialogArgDestinationSpec.deepLinks,
+        dialogProperties = dialogArgDestinationSpec.destination.properties
+    ) { backStackEntry ->
+        val scope = remember {
+            DialogArgDestinationScope(
+                relatedSpec = dialogArgDestinationSpec,
+                navController = navController,
+                backStackEntry = backStackEntry
+            )
+        }
+        dialogArgDestinationSpec.destination.Content(scope)
+    }
+}
+
+@OptIn(ExperimentalMaterialNavigationApi::class)
+private fun NavGraphBuilder.addBottomSheetDestination(
+    bottomSheetDestinationSpec: BottomSheetDestinationSpec,
+    navController: NavHostController
+) {
+    bottomSheet(
+        route = bottomSheetDestinationSpec.route,
+        deepLinks = bottomSheetDestinationSpec.deepLinks,
+    ) { backStackEntry ->
+        val scope = remember {
+            BottomSheetDestinationScope(
+                relatedSpec = bottomSheetDestinationSpec,
+                navController = navController,
+                backStackEntry = backStackEntry,
+                columnScope = this
+            )
+        }
+        bottomSheetDestinationSpec.destination.Content(scope)
+    }
+}
+
+@OptIn(ExperimentalMaterialNavigationApi::class)
+private fun NavGraphBuilder.addBottomSheetArgDestination(
+    bottomSheetArgDestinationSpec: BottomSheetArgDestinationSpec<Any>,
+    navController: NavHostController
+) {
+    bottomSheet(
+        route = bottomSheetArgDestinationSpec.route,
+        arguments = bottomSheetArgDestinationSpec.arguments,
+        deepLinks = bottomSheetArgDestinationSpec.deepLinks,
+    ) { backStackEntry ->
+        val scope = remember {
+            BottomSheetArgDestinationScope(
+                relatedSpec = bottomSheetArgDestinationSpec,
+                navController = navController,
+                backStackEntry = backStackEntry,
+                columnScope = this
+            )
+        }
+        bottomSheetArgDestinationSpec.destination.Content(scope)
+    }
 }
 
 
-
-
-//fun <T> NavGraphBuilder.navDestination(
-//    argsSpec: NavDestinationArgSpec<T>,
-//    content: @Composable NavDestinationArgScope<T>.() -> Unit
-//) = composable(
-//    route = argsSpec.route,
-//    arguments = argsSpec.arguments,
-//    deepLinks = argsSpec.deepLinks,
-//) {
-//    content(NavDestinationArgScope(argsSpec, it))
-//}
-//
-////Noch einbauen, dass man über einen type beim NavDestination bestimmen kann ob es ein dialog ist oder nicht
-//fun <T> NavGraphBuilder.navDestinationDialog(
-//    argsSpec: NavDestinationArgSpec<T>,
-//    content: @Composable NavDestinationArgScope<T>.() -> Unit
-//) = dialog(
-//    route = argsSpec.route,
-//    arguments = argsSpec.arguments,
-//    deepLinks = argsSpec.deepLinks
-//) {
-//    content(NavDestinationArgScope(argsSpec, it))
-//}
-//
-//fun NavGraphBuilder.navDestination(
-//    plainSpec: NavDestinationPlainSpec,
-//    content: @Composable NavDestinationPlainScope.() -> Unit
-//) = composable(
-//    route = plainSpec.route,
-//    deepLinks = plainSpec.deepLinks
-//) {
-//    content(NavDestinationPlainScope(plainSpec, it))
-//}
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addNestedNavigation(
+    navGraphSpec: ComposeNavGraphSpec,
+    navController: NavHostController
+) {
+    navigation(
+        route = navGraphSpec.route,
+        startDestination = navGraphSpec.startComponentSpec.route,
+        deepLinks = navGraphSpec.deepLinks,
+        arguments = when(navGraphSpec) {
+            is ArgNavGraphSpec<*> -> navGraphSpec.arguments
+            is NavGraphSpec -> emptyList()
+        }
+    ) {
+        addNavComponents(navGraphSpec, navController)
+    }
+}

@@ -4,7 +4,7 @@ import androidx.navigation.NavDeepLink
 
 /**
  * Marks a Class as a [NavComponentSpec]. Such a class can be added with a NavGraphBuilder
- * and is identified with an unique [route]. [DestinationSpec] and [NavGraphSpec] implement this interface.
+ * and is identified with an unique [route]. [ComposeDestinationSpec] and [ComposeNavGraphSpec] implement this interface.
  */
 sealed interface NavComponentSpec {
 
@@ -24,8 +24,8 @@ sealed interface NavComponentSpec {
     val deepLinks: List<NavDeepLink> get() = emptyList()
 
     /**
-     * This is the parent [NavGraphSpec] of this [NavComponentSpec]. Can be null when this [NavComponentSpec] is a [NavGraphSpec] and is in the root of the NavHost.
+     * This is the parent [ComposeNavGraphSpec] of this [NavComponentSpec]. Can be null when this [NavComponentSpec] is a [ComposeNavGraphSpec] and is in the root of the NavHost.
      */
-    val parentNavGraphSpec: NavGraphSpec?
+    val parentNavGraphSpec: ComposeNavGraphSpec?
 
 }

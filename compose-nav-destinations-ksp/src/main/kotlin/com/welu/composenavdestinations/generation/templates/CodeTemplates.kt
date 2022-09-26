@@ -2,24 +2,37 @@ package com.welu.composenavdestinations.generation.templates
 
 import com.welu.composenavdestinations.utils.PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT
 
-internal object GeneralCodeTemplates {
-
+internal object CodeTemplates {
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Template for NavComponentUtils File
 
+    const val PLACEHOLDER_NAV_UTILS_ALL_COMPONENT_SPECS_SET = "NAV_UTILS_ALL_COMPONENT_SPECS_SET"
     const val PLACEHOLDER_NAV_UTILS_DESTINATION_SPEC_MAP = "NAV_UTILS_DESTINATION_SPEC_MAP_PLACEHOLDER"
 
     val NAV_COMPONENT_UTILS_TEMPLATE =
     """
     | object ${NAV_COMPONENT_UTILS_FILE_IMPORT.simpleName} {
     |     
-    |     val allSpecs: Map<Destination<out DestinationScope>, DestinationSpec<*>> = mapOf(
+    |     val allNavComponentSpecs: Set<NavComponentSpec> = setOf(
+    |         $PLACEHOLDER_NAV_UTILS_ALL_COMPONENT_SPECS_SET
+    |     )
+    |     
+    |     val allComposeDestinationSpecs: List<ComposeDestinationSpec<*>> = allNavComponentSpecs.filterIsInstance<ComposeDestinationSpec<*>>()
+    |     
+    |     val allComposeNavGraphSpecs: List<ComposeNavGraphSpec> = allNavComponentSpecs.filterIsInstance<ComposeNavGraphSpec>()
+    |     
+    |     val destinationSpecMap: Map<ComposeDestination<*>, ComposeDestinationSpec<*>> = mapOf(
     |         $PLACEHOLDER_NAV_UTILS_DESTINATION_SPEC_MAP
     |     )
+    |     
+    |     fun findSpecWith(route: String): NavComponentSpec? = allNavComponentSpecs.firstOrNull { it.route == route }
+    |         
+    |     fun findDestinationWith(route: String): ComposeDestination<*>? = destinationSpecMap.keys.firstOrNull { it.route == route }
     |    
     | }
     """.trimMargin("| ")
+
 
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -27,15 +40,16 @@ internal object GeneralCodeTemplates {
 
     private val DESTINATION_FIND_SPEC_EXTENSION_FUNCTIONS =
     """
-    | fun Destination<out DestinationScope>.findSpec(): DestinationSpec<*> = ${NAV_COMPONENT_UTILS_FILE_IMPORT.simpleName}.allSpecs[this] 
+    | fun ComposeDestination<*>.findSpec(): ComposeDestinationSpec<*> = ${NAV_COMPONENT_UTILS_FILE_IMPORT.simpleName}.destinationSpecMap[this] 
     |     ?: throw IllegalArgumentException("Destination is not annotated with NavDestinationDefinition")
     | 
     | @Suppress("UNCHECKED_CAST")
-    | fun <Arg : Any> ArgDestination<Arg>.findArgSpec(): ArgDestinationSpec<Arg> = findSpec() as ArgDestinationSpec<Arg>
+    | fun <Arg : Any> ComposeArgDestination<Arg, *>.getSpec(): ComposeArgDestinationSpec<Arg, *> = findSpec() as ComposeArgDestinationSpec<Arg, *>
     | 
-    | fun PlainDestination.findPlainSpec(): PlainDestinationSpec = findSpec() as PlainDestinationSpec
+    | fun ComposeRoutableDestination<*>.getSpec(): ComposeRoutableDestinationSpec<*> = findSpec() as ComposeRoutableDestinationSpec<*>
     | 
-    | val Destination<out DestinationScope>.route get() = findSpec().route
+    | val ComposeDestination<*>.route get() = findSpec().route
+    | 
     """.trimMargin("| ")
 
 
@@ -55,13 +69,42 @@ internal object GeneralCodeTemplates {
 
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    // Template for Result Extensions File
+    // Templates for NavController Extension File
 
+    private val NAV_CONTROLLER_NAVIGATE_WITH_ROUTABLE_DESTINATION =
+    """
+    | fun NavController.navigate(
+    |   destination: ComposeRoutableDestination<*>,
+    |   builder: NavOptionsBuilder.() -> Unit = { }
+    | ) = navigate(destination.findSpec().route, builder)
+    """.trimMargin("| ")
+
+
+    val NAV_CONTROLLER_EXTENSIONS_TEMPLATE =
+    """
+    | $NAV_CONTROLLER_NAVIGATE_WITH_ROUTABLE_DESTINATION    
+    """.trimMargin("| ")
+
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Templates for NavBackStackEntry Extension File
+
+    val NAV_BACK_STACK_ENTRY_EXTENSIONS_TEMPLATE =
+    """
+    | val NavBackStackEntry.navComponentSpec get() = NavComponentUtils.allNavComponentSpecs.firstOrNull { it.route == destination.route }
+    | 
+    | val NavBackStackEntry.composeDestination get() = NavComponentUtils.allComposeDestinationSpecs.firstOrNull { it.route == destination.route }?.destination
+    """.trimMargin("| ")
+
+
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Template for Result Extensions File
 
     private val DESTINATION_SCOPE_SEND_RESULT_TO_DESTINATION_EXTENSION_FUNCTION =
     """
-    | inline fun <reified T> DestinationScope.sendDestinationResultTo(
-    |     destination: Destination<*>,
+    | inline fun <reified T> ComposeDestinationScope.sendDestinationResultTo(
+    |     destination: ComposeDestination<*>,
     |     value: T?,
     |     keySpecification: String? = null
     | ): Unit = navController.sendDestinationResultTo(
@@ -74,7 +117,7 @@ internal object GeneralCodeTemplates {
     private val NAV_CONTROLLER_SEND_RESULT_TO_DESTINATION_EXTENSION_FUNCTION =
     """
     | inline fun <reified T> NavController.sendDestinationResultTo(
-    |     destination: Destination<*>,
+    |     destination: ComposeDestination<*>,
     |     value: T?,
     |     keySpecification: String? = null
     | ): Unit = sendDestinationResultTo(
@@ -88,7 +131,7 @@ internal object GeneralCodeTemplates {
     """
     | @Composable
     | inline fun <reified T> NavController.DestinationResultListener(
-    |     forDestination: Destination<*>,
+    |     forDestination: ComposeDestination<*>,
     |     keySpecification: String? = null,
     |     withLifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     |     crossinline callback: (T) -> Unit
@@ -104,7 +147,7 @@ internal object GeneralCodeTemplates {
     """
     | @Composable
     | inline fun <reified T> NavController.LifecycleDestinationResultListener(
-    |     forDestination: Destination<*>,
+    |     forDestination: ComposeDestination<*>,
     |     keySpecification: String? = null,
     |     crossinline callback: (T) -> Unit
     | ) = LifecycleDestinationResultListener(

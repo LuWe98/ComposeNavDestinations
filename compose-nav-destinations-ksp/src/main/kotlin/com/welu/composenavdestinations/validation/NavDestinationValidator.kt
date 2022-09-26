@@ -4,6 +4,7 @@ import com.welu.composenavdestinations.exceptions.DuplicateDestinationException
 import com.welu.composenavdestinations.exceptions.DuplicateRouteException
 import com.welu.composenavdestinations.model.components.NavDestinationInfo
 
+//TODO -> Validation Classes bauen -> NavDestinationValidator, NavGraphValidator, NavComponentValidator
 object NavDestinationValidator {
 
     fun validate(destinations: Sequence<NavDestinationInfo>) {

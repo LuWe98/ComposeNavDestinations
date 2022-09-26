@@ -55,22 +55,11 @@ class NavDestinationsProcessor(
 
         val navGraphInfos = rawNavComponents.rawNavGraphInfos.map(navGraphInfoMapper::map)
 
-
-//        rawNavComponents.rawNavDestinationInfos.forEach {
-//            //GENERATE Destinations
-//            logger.warn("Destination: $it")
-//        }
-//
-//        rawNavComponents.rawNavGraphInfos.forEach {
-//            //GENERATE NavGraphs
-//            logger.warn("NavGraph: $it")
-//        }
-
 //        NavDestinationValidator.validate(
 //            destinations = navDestinationInfos
 //        )
 
-        ContentGenerator(resolver, codeGenerator).generate(
+        ContentGenerator(resolver, logger, codeGenerator).generate(
             navDestinations = navDestinationInfos,
             navGraphs = navGraphInfos
         )

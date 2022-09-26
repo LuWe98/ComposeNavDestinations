@@ -1,8 +1,9 @@
 package com.welu.composenavdestinations.navigation.spec
 
 import com.welu.composenavdestinations.navigation.Routable
+import com.welu.composenavdestinations.navigation.destinations.ComposeRoutableDestination
 
-interface PlainNavGraphSpec: NavGraphSpec, Routable {
+sealed interface ComposeRoutableDestinationSpec<D: ComposeRoutableDestination<*>> : ComposeDestinationSpec<D>, Routable {
 
     override val route: String get() = baseRoute
 

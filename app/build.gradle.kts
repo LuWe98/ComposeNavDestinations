@@ -87,6 +87,10 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.5.1")
     implementation("androidx.navigation:navigation-compose:2.5.2")
 
+    //Appcompanist
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.26.4-beta")
+    implementation("com.google.accompanist:accompanist-navigation-material:0.26.4-beta")
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

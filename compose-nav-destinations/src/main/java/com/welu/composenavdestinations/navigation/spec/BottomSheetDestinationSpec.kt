@@ -1,0 +1,5 @@
+package com.welu.composenavdestinations.navigation.spec
+
+import com.welu.composenavdestinations.navigation.destinations.BottomSheetDestination
+
+interface BottomSheetDestinationSpec: ComposeRoutableDestinationSpec<BottomSheetDestination>

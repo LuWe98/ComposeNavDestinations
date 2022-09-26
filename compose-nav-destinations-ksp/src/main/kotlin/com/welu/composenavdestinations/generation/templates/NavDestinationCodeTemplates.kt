@@ -1,11 +1,10 @@
 package com.welu.composenavdestinations.generation.templates
 
-import com.welu.composenavdestinations.utils.PackageUtils
-
-object NavDestinationCodeTemplates {
+internal object NavDestinationCodeTemplates {
 
     const val PLACEHOLDER_NAV_DESTINATION_NAME = "PLACEHOLDER_NAV_DESTINATION_NAME"
     const val PLACEHOLDER_NAV_DESTINATION_NAV_GRAPH = "PLACEHOLDER_NAV_DESTINATION_NAV_GRAPH"
+    const val PLACEHOLDER_DESTINATION_TYPE_SPEC_NAME = "PlaceholderDestinationTypeSpecName"
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Template for DestinationPlainSpec
@@ -16,7 +15,7 @@ object NavDestinationCodeTemplates {
 
     val NAV_DESTINATION_PLAIN_SPEC_TEMPLATE =
     """
-    | object $PLACEHOLDER_NAV_SPEC_DESTINATION_NAME: ${PackageUtils.NAV_DESTINATION_PLAIN_SPEC_IMPORT.simpleName} {
+    | object $PLACEHOLDER_NAV_SPEC_DESTINATION_NAME: $PLACEHOLDER_DESTINATION_TYPE_SPEC_NAME {
     | 
     |     override val destination get() = $PLACEHOLDER_NAV_DESTINATION_NAME
     |     
@@ -44,7 +43,7 @@ object NavDestinationCodeTemplates {
 
     val NAV_DESTINATION_ARG_SPEC_TEMPLATE =
     """
-    | object $PLACEHOLDER_NAV_SPEC_DESTINATION_NAME: ${PackageUtils.NAV_DESTINATION_ARG_SPEC_IMPORT.simpleName}<$PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE> {
+    | object $PLACEHOLDER_NAV_SPEC_DESTINATION_NAME: $PLACEHOLDER_DESTINATION_TYPE_SPEC_NAME<$PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE> {
     |     
     |     override val destination get() = $PLACEHOLDER_NAV_DESTINATION_NAME
     |     
@@ -75,6 +74,18 @@ object NavDestinationCodeTemplates {
     |         override val parameterizedRoute: String = $PLACEHOLDER_NAV_ARG_SPEC_INVOKE_FUNCTION_BODY
     |     }
     |           
+    | }
+    """.trimMargin("| ")
+
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Template for generated NavComponents -> Diese sollen ein Sealed Interface implementieren
+    // Dadurch kann man einfach mit when Statements durchiterieren
+
+    private val GENERATED_COMPOSE_DESTINATION_SEALED_INTERFACE =
+        """
+    | sealed interface GeneratedComposeDestination {
+    | 
     | }
     """.trimMargin("| ")
 

@@ -55,4 +55,6 @@ dependencies {
 //    lintPublish(project(":compose-nav-destinations-lint"))
 
     implementation("androidx.navigation:navigation-compose:2.5.2")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.26.4-beta")
+    implementation("com.google.accompanist:accompanist-navigation-material:0.26.4-beta")
 }

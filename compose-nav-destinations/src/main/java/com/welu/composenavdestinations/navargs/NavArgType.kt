@@ -20,10 +20,18 @@ sealed class NavArgType<T: Any?>: NavType<T>(true) {
 
     fun get(savedStateHandle: SavedStateHandle, key: String): T? = savedStateHandle[key]
 
-    //Returns the NavArgument as a typed Parameter. This ensures that compiler Errors will not occur -> Array<String> would not be compatible with Array<String?>?
-    //Shouldnt be called otherwise
+    /**
+     * Returns the NavArgument as a typed parameter from a [NavBackStackEntry].
+     * This ensures that compiler Errors will not occur (Array<String> would not be compatible with Array<String?>?).
+     * Should not be called otherwise.
+     */
     fun <R> getTyped(navBackStackEntry: NavBackStackEntry, key: String): R? = navBackStackEntry[key]
 
+    /**
+     * Returns the NavArgument as a typed parameter from a [SavedStateHandle].
+     * This ensures that compiler Errors will not occur (Array<String> would not be compatible with Array<String?>?).
+     * Should not be called otherwise.
+     */
     fun <R> getTyped(savedStateHandle: SavedStateHandle, key: String): R? = savedStateHandle[key]
 
 }

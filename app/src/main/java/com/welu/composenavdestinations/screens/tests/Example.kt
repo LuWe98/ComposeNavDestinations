@@ -1,11 +1,18 @@
 package com.welu.composenavdestinations.screens.tests
 
 import android.os.Parcelable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.welu.composenavdestinations.DetailsVm
 import com.welu.composenavdestinations.annotations.DefaultNavGraph
@@ -16,11 +23,11 @@ import com.welu.composenavdestinations.extensions.navigation.getBackStackEntry
 import com.welu.composenavdestinations.extensions.navigation.navigate
 import com.welu.composenavdestinations.extensions.sendDestinationResultTo
 import com.welu.composenavdestinations.navgraphs.OtherGraphSpec
-import com.welu.composenavdestinations.navigation.ArgCompositionScope
-import com.welu.composenavdestinations.navigation.PlainCompositionScope
+import com.welu.composenavdestinations.navigation.ArgDestinationCompositionScope
+import com.welu.composenavdestinations.navigation.DestinationCompositionScope
 import com.welu.composenavdestinations.navigation.destinations.ArgDestination
-import com.welu.composenavdestinations.navigation.destinations.PlainDestination
-import com.welu.composenavdestinations.navigation.scope.PlainDestinationScope
+import com.welu.composenavdestinations.navigation.destinations.Destination
+import com.welu.composenavdestinations.navigation.transitions.NavComponentTransitions
 import com.welu.composenavdestinations.result.DestinationResultListener
 import com.welu.composenavdestinations.screens.DetailScreen
 import com.welu.composenavdestinations.screens.DetailScreenNavArgs
@@ -37,9 +44,9 @@ data class User(
 
 @DefaultNavGraph(isStart = true)
 @NavDestinationDefinition
-object FirstDestination : PlainDestination {
+object FirstDestination : Destination {
 
-    override val Content: PlainCompositionScope = {
+    override val Content: DestinationCompositionScope = {
         var parsedValue: Int? by rememberSaveable { mutableStateOf(null) }
 
         DestinationResultListener<Int> {
@@ -68,13 +75,22 @@ object FirstDestination : PlainDestination {
     }
 }
 
-
 @NavDestinationDefinition
 object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
 
     class NavArgs(val user: User? = User("123", "Sasi", 23))
 
-    override val Content: ArgCompositionScope<NavArgs> = {
+//    @ExperimentalAnimationApi
+//    override val transitions = object : NavComponentTransitions {
+//        override val enterTransition: EnterTransitionProvider = {
+//            when(targetState.composeDestination) {
+//                is SecondDestination -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right)
+//                else -> null
+//            }
+//        }
+//    }
+
+    override val Content: ArgDestinationCompositionScope<NavArgs> = {
         TestDestinationComposable(
             user = args.user,
             navigateBack = navController::navigateUp,
@@ -111,20 +127,25 @@ object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
 
 @NavDestinationDefinition("ThirdAdjustedRoute")
 object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
-    override val Content: ArgCompositionScope<DetailScreenNavArgs> = {
+
+    override val Content: ArgDestinationCompositionScope<DetailScreenNavArgs> = {
         val vm = viewModel<DetailsVm>()
         DetailScreen(args = vm.args) {
             //navigate to nested Graph
-            navController.navigate(OtherGraphSpec(
-                user = User("212","HansPeter", 21)
-            ))
+            navController.navigate(
+                OtherGraphSpec(
+                    user = User("212", "HansPeter", 21)
+                )
+            )
         }
     }
+
 }
 
 @DefaultNavGraph
 @NavGraphDefinition(
-    argsClass = SecondDestination.NavArgs::class
+    argsClass = SecondDestination.NavArgs::class,
+    transitionClass = NavComponentTransitions.Default::class
 )
 annotation class OtherGraph(
     val isStart: Boolean
@@ -132,12 +153,20 @@ annotation class OtherGraph(
 
 @OtherGraph(true)
 @NavDestinationDefinition
-object FourthDestination: PlainDestination {
-    override val Content: PlainCompositionScope = {
+object FourthDestination : Destination {
 
+    override val Content: DestinationCompositionScope = {
         val parentNavArgs = remember {
             OtherGraphSpec.argsFrom(getBackStackEntry(OtherGraphSpec)!!)
         }
-        Text(text = "HELLO FROM FOURTH: ${parentNavArgs.user}")
+
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Gray, RoundedCornerShape(15.dp))
+            .padding(20.dp)
+        ) {
+            Text(text = "HELLO FROM FOURTH: ${parentNavArgs.user}")
+        }
     }
+
 }

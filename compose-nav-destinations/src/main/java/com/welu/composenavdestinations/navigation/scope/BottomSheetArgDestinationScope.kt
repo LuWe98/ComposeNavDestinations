@@ -1,16 +1,16 @@
 package com.welu.composenavdestinations.navigation.scope
 
-import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import com.welu.composenavdestinations.navigation.spec.ArgDestinationSpec
+import com.welu.composenavdestinations.navigation.spec.BottomSheetArgDestinationSpec
 
-data class ArgDestinationScope<Arg : Any>(
-    override val relatedSpec: ArgDestinationSpec<Arg>,
+data class BottomSheetArgDestinationScope<Arg: Any>(
+    override val relatedSpec: BottomSheetArgDestinationSpec<Arg>,
     override val navController: NavHostController,
     override val backStackEntry: NavBackStackEntry,
-    val animatedVisibilityScope: AnimatedVisibilityScope
-) : ComposeArgDestinationScope<Arg> {
+    val columnScope: ColumnScope
+): ComposeArgDestinationScope<Arg> {
 
     override val args: Arg by lazy(LazyThreadSafetyMode.NONE) {
         relatedSpec.argsFrom(backStackEntry)

@@ -8,6 +8,7 @@ import com.welu.composenavdestinations.extensions.isOneOf
 import com.welu.composenavdestinations.extensions.ksp.*
 import com.welu.composenavdestinations.extractor.NavArgTypeInfoExtractor.extractParameterNavArgTypeInfo
 import com.welu.composenavdestinations.model.*
+import com.welu.composenavdestinations.model.components.NavDestinationType
 import com.welu.composenavdestinations.utils.PackageUtils
 import java.io.Serializable
 
@@ -93,17 +94,22 @@ class NavArgsInfoExtractor(
     /**
      * This method extracts the NavArgsClassDeclaration from from a NavDestinationClassDeclaration
      */
-    fun extractNavArgsClassDeclarationOfNavDestination(navDestinationClassDeclaration: KSClassDeclaration): ParameterTypeInfoAndDeclaration? {
-        //TODO -> Das noch gegebenenfalls umbauen
-        //Gets the resolved supertypes of the NavDestination. If this fails, then the necessary Destination Interfaces are not present
-        val resolvedType = navDestinationClassDeclaration.superTypes.firstOrNull()?.resolve()
-            ?: throw IllegalStateException("Destination does not implement the necessary Destination Interface!")
+    fun extractNavArgsClassDeclarationWith(
+        destinationClassSupertype: KSType,
+        destinationType: NavDestinationType
+    ): ParameterTypeInfoAndDeclaration? = when(destinationType) {
 
-        return when (resolvedType.declaration.qualifiedName!!.asString()) {
-            PackageUtils.NAV_PLAIN_DESTINATION_IMPORT.qualifiedName -> null
-            PackageUtils.NAV_ARG_DESTINATION_IMPORT.qualifiedName -> resolvedType.arguments.first().toResolvedType()?.toParameterTypeInfoWithClassDeclaration()
-            else -> throw IllegalStateException("Destination does not implement the necessary Destination Interface!")
-        }
+        NavDestinationType.DESTINATION,
+        NavDestinationType.BOTTOM_SHEET_DESTINATION,
+        NavDestinationType.DIALOG_DESTINATION -> null
+
+        NavDestinationType.ARG_DESTINATION,
+        NavDestinationType.BOTTOM_SHEET_ARG_DESTINATION,
+        NavDestinationType.DIALOG_ARG_DESTINATION -> destinationClassSupertype
+            .arguments
+            .first()
+            .toResolvedType()
+            ?.toParameterTypeInfoWithClassDeclaration()
     }
 
     /**

@@ -1,17 +1,8 @@
 package com.welu.composenavdestinations.navigation
 
 import android.annotation.SuppressLint
-import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import com.welu.composenavdestinations.navigation.scope.ArgDestinationScope
-import com.welu.composenavdestinations.navigation.scope.PlainDestinationScope
-import com.welu.composenavdestinations.navigation.spec.ArgDestinationSpec
-import com.welu.composenavdestinations.navigation.spec.NavGraphSpec
-import com.welu.composenavdestinations.navigation.spec.PlainDestinationSpec
-
 
 
 @SuppressLint("UnrememberedGetBackStackEntry")

@@ -1,8 +1,19 @@
 package com.welu.composenavdestinations.navigation.destinations
 
-import androidx.compose.runtime.Composable
+import com.welu.composenavdestinations.navigation.DestinationCompositionScope
 import com.welu.composenavdestinations.navigation.scope.DestinationScope
+import com.welu.composenavdestinations.navigation.transitions.NavComponentTransitions
 
-sealed interface Destination <Scope: DestinationScope> {
-    val Content : @Composable Scope.() -> Unit
+interface Destination: ComposeRoutableDestination<DestinationScope> {
+
+    /**
+     * The transitions this [Destination] is associated with
+     */
+    val transitions: NavComponentTransitions get() = NavComponentTransitions.Default
+
+    /**
+     * Composables can be written inside of this typealias Scope Definition
+     */
+    override val Content: DestinationCompositionScope
+
 }

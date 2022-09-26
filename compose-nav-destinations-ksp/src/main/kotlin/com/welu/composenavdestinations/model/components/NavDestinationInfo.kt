@@ -14,6 +14,7 @@ data class NavDestinationInfo(
     override val deepLinks: List<String> = emptyList(),
     override val navArgsInfo: NavArgsInfo? = null,
     override val parentNavGraphSpecImport: ImportInfo,
+    val destinationType: NavDestinationType,
     val destinationImport: ImportInfo
 ) : NavComponentInfo {
 

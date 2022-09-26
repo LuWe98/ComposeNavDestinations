@@ -1,6 +1,8 @@
 package com.welu.composenavdestinations.generation.templates
 
-object NavGraphCodeTemplates {
+import com.welu.composenavdestinations.utils.PackageUtils
+
+internal object NavGraphCodeTemplates {
 
     const val PLACEHOLDER_NAV_GRAPH_SPEC_NAME = "{PLACEHOLDER-NAV-GRAPH-SPEC-NAME}"
     const val PLACEHOLDER_NAV_GRAPH_SPEC_BASE_ROUTE = "{PLACEHOLDER-BASE-ROUTE}"
@@ -13,7 +15,7 @@ object NavGraphCodeTemplates {
 
     val NAV_GRAPH_PLAIN_SPEC_TEMPLATE =
     """
-    |object $PLACEHOLDER_NAV_GRAPH_SPEC_NAME: PlainNavGraphSpec {
+    |object $PLACEHOLDER_NAV_GRAPH_SPEC_NAME: ${PackageUtils.NAV_GRAPH_SPEC_IMPORT.simpleName} {
     |  
     |    override val baseRoute: String = "$PLACEHOLDER_NAV_GRAPH_SPEC_BASE_ROUTE"
     |  
@@ -45,7 +47,7 @@ object NavGraphCodeTemplates {
 
     val NAV_GRAPH_ARG_SPEC_TEMPLATE =
     """
-    |object $PLACEHOLDER_NAV_GRAPH_SPEC_NAME: ArgNavGraphSpec<$PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE> {
+    |object $PLACEHOLDER_NAV_GRAPH_SPEC_NAME: ${PackageUtils.NAV_GRAPH_SPEC_ARG_IMPORT.simpleName}<$PLACEHOLDER_NAV_ARG_SPEC_NAV_ARG_TYPE> {
     |  
     |    override val baseRoute: String = "$PLACEHOLDER_NAV_GRAPH_SPEC_BASE_ROUTE"
     |  
@@ -54,7 +56,7 @@ object NavGraphCodeTemplates {
     |     
     |    override val startComponentSpec get(): NavComponentSpec = $PLACEHOLDER_NAV_GRAPH_SPEC_START_COMPONENT
     |    
-    |    override val parentNavGraphSpec get(): NavGraphSpec? = $PLACEHOLDER_NAV_GRAPH_SPEC_PARENT_NAV_GRAPH_SPEC
+    |    override val parentNavGraphSpec get(): ComposeNavGraphSpec? = $PLACEHOLDER_NAV_GRAPH_SPEC_PARENT_NAV_GRAPH_SPEC
     |    
     |    override val childNavComponentSpecs: List<NavComponentSpec> = listOf(
     |        $PLACEHOLDER_NAV_GRAPH_SPEC_CHILD_NAV_COMPONENT_SPECS
@@ -78,5 +80,18 @@ object NavGraphCodeTemplates {
     |     
     |}
     """.trimMargin("|")
+
+
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Template for generated NavComponents -> Diese sollen ein Sealed Interface implementieren
+    // Dadurch kann man einfach mit when Statements durchiterieren
+
+    private val GENERATED_COMPOSE_NAV_GRAPH_SEALED_INTERFACE =
+        """
+    | sealed interface GeneratedComposeNavGraph {
+    | 
+    | }
+    """.trimMargin("| ")
 
 }

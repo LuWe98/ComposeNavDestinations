@@ -4,11 +4,10 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import com.welu.composenavdestinations.navigation.Routable
-import com.welu.composenavdestinations.navigation.scope.DestinationScope
-import com.welu.composenavdestinations.navigation.spec.DestinationSpec
+import com.welu.composenavdestinations.navigation.scope.ComposeDestinationScope
 import com.welu.composenavdestinations.navigation.spec.NavComponentSpec
 
-fun DestinationScope.getBackStackEntry(spec: NavComponentSpec) = navController.getBackStackEntry(spec)
+fun ComposeDestinationScope.getBackStackEntry(spec: NavComponentSpec) = navController.getBackStackEntry(spec)
 
 fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? = try {
     getBackStackEntry(spec.route)
@@ -16,7 +15,7 @@ fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? 
     null
 }
 
-fun DestinationScope.isOnBackStack(spec: NavComponentSpec) = navController.isOnBackStack(spec)
+fun ComposeDestinationScope.isOnBackStack(spec: NavComponentSpec) = navController.isOnBackStack(spec)
 
 fun NavController.isOnBackStack(spec: NavComponentSpec) = getBackStackEntry(spec) != null
 
@@ -32,7 +31,7 @@ fun NavController.navigate(
     builder: NavOptionsBuilder.() -> Unit = {}
 ) = navigate(routable.parameterizedRoute, builder)
 
-fun DestinationScope.navigate(
+fun ComposeDestinationScope.navigate(
     routable: Routable,
     builder: NavOptionsBuilder.() -> Unit = {}
 ) = navController.navigate(routable, builder)

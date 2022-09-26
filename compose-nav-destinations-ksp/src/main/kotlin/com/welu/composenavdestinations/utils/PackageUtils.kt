@@ -15,6 +15,8 @@ internal object PackageUtils {
     const val PACKAGE_NAME = "com.welu.composenavdestinations"
     const val ANNOTATIONS_PACKAGE = "$PACKAGE_NAME.annotations"
     const val NAV_GRAPH_SPEC_PACKAGE = "$PACKAGE_NAME.navgraphs"
+    const val NAV_DESTINATION_SPEC_PACKAGE = "$PACKAGE_NAME.destinations"
+
 
     const val NAV_ARGS_PACKAGE = "$PACKAGE_NAME.navargs"
     val NAV_DESTINATION_CUSTOM_NAV_ARGS_FILE_IMPORT = ImportInfo("NavDestinationCustomNavArgs", NAV_ARGS_PACKAGE)
@@ -25,36 +27,49 @@ internal object PackageUtils {
     private const val NAV_DESTINATIONS_EXTENSIONS_PACKAGE = "$PACKAGE_NAME.extensions"
     val NAV_DESTINATION_EXTENSIONS_FILE_IMPORT = ImportInfo("NavDestinationExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
     val NAV_DESTINATION_RESULT_EXTENSIONS_FILE_IMPORT = ImportInfo("NavDestinationResultExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
-
-    //TODO -> Um die Composables zu generieren
-    val NAV_DESTINATION_COMPOSABLE_NAV_GRAPH_FILE_IMPORT = ImportInfo("NavDestinationComposableExt", NAV_DESTINATIONS_UTILS_PACKAGE)
-
-    //val COMPOSABLE_IMPORT = ImportInfo("Composable","androidx.compose.runtime")
+    val NAV_CONTROLLER_EXTENSIONS_FILE_IMPORT = ImportInfo("NavControllerExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
+    val NAV_BACK_STACK_ENTRY_EXTENSIONS_FILE_IMPORT = ImportInfo("NavBackStackEntryExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
+    val NAV_COMPOSE_DESTINATION_VAL_ROUTE_EXTENSION = ImportInfo("route", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
 
     private const val NAV_DESTINATION_NAVIGATION_PACKAGE = "$PACKAGE_NAME.navigation"
     val ROUTABLE_IMPORT = ImportInfo("Routable", NAV_DESTINATION_NAVIGATION_PACKAGE)
 
     private const val NAV_DESTINATION_DESTINATIONS_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.destinations"
-    val NAV_DESTINATION_IMPORT = ImportInfo("Destination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
+    val NAV_COMPOSE_SEALED_DESTINATION_IMPORT = ImportInfo("ComposeDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
+    val NAV_ROUTABLE_COMPOSE_DESTINATION_IMPORT = ImportInfo("ComposeRoutableDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
+    val NAV_ARG_COMPOSE_DESTINATION_IMPORT = ImportInfo("ComposeArgDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
     val NAV_ARG_DESTINATION_IMPORT = ImportInfo("ArgDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
-    val NAV_PLAIN_DESTINATION_IMPORT = ImportInfo("PlainDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
+    val NAV_DESTINATION_IMPORT = ImportInfo("Destination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
+    val NAV_DIALOG_DESTINATION_IMPORT = ImportInfo("DialogDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
+    val NAV_DIALOG_ARG_DESTINATION_IMPORT = ImportInfo("DialogArgDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
+    val NAV_BOTTOM_SHEET_DESTINATION_IMPORT = ImportInfo("BottomSheetDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
+    val NAV_BOTTOM_SHEET_ARG_DESTINATION_IMPORT = ImportInfo("BottomSheetArgDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
 
     private const val NAV_COMPONENT_SPEC_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.spec"
     val NAV_COMPONENT_SPEC_IMPORT = ImportInfo("NavComponentSpec", NAV_COMPONENT_SPEC_PACKAGE)
-
-    val NAV_DESTINATION_SPEC_IMPORT = ImportInfo("DestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
-    val NAV_DESTINATION_PLAIN_SPEC_IMPORT= ImportInfo("PlainDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_COMPOSE_DESTINATION_SPEC_IMPORT = ImportInfo("ComposeDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_ROUTABLE_COMPOSE_DESTINATION_SPEC_IMPORT = ImportInfo("ComposeRoutableDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_ARG_COMPOSE_DESTINATION_SPEC_IMPORT = ImportInfo("ComposeArgDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_DESTINATION_SPEC_IMPORT= ImportInfo("DestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
     val NAV_DESTINATION_ARG_SPEC_IMPORT = ImportInfo("ArgDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_DIALOG_DESTINATION_SPEC_IMPORT = ImportInfo("DialogDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_DIALOG_ARG_DESTINATION_SPEC_IMPORT = ImportInfo("DialogArgDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_BOTTOM_SHEET_DESTINATION_SPEC_IMPORT = ImportInfo("BottomSheetDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
+    val NAV_BOTTOM_SHEET_ARG_DESTINATION_SPEC_IMPORT = ImportInfo("BottomSheetArgDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
 
+    //TODO -> Alle Destinations in einen Folder machen und diese GeneratedDestination implementieren lassen.
+    // -> Das gleiche mit NavGraphs -> GeneratedNavGraph
+
+
+    val NAV_COMPOSE_GRAPH_SPEC_IMPORT = ImportInfo("ComposeNavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
     val NAV_GRAPH_SPEC_IMPORT = ImportInfo("NavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
-    val NAV_GRAPH_PLAIN_SPEC_IMPORT = ImportInfo("PlainNavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
     val NAV_GRAPH_SPEC_ARG_IMPORT = ImportInfo("ArgNavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
 
 
 
     private const val NAV_DESTINATION_SCOPE_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.scope"
-    val NAV_DESTINATION_SCOPE_IMPORT = ImportInfo("DestinationScope", NAV_DESTINATION_SCOPE_PACKAGE)
-    val NAV_DESTINATION_PLAIN_SCOPE_IMPORT= ImportInfo("PlainDestinationScope", NAV_DESTINATION_SCOPE_PACKAGE)
+    val NAV_COMPOSE_DESTINATION_SCOPE_IMPORT = ImportInfo("ComposeDestinationScope", NAV_DESTINATION_SCOPE_PACKAGE)
+    val NAV_DESTINATION_SCOPE_IMPORT= ImportInfo("DestinationScope", NAV_DESTINATION_SCOPE_PACKAGE)
     val NAV_DESTINATION_ARG_SCOPE_IMPORT = ImportInfo("ArgDestinationScope", NAV_DESTINATION_SCOPE_PACKAGE)
 
 
@@ -63,6 +78,7 @@ internal object PackageUtils {
     val ANDROID_NAVIGATION_NAV_BACK_STACK_ENTRY_IMPORT = ImportInfo("NavBackStackEntry","androidx.navigation")
     val ANDROID_NAVIGATION_NAMED_NAV_ARGUMENT_IMPORT = ImportInfo("NamedNavArgument", "androidx.navigation")
     val ANDROID_NAVIGATION_NAV_CONTROLLER_IMPORT = ImportInfo("NavController", "androidx.navigation")
+    val ANDROID_NAVIGATION_NAV_OPTIONS_BUILDER_IMPORT = ImportInfo("NavOptionsBuilder", "androidx.navigation")
     val ANDROID_COMPOSABLE_IMPORT = ImportInfo("Composable","androidx.compose.runtime")
     val ANDROID_LIVECYCLE_IMPORT = ImportInfo("Lifecycle","androidx.lifecycle")
     val SAVED_STATE_HANDLE_IMPORT = ImportInfo("SavedStateHandle","androidx.lifecycle")
