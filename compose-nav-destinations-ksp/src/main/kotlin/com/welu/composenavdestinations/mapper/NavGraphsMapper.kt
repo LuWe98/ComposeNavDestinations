@@ -4,7 +4,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.welu.composenavdestinations.annotations.NavGraphDefinitionAnnotation
+import com.welu.composenavdestinations.annotations.ComposeNavGraphAnnotation
 import com.welu.composenavdestinations.extensions.ksp.asImportInfo
 import com.welu.composenavdestinations.extensions.ksp.getAnnotationArgument
 import com.welu.composenavdestinations.extractor.NavArgsInfoExtractor
@@ -76,7 +76,7 @@ class NavGraphsMapper(
     }
 
     private fun KSClassDeclaration.getNavArgsClassDeclaration() = getAnnotationArgument<KSType>(
-        annotation = NavGraphDefinitionAnnotation,
-        argName = NavGraphDefinitionAnnotation.ARGS_CLASS_ARG
+        annotation = ComposeNavGraphAnnotation,
+        argName = ComposeNavGraphAnnotation.ARGS_CLASS_ARG
     ).declaration as KSClassDeclaration
 }

@@ -3,11 +3,11 @@ package com.welu.composenavdestinations.annotations
 import com.welu.composenavdestinations.navigation.spec.ComposeNavGraphSpec
 
 /**
- * This is the default [NavGraphDefinition].
+ * This is the default [ComposeNavGraph].
  *
- * NavComponents will be added to the generated [ComposeNavGraphSpec] of this [DefaultNavGraph] when no other default [NavGraphDefinition] is defined.
+ * NavComponents will be added to the generated [ComposeNavGraphSpec] of this [DefaultNavGraph] when no other default [ComposeNavGraph] is defined.
  */
-@NavGraphDefinition(isDefaultNavGraph = true)
+@ComposeNavGraph(isDefaultNavGraph = true)
 annotation class DefaultNavGraph(
     val isStart: Boolean = false
 )

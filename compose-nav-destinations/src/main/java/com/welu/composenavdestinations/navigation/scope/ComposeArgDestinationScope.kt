@@ -8,4 +8,7 @@ sealed interface ComposeArgDestinationScope<Arg: Any>: ComposeDestinationScope {
 
     val args: Arg
 
+    //data class NavArgs<T: Any>(
+    //    val value: T
+    //)
 }

@@ -7,7 +7,7 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.welu.composenavdestinations.annotations.NavGraphDefaultDefinitionAnnotation
+import com.welu.composenavdestinations.annotations.DefaultComposeNavGraphAnnotation
 import com.welu.composenavdestinations.extensions.ksp.*
 import com.welu.composenavdestinations.extractor.DefaultValueExtractor
 import com.welu.composenavdestinations.extractor.NavArgsInfoExtractor
@@ -77,7 +77,7 @@ class NavDestinationsProcessor(
         //val defaultNavGraphAnnotated = resolver.getDefinitionsWithDefaultNavGraphAnnotation()
         return resolver.getDefinitionsWithDefaultNavGraphAnnotation()
             .firstOrNull()
-            ?.getAnnotationWith(NavGraphDefaultDefinitionAnnotation)
+            ?.getAnnotationWith(DefaultComposeNavGraphAnnotation)
             ?.annotationType
             ?.resolve()
             ?.declaration as KSClassDeclaration?
@@ -141,7 +141,7 @@ class NavDestinationsProcessor(
     @Throws(IllegalStateException::class)
     private fun checkContainsIsStartParameter(navGraphAnnotations: Sequence<KSClassDeclaration>) {
         val navGraphAnnotationsWithoutIsStartParam = navGraphAnnotations.filter {
-            !it.isParameterPresent(NavGraphDefaultDefinitionAnnotation.IS_START_ARG)
+            !it.isParameterPresent(DefaultComposeNavGraphAnnotation.IS_START_ARG)
         }
 
         if (navGraphAnnotationsWithoutIsStartParam.none()) return

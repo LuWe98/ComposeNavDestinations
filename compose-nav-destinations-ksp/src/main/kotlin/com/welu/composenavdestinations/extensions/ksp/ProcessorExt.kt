@@ -4,9 +4,9 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSNode
-import com.welu.composenavdestinations.annotations.NavDestinationDefinitionAnnotation
-import com.welu.composenavdestinations.annotations.NavGraphDefaultDefinitionAnnotation
-import com.welu.composenavdestinations.annotations.NavGraphDefinitionAnnotation
+import com.welu.composenavdestinations.annotations.ComposeDestinationAnnotation
+import com.welu.composenavdestinations.annotations.DefaultComposeNavGraphAnnotation
+import com.welu.composenavdestinations.annotations.ComposeNavGraphAnnotation
 import com.welu.composenavdestinations.model.ImportInfo
 
 //fun Resolver.getNavDestinations(): Sequence<KSFunctionDeclaration> = getSymbolsWithAnnotation(NavDestinationAnnotation.import.qualifiedName)
@@ -26,8 +26,8 @@ inline fun <reified NodeType: KSNode> Resolver.findAnnotatedNodesTyped(importInf
 
 fun Resolver.findAnnotatedClassesWith(annotationQualifiedName: String) = findAnnotatedNodesTyped<KSClassDeclaration>(annotationQualifiedName)
 
-fun Resolver.findNavDestinationDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(NavDestinationDefinitionAnnotation.import)
+fun Resolver.findNavDestinationDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(ComposeDestinationAnnotation.import)
 
-fun Resolver.findNavGraphDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(NavGraphDefinitionAnnotation.import)
+fun Resolver.findNavGraphDefinitions() = findAnnotatedNodesTyped<KSClassDeclaration>(ComposeNavGraphAnnotation.import)
 
-fun Resolver.getDefinitionsWithDefaultNavGraphAnnotation() = findAnnotatedNodesTyped<KSClassDeclaration>(NavGraphDefaultDefinitionAnnotation.import)
+fun Resolver.getDefinitionsWithDefaultNavGraphAnnotation() = findAnnotatedNodesTyped<KSClassDeclaration>(DefaultComposeNavGraphAnnotation.import)

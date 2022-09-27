@@ -1,27 +1,32 @@
 package com.welu.composenavdestinations.extractor
 
-import com.welu.composenavdestinations.model.*
-import com.welu.composenavdestinations.utils.PackageUtils
-import com.welu.composenavdestinations.utils.PackageUtils.BASIC_NAV_ARGS
-import com.welu.composenavdestinations.utils.PackageUtils.NAV_ARG_SERIALIZABLE_TYPE
+import com.welu.composenavdestinations.model.CustomNavArgType
+import com.welu.composenavdestinations.model.ParameterNavTypeInfo
+import com.welu.composenavdestinations.model.ParameterTypeInfo
+import com.welu.composenavdestinations.utils.PackageUtils.BASIC_NAV_ARGS_MAP
 
 
 object NavArgTypeInfoExtractor {
+
+    //        BASIC_NAV_ARGS_MAP.firstOrNull { this.isSame(it.first) }?.second?.let {
+//            return ParameterNavTypeInfo(it)
+//        }
+
 
     /**
      * Extracts the NavArgType which is used to parse and serialize this parameter.
      */
     fun ParameterTypeInfo.extractParameterNavArgTypeInfo(): ParameterNavTypeInfo {
-        BASIC_NAV_ARGS.firstOrNull { this.isSame(it.first) }?.second?.let {
-            return ParameterNavTypeInfo(it)
+        BASIC_NAV_ARGS_MAP.entries.firstOrNull { isSame(it.key) }?.let {
+            return ParameterNavTypeInfo(it.value)
         }
 
         if (isParcelable) {
-            return ParameterNavTypeInfo(this, PackageUtils.NAV_ARG_PARCELABLE_TYPE)
+            return ParameterNavTypeInfo(this, CustomNavArgType.ParcelableType)
         }
 
         if (isEnum) {
-            return ParameterNavTypeInfo(this, PackageUtils.NAV_ARG_ENUM_TYPE)
+            return ParameterNavTypeInfo(this, CustomNavArgType.EnumType)
         }
 
         if (type.typeArguments.size == 1) {
@@ -30,18 +35,18 @@ object NavArgTypeInfoExtractor {
             if (argTypeInfo != null) {
                 when {
                     type.isList -> when {
-                        argTypeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_LIST_TYPE
-                        argTypeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_LIST_TYPE
+                        argTypeInfo.isEnum -> CustomNavArgType.EnumListType
+                        argTypeInfo.isParcelable -> CustomNavArgType.ParcelableListType
                         else -> null
                     }
                     type.isSet -> when {
-                        argTypeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_SET_TYPE
-                        argTypeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_SET_TYPE
+                        argTypeInfo.isEnum -> CustomNavArgType.EnumSetType
+                        argTypeInfo.isParcelable -> CustomNavArgType.ParcelableSetType
                         else -> null
                     }
                     type.isArray -> when {
-                        argTypeInfo.isEnum -> PackageUtils.NAV_ARG_ENUM_ARRAY_TYPE
-                        argTypeInfo.isParcelable -> PackageUtils.NAV_ARG_PARCELABLE_ARRAY_TYPE
+                        argTypeInfo.isEnum -> CustomNavArgType.EnumArrayType
+                        argTypeInfo.isParcelable -> CustomNavArgType.ParcelableArrayType
                         else -> null
                     }
                     else -> null
@@ -52,7 +57,7 @@ object NavArgTypeInfoExtractor {
         }
 
         if (isSerializable) {
-            return ParameterNavTypeInfo(NAV_ARG_SERIALIZABLE_TYPE)
+            return ParameterNavTypeInfo(CustomNavArgType.SerializableType.importInfo)
         }
 
         if (isKtxSerializable) {
@@ -72,8 +77,7 @@ object NavArgTypeInfoExtractor {
     }
 
 
-    private fun ParameterTypeInfo.isSame(otherInfo: ParameterTypeInfo): Boolean =
-        qualifiedName == otherInfo.qualifiedName
+    private fun ParameterTypeInfo.isSame(otherInfo: ParameterTypeInfo): Boolean = qualifiedName == otherInfo.qualifiedName
             && type.typeArguments.size == otherInfo.type.typeArguments.size
             && type.typeArguments.zip(otherInfo.type.typeArguments).all { it.first.typeInfo?.qualifiedName == it.second.typeInfo?.qualifiedName }
 

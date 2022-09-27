@@ -114,7 +114,7 @@ class RawNavComponentsExtractor(
 
         val annotatedGraphs = annotatedClassDeclarations.filter(annotatedNavGraphs::contains)
 
-        val annotatedDestinations = annotatedClassDeclarations.filter { it.isAnnotationPresentSimple(NavDestinationDefinitionAnnotation.import) }
+        val annotatedDestinations = annotatedClassDeclarations.filter { it.isAnnotationPresentSimple(ComposeDestinationAnnotation.import) }
 
         val invalidComponents = annotatedClassDeclarations - annotatedGraphs.toSet() - annotatedDestinations.toSet()
 
@@ -355,18 +355,18 @@ class RawNavComponentsExtractor(
 
 
     private fun KSClassDeclaration.getNavGraphRouteParameter() = getAnnotationArgument<String>(
-        argName = NavGraphDefinitionAnnotation.ROUTE_ARG,
-        annotation = NavGraphDefinitionAnnotation
+        argName = ComposeNavGraphAnnotation.ROUTE_ARG,
+        annotation = ComposeNavGraphAnnotation
     ).ifBlank { simpleName.asString() }
 
     private fun KSClassDeclaration.getNavDestinationRouteParameter(): String = getAnnotationArgument<String>(
-        argName = NavDestinationDefinitionAnnotation.ROUTE_ARG,
-        annotation = NavDestinationDefinitionAnnotation
+        argName = ComposeDestinationAnnotation.ROUTE_ARG,
+        annotation = ComposeDestinationAnnotation
     ).ifBlank { simpleName.asString() }
 
     private fun KSClassDeclaration.getIsDefaultNavGraphParameter() = getAnnotationArgument<Boolean>(
-        argName = NavGraphDefinitionAnnotation.IS_DEFAULT_NAV_GRAPH,
-        annotation = NavGraphDefinitionAnnotation
+        argName = ComposeNavGraphAnnotation.IS_DEFAULT_NAV_GRAPH,
+        annotation = ComposeNavGraphAnnotation
     )
 
     private fun KSClassDeclaration.getIsStartParameter(annotation: KSClassDeclaration) = getAnnotationArgument<Boolean>(

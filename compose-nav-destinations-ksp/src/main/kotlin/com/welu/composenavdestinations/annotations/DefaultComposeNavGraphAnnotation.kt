@@ -1,5 +1,5 @@
 package com.welu.composenavdestinations.annotations
 
-object NavGraphDefaultDefinitionAnnotation: AnnotationDeclaration("DefaultNavGraph") {
+object DefaultComposeNavGraphAnnotation: AnnotationDeclaration("DefaultNavGraph") {
     const val IS_START_ARG = "isStart"
 }

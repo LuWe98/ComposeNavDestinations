@@ -3,10 +3,7 @@ package com.welu.composenavdestinations.extensions.navigation
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
-import com.welu.composenavdestinations.navigation.spec.ArgDestinationSpec
-import com.welu.composenavdestinations.navigation.spec.ArgNavGraphSpec
-import com.welu.composenavdestinations.navigation.spec.NavComponentSpec
-import com.welu.composenavdestinations.navigation.spec.ComposeNavGraphSpec
+import com.welu.composenavdestinations.navigation.spec.*
 
 //TODO -> Nochmal schauen
 //fun NavComponentSpec.isInsideGraph(navGraph: ComposeNavGraphSpec): Boolean {
@@ -20,9 +17,9 @@ import com.welu.composenavdestinations.navigation.spec.ComposeNavGraphSpec
 fun NavComponentSpec.isInsideGraph(navGraph: ComposeNavGraphSpec): Boolean =
     this == navGraph || parentNavGraphSpec == navGraph || parentNavGraphSpec?.isInsideGraph(navGraph) == true
 
-fun <Arg: Any> ArgDestinationSpec<Arg>.areArgumentsSetCorrectly(navBackStackEntry: NavBackStackEntry) = arguments.areArgumentsSetCorrectly(navBackStackEntry)
+fun <Arg: Any> ComposeArgDestinationSpec<Arg, *>.areArgumentsSetCorrectly(navBackStackEntry: NavBackStackEntry) = arguments.areArgumentsSetCorrectly(navBackStackEntry)
 
-fun <Arg: Any> ArgDestinationSpec<Arg>.areArgumentsSetCorrectly(savedStateHandle: SavedStateHandle) = arguments.areArgumentsSetCorrectly(savedStateHandle)
+fun <Arg: Any> ComposeArgDestinationSpec<Arg, *>.areArgumentsSetCorrectly(savedStateHandle: SavedStateHandle) = arguments.areArgumentsSetCorrectly(savedStateHandle)
 
 fun <Arg: Any> ArgNavGraphSpec<Arg>.areArgumentsSetCorrectly(savedStateHandle: SavedStateHandle) = arguments.areArgumentsSetCorrectly(savedStateHandle)
 

@@ -2,7 +2,7 @@ package com.welu.composenavdestinations.model
 
 data class ParameterCustomNavTypeInfo(
     val parameterTypeImport: ImportInfo,
-    val navArgTypeImport: ImportInfo
+    val navArgType: CustomNavArgType
 ) {
-    val allImports get(): List<ImportInfo> = listOf(parameterTypeImport, navArgTypeImport)
+    val imports get(): List<ImportInfo> = listOf(parameterTypeImport, navArgType.importInfo)
 }

@@ -10,24 +10,3 @@ import com.welu.composenavdestinations.navigation.destinations.ArgDestination
  * Describes a Destination with defines NavArgs. These can be easily obtained trough the [argsFrom] methods.
  */
 interface ArgDestinationSpec<Arg : Any> : ComposeArgDestinationSpec<Arg, ArgDestination<Arg>>
-
-/*
-{
-
-    /**
-     * Contains the [NamedNavArgument]s needed to instantiate this [NavGraphSpec]
-     */
-    val arguments: List<NamedNavArgument> get() = listOf()
-
-    /**
-     * Retrieves the NavArgs with an [NavBackStackEntry]
-     */
-    fun argsFrom(navBackStackEntry: NavBackStackEntry): Arg
-
-    /**
-     * Retrieves the NavArgs with an [SavedStateHandle]
-     */
-    fun argsFrom(savedStateHandle: SavedStateHandle): Arg
-
-}
- */

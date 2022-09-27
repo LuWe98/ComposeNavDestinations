@@ -99,13 +99,13 @@ class NavArgsInfoExtractor(
         destinationType: NavDestinationType
     ): ParameterTypeInfoAndDeclaration? = when(destinationType) {
 
-        NavDestinationType.DESTINATION,
-        NavDestinationType.BOTTOM_SHEET_DESTINATION,
-        NavDestinationType.DIALOG_DESTINATION -> null
+        NavDestinationType.Destination,
+        NavDestinationType.BottomSheetDestination,
+        NavDestinationType.DialogDestination -> null
 
-        NavDestinationType.ARG_DESTINATION,
-        NavDestinationType.BOTTOM_SHEET_ARG_DESTINATION,
-        NavDestinationType.DIALOG_ARG_DESTINATION -> destinationClassSupertype
+        NavDestinationType.ArgDestination,
+        NavDestinationType.BottomSheetArgDestination,
+        NavDestinationType.DialogArgDestination -> destinationClassSupertype
             .arguments
             .first()
             .toResolvedType()

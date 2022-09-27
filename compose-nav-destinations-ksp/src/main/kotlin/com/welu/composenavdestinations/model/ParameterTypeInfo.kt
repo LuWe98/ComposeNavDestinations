@@ -15,16 +15,14 @@ data class ParameterTypeInfo(
     val simpledName get() = type.import.simpleName
 
 
-    val allImports
-        get(): List<ImportInfo> = type.typeArguments.mapNotNull { it.typeInfo?.allImports }.flatten() + type.import
+    val allImports get(): List<ImportInfo> = type.typeArguments.mapNotNull { it.typeInfo?.allImports }.flatten() + type.import
 
-    val definition
-        get(): String = run {
-            if (type.typeArguments.isEmpty()) return@run type.import.simpleName
-
-            type.import.simpleName + "<" + type.typeArguments.joinToString(", ") { type ->
-                type.label.ifNotBlank { "$it " } + (type.typeInfo?.let { it.definition + if (it.isNullable) "?" else "" } ?: "")
-            } + ">"
-        }
+    val definition get(): String = if (type.typeArguments.isEmpty()) {
+        type.import.simpleName
+    } else {
+        type.import.simpleName + "<" + type.typeArguments.joinToString(", ") { type ->
+            type.label.ifNotBlank { "$it " } + (type.typeInfo?.definition ?: "")
+        } + ">"
+    } + if (isNullable) "?" else ""
 
 }
