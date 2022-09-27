@@ -4,12 +4,11 @@ import com.welu.composenavdestinations.utils.PackageUtils
 
 sealed interface NavArgType {
     val simpleName: String
-    val importInfo: ImportInfo
+    val importInfo: ImportInfo get() = ImportInfo(simpleName, PackageUtils.NAV_ARGS_PACKAGE)
 }
 
 enum class BasicNavArgType(
-    override val simpleName: String,
-    override val importInfo: ImportInfo = ImportInfo(simpleName, PackageUtils.NAV_ARGS_PACKAGE)
+    override val simpleName: String
 ): NavArgType {
 
     StringType("NavArgStringType"),
@@ -63,24 +62,102 @@ enum class BasicNavArgType(
     PrimitiveDoubleArrayType("NavArgPrimitiveDoubleArrayType"),
     DoubleArrayType("NavArgDoubleArrayType"),
     DoubleListType("NavArgDoubleListType"),
-    DoubleSetType("NavArgDoubleSetType");
-}
-
-enum class CustomNavArgType(
-    override val simpleName: String,
-    override val importInfo: ImportInfo = ImportInfo(simpleName, PackageUtils.NAV_ARGS_PACKAGE)
-): NavArgType {
-    ParcelableType("NavArgParcelableType"),
-    ParcelableArrayType("NavArgParcelableArrayType"),
-    ParcelableListType("NavArgParcelableListType"),
-    ParcelableSetType("NavArgParcelableSetType"),
-
-    EnumType("NavArgEnumType"),
-    EnumArrayType("NavArgEnumArrayType"),
-    EnumListType("NavArgEnumListType"),
-    EnumSetType("NavArgEnumSetType"),
+    DoubleSetType("NavArgDoubleSetType"),
 
     SerializableType("NavArgSerializableType");
+}
+
+//enum class CustomNavArgType(
+//    override val simpleName: String
+//): NavArgType {
+//    ParcelableType("NavArgParcelableType"),
+//    ParcelableArrayType("NavArgParcelableArrayType"),
+//    ParcelableListType("NavArgParcelableListType"),
+//    ParcelableSetType("NavArgParcelableSetType"),
+//
+//    EnumType("NavArgEnumType"),
+//    EnumArrayType("NavArgEnumArrayType"),
+//    EnumListType("NavArgEnumListType"),
+//    EnumSetType("NavArgEnumSetType");
+//}
+
+sealed class CustomNavArgType(
+    val generatedNavArgImport: ImportInfo,
+    val parameterTypeImport: ImportInfo,
+    override val simpleName: String
+): NavArgType {
+
+    class ParcelableType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): CustomNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgParcelableType"
+    )
+
+    class ParcelableArrayType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): CustomNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgParcelableArrayType"
+    )
+
+    class ParcelableListType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): CustomNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgParcelableListType"
+    )
+
+    class ParcelableSetType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): CustomNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgParcelableSetType"
+    )
+
+    class EnumType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): CustomNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgEnumType"
+    )
+
+    class EnumArrayType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): CustomNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgEnumArrayType"
+    )
+
+    class EnumListType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): CustomNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgEnumListType"
+    )
+
+    class EnumSetType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): CustomNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgEnumSetType"
+    )
 }
 
 

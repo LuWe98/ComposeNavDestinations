@@ -21,15 +21,15 @@ object NavArgsGeneratorUtils {
 
     fun generateNamedNavArguments(sortedParams: List<Parameter>) = sortedParams.joinToString(",\n\t\t") { parameter ->
         val defaultValue = parameter.defaultValue?.let {
+
             //parameter.navArgTypeInfo.
 //            val s = parameter.typeInfo.type.isArray
 //            val b = parameter.typeInfo.type.typeArguments.first().typeInfo?.type
 //            val ss = parameter.navArgTypeInfo.import
 //
-
             "${it.value}, "
         } ?: ""
-        "navArgument(\"${parameter.name}\", ${parameter.navArgTypeInfo.simpleName}, $defaultValue${parameter.typeInfo.isNullable})"
+        "navArgument(\"${parameter.name}\", ${parameter.navArgTypeInfo.import.simpleName}, $defaultValue${parameter.typeInfo.isNullable})"
     }
 
     fun generateInvokeParameters(component: NavComponentInfo) = component
@@ -40,7 +40,7 @@ object NavArgsGeneratorUtils {
     fun generateInvokeBody(routeName: String, sortedParams: List<Parameter>): String {
         var optionalNavSeparator = '?'
         return "\"$routeName\" +\n\t\t" + sortedParams.joinToString(" +\n\t\t") {
-            val serializeSnipped = "\${${it.navArgTypeInfo.simpleName}.serializeValue(${it.name})}"
+            val serializeSnipped = "\${${it.navArgTypeInfo.import.simpleName}.serializeValue(${it.name})}"
             if (it.typeInfo.isNullable || it.hasDefaultValue) {
                 "\"$optionalNavSeparator${it.name}=$serializeSnipped\"".also {
                     optionalNavSeparator = '&'
@@ -56,6 +56,6 @@ object NavArgsGeneratorUtils {
         .parameters
         .joinToString(",\n\t\t") {
             val nonNullableClaim = if (it.typeInfo.isNullable) "" else "!!"
-            it.name + " = " + "${it.navArgTypeInfo.simpleName}.getTyped(${argContainer.variableName}, \"${it.name}\")$nonNullableClaim"
+            it.name + " = " + "${it.navArgTypeInfo.import.simpleName}.getTyped(${argContainer.variableName}, \"${it.name}\")$nonNullableClaim"
         }
 }

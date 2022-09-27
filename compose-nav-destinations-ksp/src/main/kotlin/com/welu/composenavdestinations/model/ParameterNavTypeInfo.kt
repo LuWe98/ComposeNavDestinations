@@ -3,19 +3,24 @@ package com.welu.composenavdestinations.model
 import com.welu.composenavdestinations.utils.PackageUtils
 
 data class ParameterNavTypeInfo(
-    //TODO -> Was das für ein Import? Nur von dem NavType? -> Wenn ja dann kann hier NavArgType SealedClass rein
-    val import: ImportInfo,
+    val navArgType: NavArgType,
     val customNavTypeInfo: ParameterCustomNavTypeInfo? = null
 ) {
 
     constructor(typeInfo: ParameterTypeInfo, customNavArgType: CustomNavArgType): this(
-        import = ImportInfo(typeInfo.qualifiedName.replace(".", "_") + "_" + customNavArgType.simpleName, PackageUtils.NAV_ARGS_PACKAGE),
+        navArgType = customNavArgType,
         customNavTypeInfo = ParameterCustomNavTypeInfo(
             parameterTypeImport = typeInfo.type.import,
-            navArgType = customNavArgType
+            generatedCustomNavArgTypeImport = ImportInfo(
+                simpleName = typeInfo.qualifiedName.replace(".", "_") + "_" + customNavArgType.simpleName,
+                packageDir = PackageUtils.NAV_ARGS_PACKAGE
+            )
         )
     )
+    //ImportInfo(typeInfo.qualifiedName.replace(".", "_") + "_" + customNavArgType.simpleName, PackageUtils.NAV_ARGS_PACKAGE)
 
-    val simpleName: String get() = import.simpleName
+    val import: ImportInfo get() = customNavTypeInfo?.generatedCustomNavArgTypeImport ?: navArgType.importInfo
+
+    val simpleName: String get() = navArgType.simpleName
 
 }

@@ -24,14 +24,6 @@ class ContentGenerator(
         navDestinations: Sequence<NavDestinationInfo>,
         navGraphs: Sequence<NavGraphInfo>
     ) {
-        navDestinations.forEach {
-            it.navArgsInfo?.parameters?.forEach { param ->
-                logger.warn(param.navArgTypeInfo.import.qualifiedName)
-                if(param.navArgTypeInfo.customNavTypeInfo != null) {
-                    logger.warn("!= NULL: ${param.navArgTypeInfo.customNavTypeInfo.parameterTypeImport}")
-                }
-            }
-        }
 
         //Generates the custom NavArgs needed for Navigation
         FileGeneratorCustomNavArgs.generate(navDestinations + navGraphs)?.let(fileContentInfoOutputWriter::writeFile)

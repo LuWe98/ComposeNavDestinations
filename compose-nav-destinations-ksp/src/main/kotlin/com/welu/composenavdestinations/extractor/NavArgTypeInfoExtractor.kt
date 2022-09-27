@@ -1,17 +1,14 @@
 package com.welu.composenavdestinations.extractor
 
-import com.welu.composenavdestinations.model.CustomNavArgType
-import com.welu.composenavdestinations.model.ParameterNavTypeInfo
-import com.welu.composenavdestinations.model.ParameterTypeInfo
+import com.welu.composenavdestinations.model.*
+import com.welu.composenavdestinations.utils.PackageUtils
 import com.welu.composenavdestinations.utils.PackageUtils.BASIC_NAV_ARGS_MAP
-
 
 object NavArgTypeInfoExtractor {
 
     //        BASIC_NAV_ARGS_MAP.firstOrNull { this.isSame(it.first) }?.second?.let {
 //            return ParameterNavTypeInfo(it)
 //        }
-
 
     /**
      * Extracts the NavArgType which is used to parse and serialize this parameter.
@@ -22,11 +19,17 @@ object NavArgTypeInfoExtractor {
         }
 
         if (isParcelable) {
-            return ParameterNavTypeInfo(this, CustomNavArgType.ParcelableType)
+            return ParameterNavTypeInfo(
+                typeInfo = this,
+                customNavArgType = generateCustomNavArgsType(this, CustomNavArgType::ParcelableType)
+            )
         }
 
         if (isEnum) {
-            return ParameterNavTypeInfo(this, CustomNavArgType.EnumType)
+            return ParameterNavTypeInfo(
+                typeInfo = this,
+                customNavArgType = generateCustomNavArgsType(this, CustomNavArgType::EnumType)
+            )
         }
 
         if (type.typeArguments.size == 1) {
@@ -35,47 +38,66 @@ object NavArgTypeInfoExtractor {
             if (argTypeInfo != null) {
                 when {
                     type.isList -> when {
-                        argTypeInfo.isEnum -> CustomNavArgType.EnumListType
-                        argTypeInfo.isParcelable -> CustomNavArgType.ParcelableListType
+                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::EnumListType)
+                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::ParcelableListType)
                         else -> null
                     }
                     type.isSet -> when {
-                        argTypeInfo.isEnum -> CustomNavArgType.EnumSetType
-                        argTypeInfo.isParcelable -> CustomNavArgType.ParcelableSetType
+                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::EnumSetType)
+                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::ParcelableSetType)
                         else -> null
                     }
                     type.isArray -> when {
-                        argTypeInfo.isEnum -> CustomNavArgType.EnumArrayType
-                        argTypeInfo.isParcelable -> CustomNavArgType.ParcelableArrayType
+                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::EnumArrayType)
+                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::ParcelableArrayType)
                         else -> null
                     }
                     else -> null
-                }?.let {
-                    return ParameterNavTypeInfo(argTypeInfo, it)
+                }?.let { customArgType ->
+                    return ParameterNavTypeInfo(
+                        typeInfo = argTypeInfo,
+                        customNavArgType =  customArgType
+                    )
                 }
             }
         }
 
         if (isSerializable) {
-            return ParameterNavTypeInfo(CustomNavArgType.SerializableType.importInfo)
+            return ParameterNavTypeInfo(BasicNavArgType.SerializableType)
         }
 
         if (isKtxSerializable) {
             //TODO -> KTX Serializable NavArg -> Hier muss dann auch auf den Serializer Referenziert werden, also für jeden Typen ein eigenes --> CustomNavArgType wie Enum
         }
 
-        //TODO -> Noch custom Serializer einbauen, dass man das für die Navigation auch verwenden kann
-        /*
-        @NavTypeSerializer
-        class ColorTypeSerializer : DestinationsNavTypeSerializer<Color> {
-            override fun toRouteString(value: Color): String
-            override fun fromRouteString(routeStr: String): Color
-        }
-         */
-
         throw IllegalArgumentException("Cannot map the following Parameter: ${type.import.qualifiedName}")
     }
 
+
+    //Generiert ein CustonNavArgsType mit wenigen Informationen -> Wird später genutzt, wenn es kein ParameterNavTypeInfo mehr gibt
+    private inline fun <reified T: CustomNavArgType> generateCustomNavArgsType(
+        typeInfo: ParameterTypeInfo,
+        customNavArgTypeProvider: (ImportInfo, ImportInfo) -> T
+    ): T {
+        val generatedCustomNavArgTypeImport = ImportInfo(
+            simpleName = typeInfo.qualifiedName.replace(".", "_") + "_" + "NavArg" + T::class.simpleName,
+            packageDir = PackageUtils.NAV_ARGS_PACKAGE
+        )
+
+        return customNavArgTypeProvider(
+            generatedCustomNavArgTypeImport,
+            typeInfo.type.import
+        )
+    }
+
+    //TODO -> Noch custom Serializer einbauen, dass man das für die Navigation auch verwenden kann
+    /*
+    @NavTypeSerializer
+    class ColorTypeSerializer : DestinationsNavTypeSerializer<Color> {
+        override fun toRouteString(value: Color): String
+        override fun fromRouteString(routeStr: String): Color
+    }
+     */
 
     private fun ParameterTypeInfo.isSame(otherInfo: ParameterTypeInfo): Boolean = qualifiedName == otherInfo.qualifiedName
             && type.typeArguments.size == otherInfo.type.typeArguments.size

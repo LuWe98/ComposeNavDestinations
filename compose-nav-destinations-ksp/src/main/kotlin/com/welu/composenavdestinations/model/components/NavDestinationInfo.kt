@@ -30,4 +30,12 @@ data class NavDestinationInfo(
                 addAll(it.typeInfo.allImports)
             }
         }
+
+//    val allParameterTypeImports: Set<ImportInfo>
+//    get() = mutableSetOf<ImportInfo>().apply {
+//        navArgsInfo?.let { navArgsInfo ->
+//            addAll(navArgsInfo.parameters.mapNotNull { it.navArgTypeInfo.customNavTypeInfo?.parameterTypeImport })
+//            addAll(navArgsInfo.parameters.map { it. })
+//        }
+//    }
 }
