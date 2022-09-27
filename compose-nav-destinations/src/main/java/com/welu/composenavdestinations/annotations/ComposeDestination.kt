@@ -11,7 +11,6 @@ annotation class ComposeDestination(
 // -> Also das auch hier festlegen i guess
 // -> Name wird aber eh Args sein -> Also wenn es ArgsDestination<String> wär dann würde es args in dem Scope heißen.
 //val useNavArgsAsWholeObject: Boolean = false,
-
 /*
     //TODO -> Das noch einbauen - OLD: val type: KClass<out NavDestinationType> = NavDestinationType.Default::class,
     val destinationType: KClass<*> = Unit::class,

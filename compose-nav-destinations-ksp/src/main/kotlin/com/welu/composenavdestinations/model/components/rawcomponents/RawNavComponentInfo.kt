@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations.model.rawcomponents
+package com.welu.composenavdestinations.model.components.rawcomponents
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 

@@ -1,6 +1,6 @@
 package com.welu.composenavdestinations.model
 
-enum class ArgContainer(
+enum class AndroidArgsContainer(
     val variableName: String
 ) {
     NabBackStackEntry("navBackStackEntry"),

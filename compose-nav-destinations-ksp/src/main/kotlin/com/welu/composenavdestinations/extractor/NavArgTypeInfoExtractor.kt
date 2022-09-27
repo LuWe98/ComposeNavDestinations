@@ -1,35 +1,28 @@
 package com.welu.composenavdestinations.extractor
 
 import com.welu.composenavdestinations.model.*
+import com.welu.composenavdestinations.model.navargs.BasicParameterNavArgType
+import com.welu.composenavdestinations.model.navargs.ComplexParameterNavArgType
+import com.welu.composenavdestinations.model.navargs.ParameterNavArgType
 import com.welu.composenavdestinations.utils.PackageUtils
 import com.welu.composenavdestinations.utils.PackageUtils.BASIC_NAV_ARGS_MAP
 
 object NavArgTypeInfoExtractor {
 
-    //        BASIC_NAV_ARGS_MAP.firstOrNull { this.isSame(it.first) }?.second?.let {
-//            return ParameterNavTypeInfo(it)
-//        }
-
     /**
      * Extracts the NavArgType which is used to parse and serialize this parameter.
      */
-    fun ParameterTypeInfo.extractParameterNavArgTypeInfo(): ParameterNavTypeInfo {
+    fun ParameterTypeInfo.extractParameterNavArgType(): ParameterNavArgType {
         BASIC_NAV_ARGS_MAP.entries.firstOrNull { isSame(it.key) }?.let {
-            return ParameterNavTypeInfo(it.value)
+            return it.value
         }
 
         if (isParcelable) {
-            return ParameterNavTypeInfo(
-                typeInfo = this,
-                customNavArgType = generateCustomNavArgsType(this, CustomNavArgType::ParcelableType)
-            )
+            return generateCustomNavArgsType(this, ComplexParameterNavArgType::ParcelableType)
         }
 
         if (isEnum) {
-            return ParameterNavTypeInfo(
-                typeInfo = this,
-                customNavArgType = generateCustomNavArgsType(this, CustomNavArgType::EnumType)
-            )
+            return generateCustomNavArgsType(this, ComplexParameterNavArgType::EnumType)
         }
 
         if (type.typeArguments.size == 1) {
@@ -38,32 +31,29 @@ object NavArgTypeInfoExtractor {
             if (argTypeInfo != null) {
                 when {
                     type.isList -> when {
-                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::EnumListType)
-                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::ParcelableListType)
+                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, ComplexParameterNavArgType::EnumListType)
+                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, ComplexParameterNavArgType::ParcelableListType)
                         else -> null
                     }
                     type.isSet -> when {
-                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::EnumSetType)
-                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::ParcelableSetType)
+                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, ComplexParameterNavArgType::EnumSetType)
+                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, ComplexParameterNavArgType::ParcelableSetType)
                         else -> null
                     }
                     type.isArray -> when {
-                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::EnumArrayType)
-                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, CustomNavArgType::ParcelableArrayType)
+                        argTypeInfo.isEnum -> generateCustomNavArgsType(argTypeInfo, ComplexParameterNavArgType::EnumArrayType)
+                        argTypeInfo.isParcelable -> generateCustomNavArgsType(argTypeInfo, ComplexParameterNavArgType::ParcelableArrayType)
                         else -> null
                     }
                     else -> null
                 }?.let { customArgType ->
-                    return ParameterNavTypeInfo(
-                        typeInfo = argTypeInfo,
-                        customNavArgType =  customArgType
-                    )
+                    return customArgType
                 }
             }
         }
 
         if (isSerializable) {
-            return ParameterNavTypeInfo(BasicNavArgType.SerializableType)
+            return BasicParameterNavArgType.SerializableType
         }
 
         if (isKtxSerializable) {
@@ -75,7 +65,7 @@ object NavArgTypeInfoExtractor {
 
 
     //Generiert ein CustonNavArgsType mit wenigen Informationen -> Wird später genutzt, wenn es kein ParameterNavTypeInfo mehr gibt
-    private inline fun <reified T: CustomNavArgType> generateCustomNavArgsType(
+    private inline fun <reified T: ComplexParameterNavArgType> generateCustomNavArgsType(
         typeInfo: ParameterTypeInfo,
         customNavArgTypeProvider: (ImportInfo, ImportInfo) -> T
     ): T {
@@ -83,11 +73,7 @@ object NavArgTypeInfoExtractor {
             simpleName = typeInfo.qualifiedName.replace(".", "_") + "_" + "NavArg" + T::class.simpleName,
             packageDir = PackageUtils.NAV_ARGS_PACKAGE
         )
-
-        return customNavArgTypeProvider(
-            generatedCustomNavArgTypeImport,
-            typeInfo.type.import
-        )
+        return customNavArgTypeProvider(generatedCustomNavArgTypeImport, typeInfo.type.import)
     }
 
     //TODO -> Noch custom Serializer einbauen, dass man das für die Navigation auch verwenden kann

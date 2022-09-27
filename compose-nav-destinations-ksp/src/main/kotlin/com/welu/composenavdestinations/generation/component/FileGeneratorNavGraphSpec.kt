@@ -5,19 +5,19 @@ import com.welu.composenavdestinations.generation.FileContentInfoTypedGenerator
 import com.welu.composenavdestinations.generation.templates.NavDestinationCodeTemplates
 import com.welu.composenavdestinations.generation.templates.NavGraphCodeTemplates
 import com.welu.composenavdestinations.model.*
-import com.welu.composenavdestinations.model.components.NavGraphInfo
+import com.welu.composenavdestinations.model.components.ComposeNavGraphInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
 //TODO -> noch einbauen
-object FileGeneratorNavGraphSpec : FileContentInfoTypedGenerator<NavGraphInfo> {
+object FileGeneratorNavGraphSpec : FileContentInfoTypedGenerator<ComposeNavGraphInfo> {
 
-    override fun generate(instance: NavGraphInfo): FileContentInfo = if (instance.isArgNavGraph) {
+    override fun generate(instance: ComposeNavGraphInfo): FileContentInfo = if (instance.isArgNavGraph) {
         generateArgnNavGraphSpec(instance)
     } else {
         generatePlainNavGraphSpec(instance)
     }
 
-    private fun generatePlainNavGraphSpec(navGraphInfo: NavGraphInfo) = FileContentInfo(
+    private fun generatePlainNavGraphSpec(navGraphInfo: ComposeNavGraphInfo) = FileContentInfo(
         fileName = navGraphInfo.simpleName,
         packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE,
         imports = mutableSetOf(
@@ -47,13 +47,13 @@ object FileGeneratorNavGraphSpec : FileContentInfoTypedGenerator<NavGraphInfo> {
             )
     )
 
-    private fun generateChildNavComponentSpecParams(navGraphInfo: NavGraphInfo): String = navGraphInfo
+    private fun generateChildNavComponentSpecParams(navGraphInfo: ComposeNavGraphInfo): String = navGraphInfo
         .allChildNavComponentSpecImports
         .joinToString(",\n\t\t", transform = ImportInfo::simpleName)
 
 
     //TODO -> Das machen
-    private fun generateArgnNavGraphSpec(argNavGraphSpec: NavGraphInfo): FileContentInfo {
+    private fun generateArgnNavGraphSpec(argNavGraphSpec: ComposeNavGraphInfo): FileContentInfo {
         val sortedParams = argNavGraphSpec
             .navArgsInfo!!
             .parameters
@@ -107,7 +107,7 @@ object FileGeneratorNavGraphSpec : FileContentInfoTypedGenerator<NavGraphInfo> {
                     newValue = NavArgsGeneratorUtils.generateNamedNavArguments(sortedParams)
                 ).replace(
                     oldValue = NavGraphCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_BACKSTACK,
-                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argNavGraphSpec, ArgContainer.NabBackStackEntry)
+                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argNavGraphSpec, AndroidArgsContainer.NabBackStackEntry)
                 ).replace(
                     oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_SPEC_DEEPLINK_VALUE,
                     newValue = "emptyList()"

@@ -1,8 +1,9 @@
 package com.welu.composenavdestinations.generation.component
 
-import com.welu.composenavdestinations.model.ArgContainer
+import com.welu.composenavdestinations.model.AndroidArgsContainer
 import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.model.components.NavComponentInfo
+import com.welu.composenavdestinations.model.navargs.actualTypeName
 
 object NavArgsGeneratorUtils {
 
@@ -20,16 +21,8 @@ object NavArgsGeneratorUtils {
     }
 
     fun generateNamedNavArguments(sortedParams: List<Parameter>) = sortedParams.joinToString(",\n\t\t") { parameter ->
-        val defaultValue = parameter.defaultValue?.let {
-
-            //parameter.navArgTypeInfo.
-//            val s = parameter.typeInfo.type.isArray
-//            val b = parameter.typeInfo.type.typeArguments.first().typeInfo?.type
-//            val ss = parameter.navArgTypeInfo.import
-//
-            "${it.value}, "
-        } ?: ""
-        "navArgument(\"${parameter.name}\", ${parameter.navArgTypeInfo.import.simpleName}, $defaultValue${parameter.typeInfo.isNullable})"
+        val defaultValue = parameter.defaultValue?.let { "${it.value}, " } ?: ""
+        "navArgument(\"${parameter.name}\", ${parameter.navArgType.actualTypeName}, $defaultValue${parameter.typeInfo.isNullable})"
     }
 
     fun generateInvokeParameters(component: NavComponentInfo) = component
@@ -40,7 +33,7 @@ object NavArgsGeneratorUtils {
     fun generateInvokeBody(routeName: String, sortedParams: List<Parameter>): String {
         var optionalNavSeparator = '?'
         return "\"$routeName\" +\n\t\t" + sortedParams.joinToString(" +\n\t\t") {
-            val serializeSnipped = "\${${it.navArgTypeInfo.import.simpleName}.serializeValue(${it.name})}"
+            val serializeSnipped = "\${${it.navArgType.actualTypeName}.serializeValue(${it.name})}"
             if (it.typeInfo.isNullable || it.hasDefaultValue) {
                 "\"$optionalNavSeparator${it.name}=$serializeSnipped\"".also {
                     optionalNavSeparator = '&'
@@ -51,11 +44,11 @@ object NavArgsGeneratorUtils {
         }
     }
 
-    fun generateGetArgsBody(component: NavComponentInfo, argContainer: ArgContainer): String = component
+    fun generateGetArgsBody(component: NavComponentInfo, argContainer: AndroidArgsContainer): String = component
         .navArgsInfo!!
         .parameters
         .joinToString(",\n\t\t") {
             val nonNullableClaim = if (it.typeInfo.isNullable) "" else "!!"
-            it.name + " = " + "${it.navArgTypeInfo.import.simpleName}.getTyped(${argContainer.variableName}, \"${it.name}\")$nonNullableClaim"
+            it.name + " = " + "${it.navArgType.actualTypeName}.getTyped(${argContainer.variableName}, \"${it.name}\")$nonNullableClaim"
         }
 }

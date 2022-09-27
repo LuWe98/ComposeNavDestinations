@@ -1,8 +1,8 @@
-package com.welu.composenavdestinations.model.rawcomponents
+package com.welu.composenavdestinations.model.components.rawcomponents
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 
-data class RawNavDestinationInfo(
+data class RawComposeDestinationInfo(
     override val isStart: Boolean = false,
     override val baseRoute: String,
     override val classDeclaration: KSClassDeclaration,

@@ -4,7 +4,7 @@ import com.google.devtools.ksp.symbol.KSType
 import com.welu.composenavdestinations.model.ImportInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-enum class NavDestinationType(
+enum class ComposeDestinationType(
     val specImportInfo: ImportInfo
 ) {
     Destination(PackageUtils.NAV_DESTINATION_SPEC_IMPORT),
@@ -19,7 +19,7 @@ enum class NavDestinationType(
             destinationQualifiedName = destinationClassSupertype.declaration.qualifiedName?.asString()!!
         )
 
-        private fun fromDestinationQualifiedName(destinationQualifiedName: String): NavDestinationType = when (destinationQualifiedName) {
+        private fun fromDestinationQualifiedName(destinationQualifiedName: String): ComposeDestinationType = when (destinationQualifiedName) {
             PackageUtils.NAV_DESTINATION_IMPORT.qualifiedName -> Destination
             PackageUtils.NAV_ARG_DESTINATION_IMPORT.qualifiedName -> ArgDestination
             PackageUtils.NAV_DIALOG_DESTINATION_IMPORT.qualifiedName -> DialogDestination

@@ -6,10 +6,10 @@ import com.google.devtools.ksp.symbol.KSType
 import com.welu.composenavdestinations.extensions.ksp.asImportInfo
 import com.welu.composenavdestinations.extractor.NavArgsInfoExtractor
 import com.welu.composenavdestinations.model.ImportInfo
-import com.welu.composenavdestinations.model.NavArgsInfo
-import com.welu.composenavdestinations.model.components.NavDestinationInfo
-import com.welu.composenavdestinations.model.components.NavDestinationType
-import com.welu.composenavdestinations.model.rawcomponents.RawNavDestinationInfo
+import com.welu.composenavdestinations.model.navargs.NavArgsInfo
+import com.welu.composenavdestinations.model.components.ComposeDestinationInfo
+import com.welu.composenavdestinations.model.components.ComposeDestinationType
+import com.welu.composenavdestinations.model.components.rawcomponents.RawComposeDestinationInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
 //TODO -> Man muss nur noch deep Links einbauen, kann man auch als extra Extractor wieder machen
@@ -17,14 +17,14 @@ class NavDestinationsMapper(
     private val resolver: Resolver,
     private val logger: KSPLogger,
     private val navArgsInfoExtractor: NavArgsInfoExtractor
-) : ComponentsMapper<RawNavDestinationInfo, NavDestinationInfo> {
+) : ComponentsMapper<RawComposeDestinationInfo, ComposeDestinationInfo> {
 
-    override fun map(component: RawNavDestinationInfo): NavDestinationInfo {
+    override fun map(component: RawComposeDestinationInfo): ComposeDestinationInfo {
 
         val destinationClassSupertype: KSType = extractNavDestinationSupertype(component)
-        val destinationType = NavDestinationType.fromDestinationSuperType(destinationClassSupertype)
+        val destinationType = ComposeDestinationType.fromDestinationSuperType(destinationClassSupertype)
 
-        return NavDestinationInfo(
+        return ComposeDestinationInfo(
             baseRoute = component.baseRoute,
             destinationImport = component.classDeclaration.asImportInfo()!!,
             specImport = component.classDeclaration.asImportInfo(PackageUtils.NAV_COMPONENT_SPEC_SUFFIX)!!,
@@ -35,12 +35,12 @@ class NavDestinationsMapper(
         )
     }
 
-    private fun mapParentNavGraphSpecDeclarationToImport(rawNavDestination: RawNavDestinationInfo) = ImportInfo(
+    private fun mapParentNavGraphSpecDeclarationToImport(rawNavDestination: RawComposeDestinationInfo) = ImportInfo(
         simpleName = rawNavDestination.parentNavGraph.simpleName.asString() + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
         packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE
     )
 
-    private fun extractNavDestinationSupertype(component: RawNavDestinationInfo): KSType = component
+    private fun extractNavDestinationSupertype(component: RawComposeDestinationInfo): KSType = component
         .classDeclaration
         .superTypes
         .firstOrNull()
@@ -48,14 +48,14 @@ class NavDestinationsMapper(
 
     private fun extractNavArgs(
         destinationClassSupertype: KSType,
-        destinationType: NavDestinationType
+        destinationType: ComposeDestinationType
     ): NavArgsInfo? = navArgsInfoExtractor.extractNavArgsClassDeclarationWith(
         destinationClassSupertype = destinationClassSupertype,
         destinationType = destinationType
     )?.let(navArgsInfoExtractor::extract)
 
     //TODO -> noch einbauen
-    private fun extractDeepLinks(rawNavDestination: RawNavDestinationInfo): List<String> {
+    private fun extractDeepLinks(rawNavDestination: RawComposeDestinationInfo): List<String> {
         return emptyList()
     }
 

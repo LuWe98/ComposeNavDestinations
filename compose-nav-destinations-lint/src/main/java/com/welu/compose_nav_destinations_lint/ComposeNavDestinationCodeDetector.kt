@@ -22,6 +22,12 @@ import com.intellij.psi.PsiType
 import org.jetbrains.uast.UClass
 import org.jetbrains.uast.UElement
 
+//TODO -> https://medium.com/mobile-app-development-publication/making-custom-lint-for-kotlin-code-8a6c203bf474
+// Um eigenes Linting zu erstellen. Damit kann man bspw checken ob eine Flasse die mit @NavDestinationDefinition Annotiert ist auch das Destination Interface implementiert.
+// Beispiel kann unten gesehen werden mit -> NoParcelableSupertype, wenn man nicht Parcelable Implementiert.
+// TODO -> https://proandroiddev.com/implementing-your-first-android-lint-rule-6e572383b292
+//  LINT checks in einem separaten Modul erstellen, dass bspw. eine Destination Klasse auch die @NavDestination Annotation besitzt und umgekehrt
+
 //https://android.googlesource.com/platform/tools/base/+/studio-master-dev/lint/libs/lint-checks/src/main/java/com/android/tools/lint/checks
 //TODO -> QuickFixes einbauen.
 

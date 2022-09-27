@@ -9,69 +9,69 @@ import com.welu.composenavdestinations.extensions.ksp.asImportInfo
 import com.welu.composenavdestinations.extensions.ksp.getAnnotationArgument
 import com.welu.composenavdestinations.extractor.NavArgsInfoExtractor
 import com.welu.composenavdestinations.model.ImportInfo
-import com.welu.composenavdestinations.model.NavArgsInfo
-import com.welu.composenavdestinations.model.components.NavGraphInfo
-import com.welu.composenavdestinations.model.rawcomponents.RawNavDestinationInfo
-import com.welu.composenavdestinations.model.rawcomponents.RawNavGraphInfo
+import com.welu.composenavdestinations.model.navargs.NavArgsInfo
+import com.welu.composenavdestinations.model.components.ComposeNavGraphInfo
+import com.welu.composenavdestinations.model.components.rawcomponents.RawComposeDestinationInfo
+import com.welu.composenavdestinations.model.components.rawcomponents.RawComposeNavGraphInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
 class NavGraphsMapper(
     private val resolver: Resolver,
     private val logger: KSPLogger,
     private val navArgsInfoExtractor: NavArgsInfoExtractor
-) : ComponentsMapper<RawNavGraphInfo, NavGraphInfo> {
+) : ComponentsMapper<RawComposeNavGraphInfo, ComposeNavGraphInfo> {
 
-    override fun map(component: RawNavGraphInfo) = NavGraphInfo(
+    override fun map(component: RawComposeNavGraphInfo) = ComposeNavGraphInfo(
         deepLinks = extractDeepLinks(component),
         navArgsInfo = extractNavArgs(component),
         baseRoute = component.baseRoute,
         specImport = mapNavGraphSpecDeclarationToImport(component),
         startComponentDeclaration = mapStartComponentDeclarationToImport(component),
         parentNavGraphSpecImport = mapParentNavGraphSpecToImport(component),
-        childNavDestinationSpecImports = mapChildNavDestinationSpecsToImport(component),
+        childDestinationSpecImports = mapChildNavDestinationSpecsToImport(component),
         childNavGraphSpecImports = mapChildNavGraphSpecsToImport(component)
     )
 
-    private fun mapNavGraphSpecDeclarationToImport(rawNavGraphInfo: RawNavGraphInfo) = ImportInfo(
+    private fun mapNavGraphSpecDeclarationToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = ImportInfo(
         simpleName = rawNavGraphInfo.simpleName + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
         packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE
     )
 
-    private fun mapStartComponentDeclarationToImport(rawNavGraphInfo: RawNavGraphInfo) = rawNavGraphInfo.startComponentDeclaration!!.let { component ->
+    private fun mapStartComponentDeclarationToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = rawNavGraphInfo.startComponentDeclaration!!.let { component ->
         when (component) {
-            is RawNavGraphInfo -> ImportInfo(
+            is RawComposeNavGraphInfo -> ImportInfo(
                 simpleName = component.simpleName + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
                 packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE
             )
-            is RawNavDestinationInfo -> {
+            is RawComposeDestinationInfo -> {
                 component.classDeclaration.asImportInfo(PackageUtils.NAV_COMPONENT_SPEC_SUFFIX)!!
             }
         }
     }
 
-    private fun mapParentNavGraphSpecToImport(rawNavGraphInfo: RawNavGraphInfo) = rawNavGraphInfo.parentNavGraphSpecDeclaration?.let {
+    private fun mapParentNavGraphSpecToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = rawNavGraphInfo.parentNavGraphSpecDeclaration?.let {
         ImportInfo(it.simpleName.asString() + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX, PackageUtils.NAV_GRAPH_SPEC_PACKAGE)
     }
 
-    private fun mapChildNavGraphSpecsToImport(rawNavGraphInfo: RawNavGraphInfo) = rawNavGraphInfo.childNavGraphSpecDeclarations.map {
+    private fun mapChildNavGraphSpecsToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = rawNavGraphInfo.childNavGraphSpecDeclarations.map {
         ImportInfo(it.simpleName.asString() + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX, PackageUtils.NAV_GRAPH_SPEC_PACKAGE)
     }.toList()
 
-    private fun mapChildNavDestinationSpecsToImport(rawNavGraphInfo: RawNavGraphInfo) = rawNavGraphInfo.childNavDestinationSpecDeclarations.mapNotNull {
+    private fun mapChildNavDestinationSpecsToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = rawNavGraphInfo.childNavDestinationSpecDeclarations.mapNotNull {
         it.asImportInfo(PackageUtils.NAV_COMPONENT_SPEC_SUFFIX)
     }.toList()
 
 
     //TODO -> Noch einbauen -> NavArgs kommen aus einem Parameter von der NavGraphDefinition Annotation
     // -> Man kann dadurch direkt navArgsInfoExtractor.extract mit der KClassDeclaration aufrufen
-    private fun extractNavArgs(component: RawNavGraphInfo): NavArgsInfo? {
+    private fun extractNavArgs(component: RawComposeNavGraphInfo): NavArgsInfo? {
         val navArgsClass = component.classDeclaration.getNavArgsClassDeclaration()
         if ((navArgsClass.qualifiedName?.asString() ?: Unit::class.qualifiedName) == Unit::class.qualifiedName) return null
         return navArgsInfoExtractor.extract(navArgsClass)
     }
 
     //TODO -> noch einbauen
-    private fun extractDeepLinks(component: RawNavGraphInfo): List<String> {
+    private fun extractDeepLinks(component: RawComposeNavGraphInfo): List<String> {
         return emptyList()
     }
 

@@ -4,14 +4,14 @@ import com.welu.composenavdestinations.generation.FileContentInfoTypedGenerator
 import com.welu.composenavdestinations.generation.templates.CodeTemplates
 import com.welu.composenavdestinations.model.FileContentInfo
 import com.welu.composenavdestinations.model.components.NavComponentInfo
-import com.welu.composenavdestinations.model.components.NavDestinationInfo
+import com.welu.composenavdestinations.model.components.ComposeDestinationInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
 object FileGeneratorNavComponentUtils : FileContentInfoTypedGenerator<Sequence<NavComponentInfo>> {
 
     override fun generate(instance: Sequence<NavComponentInfo>): FileContentInfo {
 
-        val destinationInfos = instance.filterIsInstance<NavDestinationInfo>()
+        val destinationInfos = instance.filterIsInstance<ComposeDestinationInfo>()
 
         return FileContentInfo(
             fileImportInfo = PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT,
@@ -23,7 +23,7 @@ object FileGeneratorNavComponentUtils : FileContentInfoTypedGenerator<Sequence<N
                 PackageUtils.NAV_COMPOSE_DESTINATION_VAL_ROUTE_EXTENSION,
                 PackageUtils.NAV_COMPOSE_GRAPH_SPEC_IMPORT
             ).apply {
-                addAll(destinationInfos.map(NavDestinationInfo::destinationImport))
+                addAll(destinationInfos.map(ComposeDestinationInfo::destinationImport))
                 addAll(instance.map(NavComponentInfo::specImport))
             },
             code = CodeTemplates.NAV_COMPONENT_UTILS_TEMPLATE
@@ -42,7 +42,7 @@ object FileGeneratorNavComponentUtils : FileContentInfoTypedGenerator<Sequence<N
         it.specImport.simpleName
     }
 
-    private fun generateDestinationsSpecMapEntries(destinations: Sequence<NavDestinationInfo>) = destinations.joinToString(",\n\t\t") {
+    private fun generateDestinationsSpecMapEntries(destinations: Sequence<ComposeDestinationInfo>) = destinations.joinToString(",\n\t\t") {
         it.destinationImport.simpleName + " to " + it.specImport.simpleName
     }
 

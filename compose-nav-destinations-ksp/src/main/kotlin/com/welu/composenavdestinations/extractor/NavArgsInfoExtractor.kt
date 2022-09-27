@@ -6,9 +6,10 @@ import com.google.devtools.ksp.symbol.*
 import com.welu.composenavdestinations.exceptions.UnsupportedTypeException
 import com.welu.composenavdestinations.extensions.isOneOf
 import com.welu.composenavdestinations.extensions.ksp.*
-import com.welu.composenavdestinations.extractor.NavArgTypeInfoExtractor.extractParameterNavArgTypeInfo
+import com.welu.composenavdestinations.extractor.NavArgTypeInfoExtractor.extractParameterNavArgType
 import com.welu.composenavdestinations.model.*
-import com.welu.composenavdestinations.model.components.NavDestinationType
+import com.welu.composenavdestinations.model.components.ComposeDestinationType
+import com.welu.composenavdestinations.model.navargs.NavArgsInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 import java.io.Serializable
 
@@ -96,16 +97,16 @@ class NavArgsInfoExtractor(
      */
     fun extractNavArgsClassDeclarationWith(
         destinationClassSupertype: KSType,
-        destinationType: NavDestinationType
+        destinationType: ComposeDestinationType
     ): ParameterTypeInfoAndDeclaration? = when(destinationType) {
 
-        NavDestinationType.Destination,
-        NavDestinationType.BottomSheetDestination,
-        NavDestinationType.DialogDestination -> null
+        ComposeDestinationType.Destination,
+        ComposeDestinationType.BottomSheetDestination,
+        ComposeDestinationType.DialogDestination -> null
 
-        NavDestinationType.ArgDestination,
-        NavDestinationType.BottomSheetArgDestination,
-        NavDestinationType.DialogArgDestination -> destinationClassSupertype
+        ComposeDestinationType.ArgDestination,
+        ComposeDestinationType.BottomSheetArgDestination,
+        ComposeDestinationType.DialogArgDestination -> destinationClassSupertype
             .arguments
             .first()
             .toResolvedType()
@@ -146,12 +147,12 @@ class NavArgsInfoExtractor(
         //Default Value Check and retrieval
         val parameterDefaultValue = defaultValueExtractor.extract(valueParameter, qualifiedTypeName, fileContent)
         //The NavArgInfo for the according NavType<T>
-        val parameterNavArgInfo = parameterTypeInfo.extractParameterNavArgTypeInfo()
+        val parameterNavArgInfo = parameterTypeInfo.extractParameterNavArgType()
 
         return Parameter(
             name = parameterName,
             typeInfo = parameterTypeInfo,
-            navArgTypeInfo = parameterNavArgInfo,
+            navArgType = parameterNavArgInfo,
             defaultValue = parameterDefaultValue
         )
     }

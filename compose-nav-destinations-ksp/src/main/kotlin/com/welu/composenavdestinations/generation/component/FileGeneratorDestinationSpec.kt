@@ -3,22 +3,22 @@ package com.welu.composenavdestinations.generation.component
 import com.welu.composenavdestinations.extensions.div
 import com.welu.composenavdestinations.generation.FileContentInfoTypedGenerator
 import com.welu.composenavdestinations.generation.templates.NavDestinationCodeTemplates
-import com.welu.composenavdestinations.model.ArgContainer
+import com.welu.composenavdestinations.model.AndroidArgsContainer
 import com.welu.composenavdestinations.model.FileContentInfo
 import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.model.ParameterTypeInfo
-import com.welu.composenavdestinations.model.components.NavDestinationInfo
+import com.welu.composenavdestinations.model.components.ComposeDestinationInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<NavDestinationInfo> {
+object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<ComposeDestinationInfo> {
 
-    override fun generate(instance: NavDestinationInfo): FileContentInfo = if (instance.isArgDestination) {
+    override fun generate(instance: ComposeDestinationInfo): FileContentInfo = if (instance.isArgDestination) {
         generateArgSpecFileContentInfo(instance)
     } else {
         generatePlainSpecFileContentInfo(instance)
     }
 
-    private fun generatePlainSpecFileContentInfo(plainDestinationInfo: NavDestinationInfo): FileContentInfo = FileContentInfo(
+    private fun generatePlainSpecFileContentInfo(plainDestinationInfo: ComposeDestinationInfo): FileContentInfo = FileContentInfo(
         fileName = plainDestinationInfo.simpleName,
         packageDir = plainDestinationInfo.packageDir,
         imports = setOf(
@@ -49,7 +49,7 @@ object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<NavDestinati
             )
     )
 
-    private fun generateArgSpecFileContentInfo(argDestinationInfo: NavDestinationInfo): FileContentInfo {
+    private fun generateArgSpecFileContentInfo(argDestinationInfo: ComposeDestinationInfo): FileContentInfo {
         val sortedParams = argDestinationInfo
             .navArgsInfo!!
             .parameters
@@ -100,10 +100,10 @@ object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<NavDestinati
                     newValue = NavArgsGeneratorUtils.generateNamedNavArguments(sortedParams)
                 ).replace(
                     oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_BACKSTACK,
-                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, ArgContainer.NabBackStackEntry)
+                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, AndroidArgsContainer.NabBackStackEntry)
                 ).replace(
                     oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_SAVED_STATE,
-                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, ArgContainer.SaveStateHandle)
+                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, AndroidArgsContainer.SaveStateHandle)
                 ).replace(
                     oldValue = NavDestinationCodeTemplates.PLACEHOLDER_DESTINATION_TYPE_SPEC_NAME,
                     newValue = argDestinationInfo.destinationType.specImportInfo.simpleName

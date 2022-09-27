@@ -3,12 +3,12 @@ package com.welu.composenavdestinations.generation
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
-import com.welu.composenavdestinations.generation.component.FileGeneratorDestinationExtenstions
+import com.welu.composenavdestinations.generation.component.FileGeneratorDestinationExtensions
 import com.welu.composenavdestinations.generation.component.FileGeneratorDestinationSpec
 import com.welu.composenavdestinations.generation.component.FileGeneratorNavGraphSpec
 import com.welu.composenavdestinations.generation.general.*
-import com.welu.composenavdestinations.model.components.NavDestinationInfo
-import com.welu.composenavdestinations.model.components.NavGraphInfo
+import com.welu.composenavdestinations.model.components.ComposeDestinationInfo
+import com.welu.composenavdestinations.model.components.ComposeNavGraphInfo
 
 class ContentGenerator(
     private val resolver: Resolver,
@@ -21,8 +21,8 @@ class ContentGenerator(
     }
 
     fun generate(
-        navDestinations: Sequence<NavDestinationInfo>,
-        navGraphs: Sequence<NavGraphInfo>
+        navDestinations: Sequence<ComposeDestinationInfo>,
+        navGraphs: Sequence<ComposeNavGraphInfo>
     ) {
 
         //Generates the custom NavArgs needed for Navigation
@@ -32,7 +32,7 @@ class ContentGenerator(
         FileGeneratorNavComponentUtils.generate(navDestinations + navGraphs).let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavDestinationsExt File
-        FileGeneratorDestinationExtenstions.generate(navDestinations).let(fileContentInfoOutputWriter::writeFile)
+        FileGeneratorDestinationExtensions.generate(navDestinations).let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavDestinationsResultExt File
         FileGeneratorResultExtensions.generate(navDestinations).let(fileContentInfoOutputWriter::writeFile)

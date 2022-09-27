@@ -45,7 +45,7 @@ class NavDestinationsProcessor(
             navArgsInfoExtractor = navArgsInfoExtractor
         )
 
-        val navDestinationInfos = rawNavComponents.rawNavDestinationInfos.map(navDestinationInfoMapper::map)
+        val navDestinationInfos = rawNavComponents.rawDestinationInfos.map(navDestinationInfoMapper::map)
 
         val navGraphInfoMapper = NavGraphsMapper(
             resolver = resolver,
@@ -114,7 +114,8 @@ class NavDestinationsProcessor(
 
     @Throws(IllegalStateException::class)
     private fun checkIfNavDestinationsAreOfTypeObject(navDestinations: Sequence<KSClassDeclaration>) {
-        val nonObjectNavDestinations = navDestinations.filter { it.classKind != ClassKind.OBJECT }
+        //it.isCompanionObject since a CompanionObject does not have a name -> Will be maybe supported in the future
+        val nonObjectNavDestinations = navDestinations.filter { it.classKind != ClassKind.OBJECT || it.isCompanionObject }
         if (nonObjectNavDestinations.any()) {
             throw IllegalStateException(
                 "Only Destinations of type Object are supported! Non Object NavDestinations: " + nonObjectNavDestinations.joinToString(", ") {

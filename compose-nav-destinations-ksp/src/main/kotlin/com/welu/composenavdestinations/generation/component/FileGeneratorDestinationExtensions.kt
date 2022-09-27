@@ -1,35 +1,35 @@
 package com.welu.composenavdestinations.generation.component
 
-import com.welu.composenavdestinations.generation.templates.CodeTemplates
 import com.welu.composenavdestinations.generation.FileContentInfoTypedGenerator
+import com.welu.composenavdestinations.generation.templates.CodeTemplates
 import com.welu.composenavdestinations.model.FileContentInfo
-import com.welu.composenavdestinations.model.ImportInfo
-import com.welu.composenavdestinations.model.components.NavDestinationInfo
 import com.welu.composenavdestinations.model.Parameter
+import com.welu.composenavdestinations.model.components.ComposeDestinationInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-object FileGeneratorDestinationExtenstions : FileContentInfoTypedGenerator<Sequence<NavDestinationInfo>> {
+//TODO -> Noch die Imports optimieren, es wird viel zu viel importiert
+object FileGeneratorDestinationExtensions : FileContentInfoTypedGenerator<Sequence<ComposeDestinationInfo>> {
 
-    override fun generate(instance: Sequence<NavDestinationInfo>): FileContentInfo {
+    override fun generate(instance: Sequence<ComposeDestinationInfo>): FileContentInfo {
 
-        val argDestinations = instance.filter(NavDestinationInfo::isArgDestination)
+        val argDestinations = instance.filter(ComposeDestinationInfo::isArgDestination)
 
         return FileContentInfo(
             fileImportInfo = PackageUtils.NAV_DESTINATION_EXTENSIONS_FILE_IMPORT,
-            imports = mutableSetOf<ImportInfo>().apply {
-                addAll(instance.map(NavDestinationInfo::destinationImport))
-                addAll(instance.map(NavDestinationInfo::specImport))
-                addAll(argDestinations.flatMap(NavDestinationInfo::allImports))
-
-                add(PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT)
-                add(PackageUtils.NAV_COMPOSE_DESTINATION_SPEC_IMPORT)
-                add(PackageUtils.NAV_COMPOSE_SEALED_DESTINATION_IMPORT)
-                add(PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_SPEC_IMPORT)
-                add(PackageUtils.NAV_ARG_COMPOSE_DESTINATION_SPEC_IMPORT)
-                add(PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_IMPORT)
-                add(PackageUtils.NAV_ARG_COMPOSE_DESTINATION_IMPORT)
-                add(PackageUtils.NAV_COMPOSE_DESTINATION_SCOPE_IMPORT)
-                add(PackageUtils.NAV_DESTINATION_SEND_DESTINATION_RESULT_FUNCTION_IMPORT)
+            imports = mutableSetOf(
+                PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT,
+                PackageUtils.NAV_COMPOSE_DESTINATION_SPEC_IMPORT,
+                PackageUtils.NAV_COMPOSE_SEALED_DESTINATION_IMPORT,
+                PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_SPEC_IMPORT,
+                PackageUtils.NAV_ARG_COMPOSE_DESTINATION_SPEC_IMPORT,
+                PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_IMPORT,
+                PackageUtils.NAV_ARG_COMPOSE_DESTINATION_IMPORT,
+                PackageUtils.NAV_COMPOSE_DESTINATION_SCOPE_IMPORT,
+                PackageUtils.NAV_DESTINATION_SEND_DESTINATION_RESULT_FUNCTION_IMPORT
+            ).apply {
+                addAll(instance.map(ComposeDestinationInfo::destinationImport))
+                addAll(instance.map(ComposeDestinationInfo::specImport))
+                addAll(argDestinations.flatMap(ComposeDestinationInfo::allImports))
 
                 if (argDestinations.any()) {
                     add(PackageUtils.SAVED_STATE_HANDLE_IMPORT)
@@ -47,7 +47,7 @@ object FileGeneratorDestinationExtenstions : FileContentInfoTypedGenerator<Seque
         )
     }
 
-    private fun generateArgsFromFunctions(argDestinations: Sequence<NavDestinationInfo>): String = argDestinations.joinToString("\n\n") {
+    private fun generateArgsFromFunctions(argDestinations: Sequence<ComposeDestinationInfo>): String = argDestinations.joinToString("\n\n") {
         """
         | fun ${it.destinationImport.simpleName}.argsFrom(savedStateHandle: SavedStateHandle) = ${it.specImport.simpleName}.argsFrom(savedStateHandle)
         | 
@@ -55,7 +55,7 @@ object FileGeneratorDestinationExtenstions : FileContentInfoTypedGenerator<Seque
         """.trimMargin("| ")
     }
 
-    private fun generateArgsInvokeFunction(argDestinations: Sequence<NavDestinationInfo>): String = argDestinations.joinToString("\n\n") {
+    private fun generateArgsInvokeFunction(argDestinations: Sequence<ComposeDestinationInfo>): String = argDestinations.joinToString("\n\n") {
         """
         | operator fun ${it.destinationImport.simpleName}.invoke(
         |     ${it.navArgsInfo!!.parameters.joinToString(",\n\t\t| \t", transform = Parameter::fullDeclarationName)}

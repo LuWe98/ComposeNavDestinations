@@ -4,12 +4,12 @@ import com.welu.composenavdestinations.generation.FileContentInfoTypedGenerator
 import com.welu.composenavdestinations.generation.templates.CodeTemplates
 import com.welu.composenavdestinations.model.FileContentInfo
 import com.welu.composenavdestinations.model.ImportInfo
-import com.welu.composenavdestinations.model.components.NavDestinationInfo
+import com.welu.composenavdestinations.model.components.ComposeDestinationInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-object FileGeneratorResultExtensions : FileContentInfoTypedGenerator<Sequence<NavDestinationInfo>> {
+object FileGeneratorResultExtensions : FileContentInfoTypedGenerator<Sequence<ComposeDestinationInfo>> {
 
-    override fun generate(instance: Sequence<NavDestinationInfo>) = FileContentInfo(
+    override fun generate(instance: Sequence<ComposeDestinationInfo>) = FileContentInfo(
         fileImportInfo = PackageUtils.NAV_DESTINATION_RESULT_EXTENSIONS_FILE_IMPORT,
         imports = mutableSetOf<ImportInfo>().apply {
             add(PackageUtils.ANDROID_NAVIGATION_NAV_CONTROLLER_IMPORT)

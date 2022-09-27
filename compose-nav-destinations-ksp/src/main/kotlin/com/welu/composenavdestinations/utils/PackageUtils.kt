@@ -2,9 +2,9 @@ package com.welu.composenavdestinations.utils
 
 import com.welu.composenavdestinations.extensions.asParamTypeInfo
 import com.welu.composenavdestinations.extensions.asParameterTypeInfo
-import com.welu.composenavdestinations.model.BasicNavArgType
+import com.welu.composenavdestinations.model.navargs.BasicParameterNavArgType
 import com.welu.composenavdestinations.model.ImportInfo
-import com.welu.composenavdestinations.model.NavArgType
+import com.welu.composenavdestinations.model.navargs.ParameterNavArgType
 import com.welu.composenavdestinations.model.ParameterTypeInfo
 import kotlin.reflect.KClass
 
@@ -207,7 +207,7 @@ internal object PackageUtils {
 //        NAV_ARG_DOUBLE_TYPE, NAV_ARG_PRIMITIVE_DOUBLE_ARRAY_TYPE, NAV_ARG_DOUBLE_ARRAY_TYPE, NAV_ARG_DOUBLE_LIST_TYPE, NAV_ARG_DOUBLE_SET_TYPE
 //    )
 
-    val BASIC_NAV_ARGS_MAP: Map<ParameterTypeInfo, NavArgType> = setOf(
+    val BASIC_NAV_ARGS_MAP: Map<ParameterTypeInfo, ParameterNavArgType> = setOf(
         generateBasicNavArgsForClass(String::class),
         generateBasicNavArgsForClass(Char::class, CharArray::class),
         generateBasicNavArgsForClass(Boolean::class, BooleanArray::class),
@@ -232,20 +232,20 @@ internal object PackageUtils {
         clazz: KClass<*>,
         primitiveArrayClazz: KClass<*>? = null,
         name: String = clazz.simpleName!!
-    ): List<Pair<ParameterTypeInfo, NavArgType>> {
-        val listType = BasicNavArgType.valueOf(name + NAV_ARGS_LIST_SUFFIX)
-        val setType = BasicNavArgType.valueOf(name + NAV_ARGS_SET_SUFFIX)
+    ): List<Pair<ParameterTypeInfo, ParameterNavArgType>> {
+        val listType = BasicParameterNavArgType.valueOf(name + NAV_ARGS_LIST_SUFFIX)
+        val setType = BasicParameterNavArgType.valueOf(name + NAV_ARGS_SET_SUFFIX)
         val listImports = VALID_LIST_IMPORT_INFOS.map { it.asParamTypeInfo(clazz) to listType }
         val setImports = VALID_SET_IMPORT_INFOS.map { it.asParamTypeInfo(clazz) to setType }
 
-        return mutableListOf<Pair<ParameterTypeInfo, NavArgType>>(
-            clazz.asParamTypeInfo() to BasicNavArgType.valueOf(name + NAV_ARGS_SUFFIX),
-            Array::class.asParamTypeInfo(clazz) to BasicNavArgType.valueOf(name + NAV_ARGS_ARRAY_SUFFIX)
+        return mutableListOf<Pair<ParameterTypeInfo, ParameterNavArgType>>(
+            clazz.asParamTypeInfo() to BasicParameterNavArgType.valueOf(name + NAV_ARGS_SUFFIX),
+            Array::class.asParamTypeInfo(clazz) to BasicParameterNavArgType.valueOf(name + NAV_ARGS_ARRAY_SUFFIX)
         ).apply {
             addAll(listImports)
             addAll(setImports)
             primitiveArrayClazz?.let {
-                add(it.asParameterTypeInfo() to BasicNavArgType.valueOf(NAV_ARGS_PRIMITIVE_ARRAY_PREFIX + name + NAV_ARGS_ARRAY_SUFFIX))
+                add(it.asParameterTypeInfo() to BasicParameterNavArgType.valueOf(NAV_ARGS_PRIMITIVE_ARRAY_PREFIX + name + NAV_ARGS_ARRAY_SUFFIX))
             }
         }
     }
