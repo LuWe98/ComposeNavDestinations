@@ -13,8 +13,8 @@ import com.welu.composenavdestinations.extractor.DefaultValueExtractor
 import com.welu.composenavdestinations.extractor.NavArgsInfoExtractor
 import com.welu.composenavdestinations.extractor.RawNavComponentsExtractor
 import com.welu.composenavdestinations.generation.ContentGenerator
-import com.welu.composenavdestinations.mapper.NavDestinationsMapper
-import com.welu.composenavdestinations.mapper.NavGraphsMapper
+import com.welu.composenavdestinations.mapper.ComposeDestinationMapper
+import com.welu.composenavdestinations.mapper.ComposeNavGraphMapper
 
 class NavDestinationsProcessor(
     private val codeGenerator: CodeGenerator,
@@ -39,19 +39,19 @@ class NavDestinationsProcessor(
             defaultValueExtractor = defaultValueExtractor
         )
 
-        val navDestinationInfoMapper = NavDestinationsMapper(
+        val navDestinationInfoMapper = ComposeDestinationMapper(
+            resolver = resolver,
+            logger = logger,
+            navArgsInfoExtractor = navArgsInfoExtractor
+        )
+
+        val navGraphInfoMapper = ComposeNavGraphMapper(
             resolver = resolver,
             logger = logger,
             navArgsInfoExtractor = navArgsInfoExtractor
         )
 
         val navDestinationInfos = rawNavComponents.rawDestinationInfos.map(navDestinationInfoMapper::map)
-
-        val navGraphInfoMapper = NavGraphsMapper(
-            resolver = resolver,
-            logger = logger,
-            navArgsInfoExtractor = navArgsInfoExtractor
-        )
 
         val navGraphInfos = rawNavComponents.rawNavGraphInfos.map(navGraphInfoMapper::map)
 

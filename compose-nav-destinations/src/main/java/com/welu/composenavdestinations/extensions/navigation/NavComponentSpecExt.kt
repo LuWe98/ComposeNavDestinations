@@ -3,6 +3,7 @@ package com.welu.composenavdestinations.extensions.navigation
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
+import com.welu.composenavdestinations.navigation.scope.ComposeArgDestinationScope
 import com.welu.composenavdestinations.navigation.spec.*
 
 //TODO -> Nochmal schauen
@@ -17,11 +18,17 @@ import com.welu.composenavdestinations.navigation.spec.*
 fun NavComponentSpec.isInsideGraph(navGraph: ComposeNavGraphSpec): Boolean =
     this == navGraph || parentNavGraphSpec == navGraph || parentNavGraphSpec?.isInsideGraph(navGraph) == true
 
-fun <Arg: Any> ComposeArgDestinationSpec<Arg, *>.areArgumentsSetCorrectly(navBackStackEntry: NavBackStackEntry) = arguments.areArgumentsSetCorrectly(navBackStackEntry)
+fun <Arg: Any> ComposeArgDestinationScope<Arg>.areArgumentsSetCorrectly(navBackStackEntry: NavBackStackEntry = backStackEntry) =
+    relatedSpec.areArgumentsSetCorrectly(navBackStackEntry)
 
-fun <Arg: Any> ComposeArgDestinationSpec<Arg, *>.areArgumentsSetCorrectly(savedStateHandle: SavedStateHandle) = arguments.areArgumentsSetCorrectly(savedStateHandle)
+fun <Arg: Any> ComposeArgDestinationSpec<Arg, *>.areArgumentsSetCorrectly(navBackStackEntry: NavBackStackEntry) =
+    arguments.areArgumentsSetCorrectly(navBackStackEntry)
 
-fun <Arg: Any> ArgNavGraphSpec<Arg>.areArgumentsSetCorrectly(savedStateHandle: SavedStateHandle) = arguments.areArgumentsSetCorrectly(savedStateHandle)
+fun <Arg: Any> ComposeArgDestinationSpec<Arg, *>.areArgumentsSetCorrectly(savedStateHandle: SavedStateHandle) =
+    arguments.areArgumentsSetCorrectly(savedStateHandle)
+
+fun <Arg: Any> ArgNavGraphSpec<Arg>.areArgumentsSetCorrectly(savedStateHandle: SavedStateHandle) =
+    arguments.areArgumentsSetCorrectly(savedStateHandle)
 
 /**
  * Validates if all [NamedNavArgument]s are set correctly in this [NavBackStackEntry].

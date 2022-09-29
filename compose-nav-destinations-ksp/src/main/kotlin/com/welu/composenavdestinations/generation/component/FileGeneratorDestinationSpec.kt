@@ -68,7 +68,7 @@ object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<ComposeDesti
                 PackageUtils.SAVED_STATE_HANDLE_IMPORT,
                 PackageUtils.ROUTABLE_IMPORT
             ).apply {
-                addAll(argDestinationInfo.allImports)
+                addAll(argDestinationInfo.imports)
             },
             code = NavDestinationCodeTemplates.NAV_DESTINATION_ARG_SPEC_TEMPLATE
                 .replace(

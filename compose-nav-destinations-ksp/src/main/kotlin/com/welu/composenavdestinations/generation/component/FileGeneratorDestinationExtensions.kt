@@ -7,7 +7,6 @@ import com.welu.composenavdestinations.model.Parameter
 import com.welu.composenavdestinations.model.components.ComposeDestinationInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-//TODO -> Noch die Imports optimieren, es wird viel zu viel importiert
 object FileGeneratorDestinationExtensions : FileContentInfoTypedGenerator<Sequence<ComposeDestinationInfo>> {
 
     override fun generate(instance: Sequence<ComposeDestinationInfo>): FileContentInfo {
@@ -23,13 +22,11 @@ object FileGeneratorDestinationExtensions : FileContentInfoTypedGenerator<Sequen
                 PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_SPEC_IMPORT,
                 PackageUtils.NAV_ARG_COMPOSE_DESTINATION_SPEC_IMPORT,
                 PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_IMPORT,
-                PackageUtils.NAV_ARG_COMPOSE_DESTINATION_IMPORT,
-                PackageUtils.NAV_COMPOSE_DESTINATION_SCOPE_IMPORT,
-                PackageUtils.NAV_DESTINATION_SEND_DESTINATION_RESULT_FUNCTION_IMPORT
+                PackageUtils.NAV_ARG_COMPOSE_DESTINATION_IMPORT
             ).apply {
                 addAll(instance.map(ComposeDestinationInfo::destinationImport))
                 addAll(instance.map(ComposeDestinationInfo::specImport))
-                addAll(argDestinations.flatMap(ComposeDestinationInfo::allImports))
+                addAll(argDestinations.flatMap(ComposeDestinationInfo::typeImports))
 
                 if (argDestinations.any()) {
                     add(PackageUtils.SAVED_STATE_HANDLE_IMPORT)
@@ -47,6 +44,8 @@ object FileGeneratorDestinationExtensions : FileContentInfoTypedGenerator<Sequen
         )
     }
 
+    //TODO -> Für jede Destination eine eigene Extension File erstellen. Dadurch kommt es nicht zu problemen,
+    // wenn man bsw. ein gleichnamiges Objekt in zwei unterschiedlichen Packages hat
     private fun generateArgsFromFunctions(argDestinations: Sequence<ComposeDestinationInfo>): String = argDestinations.joinToString("\n\n") {
         """
         | fun ${it.destinationImport.simpleName}.argsFrom(savedStateHandle: SavedStateHandle) = ${it.specImport.simpleName}.argsFrom(savedStateHandle)

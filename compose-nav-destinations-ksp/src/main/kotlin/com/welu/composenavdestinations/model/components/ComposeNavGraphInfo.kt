@@ -32,7 +32,7 @@ data class ComposeNavGraphInfo(
         addAll(childDestinationSpecImports)
         navArgsInfo?.let {
             addAll(it.parameters.flatMap(Parameter::imports).filter(ImportInfo::isNonDefaultPackage))
-            addAll(it.typeInfo.allImports)
+            addAll(it.typeInfo.imports)
         }
     }
 }

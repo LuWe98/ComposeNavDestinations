@@ -1,6 +1,5 @@
 package com.welu.composenavdestinations.model
 
-import com.welu.composenavdestinations.extensions.flattenMutable
 import com.welu.composenavdestinations.model.navargs.ComplexParameterNavArgType
 import com.welu.composenavdestinations.model.navargs.ParameterNavArgType
 import com.welu.composenavdestinations.model.navargs.actualTypeImport
@@ -33,13 +32,11 @@ data class Parameter(
     val hasDefaultValue get() = defaultValue != null
     val hasComplexNavArgType get() = navArgType is ComplexParameterNavArgType
 
-    val imports
-        get(): List<ImportInfo> = typeInfo.type.typeArguments
-            .mapNotNull { it.typeInfo?.allImports }
-            .flattenMutable().apply {
-                add(typeInfo.type.import)
-                add(navArgType.actualTypeImport)
-                defaultValue?.requiredImports?.let(::addAll)
-            }.distinctBy(ImportInfo::qualifiedName)
+    val typeImports get(): Set<ImportInfo> = mutableSetOf(typeInfo.type.import).apply {
+        addAll(typeInfo.type.typeArguments.mapNotNull { it.typeInfo?.imports }.flatten())
+        defaultValue?.requiredImports?.let(::addAll)
+    }
+
+    val imports get(): Set<ImportInfo> = typeImports + navArgType.actualTypeImport
 
 }

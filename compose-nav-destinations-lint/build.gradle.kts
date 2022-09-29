@@ -9,12 +9,21 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-dependencies {
-    compileOnly(project(":compose-nav-destinations-shared"))
+lint {
+    htmlReport =  true
+    htmlOutput = file("lint-report.html")
+    textReport = true
+    absolutePaths = false
+    ignoreTestSources = true
+}
 
-    val lintVersion = "30.2.2"
+dependencies {
+    //compileOnly(project(":compose-nav-destinations-shared"))
+
+    val lintVersion = "30.3.0"
     compileOnly("com.android.tools.lint:lint-api:$lintVersion")
     compileOnly("com.android.tools.lint:lint-checks:$lintVersion")
 
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10")
+    val kotlinVersion = "1.7.10"
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
 }

@@ -15,11 +15,11 @@ import com.welu.composenavdestinations.model.components.rawcomponents.RawCompose
 import com.welu.composenavdestinations.model.components.rawcomponents.RawComposeNavGraphInfo
 import com.welu.composenavdestinations.utils.PackageUtils
 
-class NavGraphsMapper(
+class ComposeNavGraphMapper(
     private val resolver: Resolver,
     private val logger: KSPLogger,
     private val navArgsInfoExtractor: NavArgsInfoExtractor
-) : ComponentsMapper<RawComposeNavGraphInfo, ComposeNavGraphInfo> {
+) : NavComponentMapper<RawComposeNavGraphInfo, ComposeNavGraphInfo> {
 
     override fun map(component: RawComposeNavGraphInfo) = ComposeNavGraphInfo(
         deepLinks = extractDeepLinks(component),

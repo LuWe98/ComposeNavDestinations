@@ -9,7 +9,6 @@ import com.welu.composenavdestinations.model.components.rawcomponents.RawCompose
 import com.welu.composenavdestinations.model.components.rawcomponents.RawComposeNavGraphInfo
 import com.welu.composenavdestinations.model.components.rawcomponents.RawNavComponentInfo
 import com.welu.composenavdestinations.model.components.rawcomponents.RawNavComponents
-import com.welu.composenavdestinations.model.rawcomponents.*
 
 typealias RawNavGraphWithRawNavDestinations = Pair<RawComposeNavGraphInfo, Sequence<RawComposeDestinationInfo>>
 

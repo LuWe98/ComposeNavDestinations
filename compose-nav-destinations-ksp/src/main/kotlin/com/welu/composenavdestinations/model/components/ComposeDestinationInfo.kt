@@ -22,19 +22,23 @@ data class ComposeDestinationInfo(
     val simpleName get() = specImport.simpleName
     val isArgDestination get() = navArgsInfo != null
 
-    val allImports: Set<ImportInfo>
+    val imports: Set<ImportInfo>
         get() = mutableSetOf(destinationImport).apply {
             navArgsInfo?.let {
-                addAll(it.parameters.flatMap(Parameter::imports).filter(ImportInfo::isNonDefaultPackage))
-                addAll(it.typeInfo.allImports)
+                addAll(it.typeInfo.imports)
+                it.parameters
+                    .flatMap(Parameter::imports)
+                    .filter(ImportInfo::isNonDefaultPackage)
+                    .let(::addAll)
             }
         }
 
-//    val allParameterTypeImports: Set<ImportInfo>
-//    get() = mutableSetOf<ImportInfo>().apply {
-//        navArgsInfo?.let { navArgsInfo ->
-//            addAll(navArgsInfo.parameters.mapNotNull { it.navArgTypeInfo.customNavTypeInfo?.parameterTypeImport })
-//            addAll(navArgsInfo.parameters.map { it. })
-//        }
-//    }
+    val typeImports: Set<ImportInfo>
+        get() = mutableSetOf(destinationImport).apply {
+            navArgsInfo?.parameters
+                ?.flatMap(Parameter::typeImports)
+                ?.filter(ImportInfo::isNonDefaultPackage)
+                ?.let(::addAll)
+        }
+
 }

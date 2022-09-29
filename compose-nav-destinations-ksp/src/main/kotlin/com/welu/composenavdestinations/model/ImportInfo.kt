@@ -1,6 +1,6 @@
 package com.welu.composenavdestinations.model
 
-import com.welu.composenavdestinations.extensions.isNoneOf
+import com.welu.composenavdestinations.extensions.isAnyOf
 import com.welu.composenavdestinations.utils.PackageUtils
 
 data class ImportInfo(
@@ -12,9 +12,13 @@ data class ImportInfo(
     constructor(qualifiedName: String, importedAs: String? = null): this(getSimpleName(qualifiedName), getRoot(qualifiedName), importedAs)
 
     val qualifiedName get() = "$packageDir.$simpleName"
-    val isWholePackageImport get() = simpleName == "*"
-    val isNonDefaultPackage get() = packageDir.isNoneOf(*PackageUtils.KOTLIN_DEFAULT_PACKAGES)
     val asImportLine get() = "import $qualifiedName${importedAs?.let { " as $it" } ?: ""}"
+    val isWholePackageImport get() = simpleName == "*"
+    val isNonDefaultPackage get() = !isDefaultPackage
+    val isDefaultPackage get() =  packageDir.isAnyOf(*PackageUtils.KOTLIN_DEFAULT_PACKAGE_DIRECTORIES)
+            || qualifiedName.isAnyOf(*PackageUtils.VALID_LIST_QUALIFIERS)
+            || qualifiedName.isAnyOf(*PackageUtils.VALID_SET_QUALIFIERS)
+            || qualifiedName.isAnyOf(*PackageUtils.MAP_QUALIFIERS)
 
     companion object {
         val FILE_IMPORT_REGEX = Regex("(import)\\s+\\w+(\\s*\\.\\s*\\w+)*(\\s*\\.\\s*(\\w+|\\*))?\\s*(as\\s+\\w*)?")

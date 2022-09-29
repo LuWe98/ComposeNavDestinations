@@ -42,7 +42,7 @@ class DefaultValueExtractor(
             val defaultValueString = findDefaultValueSubString(matchedRange, argType) ?: continue
 
             // Es handelt sich um Boolean, Null oder eine Zahl
-            if (defaultValueString.isOneOf("true", "false", "null") || defaultValueString.matches(NUMBER_REGEX)) {
+            if (defaultValueString.isAnyOf("true", "false", "null") || defaultValueString.matches(NUMBER_REGEX)) {
                 return ParameterDefaultValue(defaultValueString)
             }
 
@@ -80,7 +80,7 @@ class DefaultValueExtractor(
         for (charIndex in matchedRange.indices) {
             currentChar = matchedRange[charIndex]
 
-            if (currentChar.isOneOf(',', ')')
+            if (currentChar.isAnyOf(',', ')')
                 && !isInsideChar
                 && !isInsideString
                 && openCrockCounter == 0
@@ -122,7 +122,7 @@ class DefaultValueExtractor(
                     reformatBuilder.append(lastChar)
                 }
             } else if (!isInsideString && charIndex != 0) {
-                if (currentChar.isWhitespace() && get(charIndex - 1).isOneOf(' ', '(', '<', '.')) {
+                if (currentChar.isWhitespace() && get(charIndex - 1).isAnyOf(' ', '(', '<', '.')) {
                     continue
                 }
                 if (lastChar.isWhitespace() && currentChar.isNoneOf(',', ')', '>', '.', ' ')) {
@@ -189,7 +189,7 @@ class DefaultValueExtractor(
                 continue
             }
 
-            if (currentChar.isOneOf(',', '.', ':', '<', '>', '(', ')', '{', '}')) {
+            if (currentChar.isAnyOf(',', '.', ':', '<', '>', '(', ')', '{', '}')) {
                 lastSeparatorCharacter = currentChar
 
                 if (declarationBuilder.isEmpty()) continue
@@ -215,7 +215,7 @@ class DefaultValueExtractor(
         fileImportInfos: List<ImportInfo>,
         resolver: Resolver
     ): List<ImportInfo> {
-        val filtered = fileImportInfos.filter { declaration.name.isOneOf(it.simpleName, it.importedAs) }
+        val filtered = fileImportInfos.filter { declaration.name.isAnyOf(it.simpleName, it.importedAs) }
         if (filtered.isNotEmpty()) return filtered
 
         return fileImportInfos.filter { import ->

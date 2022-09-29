@@ -15,7 +15,7 @@ data class ParameterTypeInfo(
     val simpledName get() = type.import.simpleName
 
 
-    val allImports get(): List<ImportInfo> = type.typeArguments.mapNotNull { it.typeInfo?.allImports }.flatten() + type.import
+    val imports get(): List<ImportInfo> = type.typeArguments.mapNotNull { it.typeInfo?.imports }.flatten() + type.import
 
     val definition get(): String = if (type.typeArguments.isEmpty()) {
         type.import.simpleName

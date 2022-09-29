@@ -4,7 +4,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.*
 import com.welu.composenavdestinations.exceptions.UnsupportedTypeException
-import com.welu.composenavdestinations.extensions.isOneOf
+import com.welu.composenavdestinations.extensions.isAnyOf
 import com.welu.composenavdestinations.extensions.ksp.*
 import com.welu.composenavdestinations.extractor.NavArgTypeInfoExtractor.extractParameterNavArgType
 import com.welu.composenavdestinations.model.*
@@ -32,7 +32,7 @@ class NavArgsInfoExtractor(
     private val listType: KSType by lazy { resolver.getStarProjectedTypeWithClass(List::class) }
 
     private val KSType?.isValidList
-        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isOneOf(*PackageUtils.VALID_LIST_QUALIFIERS) ?: false
+        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*PackageUtils.VALID_LIST_QUALIFIERS) ?: false
 
     private val KSType?.isList
         get() = this?.let(listType::isAssignableFrom)?.also {
@@ -46,7 +46,7 @@ class NavArgsInfoExtractor(
     private val setType: KSType by lazy { resolver.getStarProjectedTypeWithClass(Set::class) }
 
     private val KSType?.isValidSet
-        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isOneOf(*PackageUtils.VALID_SET_QUALIFIERS) ?: false
+        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*PackageUtils.VALID_SET_QUALIFIERS) ?: false
 
     private val KSType?.isSet
         get() = this?.let(setType::isAssignableFrom)?.also {
