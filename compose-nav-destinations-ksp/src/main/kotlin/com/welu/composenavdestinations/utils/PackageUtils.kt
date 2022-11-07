@@ -44,6 +44,8 @@ internal object PackageUtils {
     val NAV_BOTTOM_SHEET_DESTINATION_IMPORT = ImportInfo("BottomSheetDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
     val NAV_BOTTOM_SHEET_ARG_DESTINATION_IMPORT = ImportInfo("BottomSheetArgDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
 
+    //TODO -> Alle Destinations in einen Folder machen und diese GeneratedDestination implementieren lassen.
+    // -> Das gleiche mit NavGraphs -> GeneratedNavGraph
     private const val NAV_COMPONENT_SPEC_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.spec"
     val NAV_COMPONENT_SPEC_IMPORT = ImportInfo("NavComponentSpec", NAV_COMPONENT_SPEC_PACKAGE)
     val NAV_COMPOSE_DESTINATION_SPEC_IMPORT = ImportInfo("ComposeDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
@@ -55,19 +57,20 @@ internal object PackageUtils {
     val NAV_DIALOG_ARG_DESTINATION_SPEC_IMPORT = ImportInfo("DialogArgDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
     val NAV_BOTTOM_SHEET_DESTINATION_SPEC_IMPORT = ImportInfo("BottomSheetDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
     val NAV_BOTTOM_SHEET_ARG_DESTINATION_SPEC_IMPORT = ImportInfo("BottomSheetArgDestinationSpec", NAV_COMPONENT_SPEC_PACKAGE)
-
-    //TODO -> Alle Destinations in einen Folder machen und diese GeneratedDestination implementieren lassen.
-    // -> Das gleiche mit NavGraphs -> GeneratedNavGraph
-
     val NAV_COMPOSE_GRAPH_SPEC_IMPORT = ImportInfo("ComposeNavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
     val NAV_GRAPH_SPEC_IMPORT = ImportInfo("NavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
     val NAV_GRAPH_SPEC_ARG_IMPORT = ImportInfo("ArgNavGraphSpec", NAV_COMPONENT_SPEC_PACKAGE)
-
 
     private const val NAV_DESTINATION_SCOPE_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.scope"
     val NAV_COMPOSE_DESTINATION_SCOPE_IMPORT = ImportInfo("ComposeDestinationScope", NAV_DESTINATION_SCOPE_PACKAGE)
     val NAV_DESTINATION_SCOPE_IMPORT= ImportInfo("DestinationScope", NAV_DESTINATION_SCOPE_PACKAGE)
     val NAV_DESTINATION_ARG_SCOPE_IMPORT = ImportInfo("ArgDestinationScope", NAV_DESTINATION_SCOPE_PACKAGE)
+
+    private const val NAV_DESTINATIONS_RESULT_PACKAGE = "$PACKAGE_NAME.result"
+    val NAV_DESTINATION_SEND_DESTINATION_RESULT_FUNCTION_IMPORT = ImportInfo("sendDestinationResultTo", NAV_DESTINATIONS_RESULT_PACKAGE)
+    val NAV_DESTINATION_RESULT_LISTENER_IMPORT = ImportInfo("DestinationResultListener",NAV_DESTINATIONS_RESULT_PACKAGE)
+    val NAV_DESTINATION_LIFECYCLE_RESULT_LISTENER_IMPORT = ImportInfo("LifecycleDestinationResultListener",NAV_DESTINATIONS_RESULT_PACKAGE)
+
 
 
     val ANDROID_PARCELABLE_IMPORT = ImportInfo("Parcelable","android.os")
@@ -80,13 +83,7 @@ internal object PackageUtils {
     val ANDROID_LIVECYCLE_IMPORT = ImportInfo("Lifecycle","androidx.lifecycle")
     val SAVED_STATE_HANDLE_IMPORT = ImportInfo("SavedStateHandle","androidx.lifecycle")
     val NAV_ARGUMENT_IMPORT = ImportInfo("navArgument","com.welu.composenavdestinations.extensions.navigation")
-
-
-    private const val NAV_DESTINATIONS_RESULT_PACKAGE = "$PACKAGE_NAME.result"
-    val NAV_DESTINATION_SEND_DESTINATION_RESULT_FUNCTION_IMPORT = ImportInfo("sendDestinationResultTo", NAV_DESTINATIONS_RESULT_PACKAGE)
-    val NAV_DESTINATION_RESULT_LISTENER_IMPORT = ImportInfo("DestinationResultListener",NAV_DESTINATIONS_RESULT_PACKAGE)
-    val NAV_DESTINATION_LIFECYCLE_RESULT_LISTENER_IMPORT = ImportInfo("LifecycleDestinationResultListener",NAV_DESTINATIONS_RESULT_PACKAGE)
-
+    val KOTLIN_SERIALIZABLE_IMPORT = ImportInfo("Serializable", "kotlinx.serialization")
 
     val KOTLIN_DEFAULT_PACKAGE_DIRECTORIES = arrayOf(
         "kotlin",

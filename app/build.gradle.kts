@@ -1,6 +1,7 @@
 plugins {
+    kotlin("android")
+    kotlin("plugin.serialization") version "1.7.10"
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp") version "1.7.10-1.0.6"
 }
@@ -11,6 +12,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 
 android {
     compileSdk = 33
+    namespace = "com.welu.composenavdestinations"
 
     defaultConfig {
         applicationId = "com.welu.composenavdestinations"
@@ -36,6 +38,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -60,14 +63,13 @@ android {
         }
     }
 
-
-    lint {
-        checkDependencies = true
-        textReport = true
-        // Produce report for CI:
-        // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
-        sarifOutput = file("../lint-results.sarif")
-    }
+//    lint {
+//        checkDependencies = true
+//        textReport = true
+//        // Produce report for CI:
+//        // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
+//        sarifOutput = file("../lint-results.sarif")
+//    }
 }
 
 dependencies {
@@ -78,18 +80,20 @@ dependencies {
     ksp(project(":compose-nav-destinations-ksp"))
 
 
-
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation("androidx.activity:activity-compose:1.5.1")
-    implementation("androidx.navigation:navigation-compose:2.5.2")
+    implementation("androidx.activity:activity-compose:1.6.0")
 
-    //Appcompanist
+    //Navigation
+    implementation("androidx.navigation:navigation-compose:2.5.2")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.26.4-beta")
     implementation("com.google.accompanist:accompanist-navigation-material:0.26.4-beta")
+
+    //Ktx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
 
 
     testImplementation("junit:junit:4.13.2")

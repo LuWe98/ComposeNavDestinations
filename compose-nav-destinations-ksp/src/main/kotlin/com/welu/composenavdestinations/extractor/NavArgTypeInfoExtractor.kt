@@ -25,6 +25,11 @@ object NavArgTypeInfoExtractor {
             return generateCustomNavArgsType(this, ComplexParameterNavArgType::EnumType)
         }
 
+        if (isKotlinSerializable) {
+            //TODO -> KTX Serializable NavArg -> Hier muss dann auch auf den Serializer Referenziert werden, also für jeden Typen ein eigenes --> CustomNavArgType wie Enum
+            return generateCustomNavArgsType(this, ComplexParameterNavArgType::KotlinSerializableType)
+        }
+
         if (type.typeArguments.size == 1) {
             val argTypeInfo = type.typeArguments.first().typeInfo
 
@@ -54,10 +59,6 @@ object NavArgTypeInfoExtractor {
 
         if (isSerializable) {
             return BasicParameterNavArgType.SerializableType
-        }
-
-        if (isKtxSerializable) {
-            //TODO -> KTX Serializable NavArg -> Hier muss dann auch auf den Serializer Referenziert werden, also für jeden Typen ein eigenes --> CustomNavArgType wie Enum
         }
 
         throw IllegalArgumentException("Cannot map the following Parameter: ${type.import.qualifiedName}")

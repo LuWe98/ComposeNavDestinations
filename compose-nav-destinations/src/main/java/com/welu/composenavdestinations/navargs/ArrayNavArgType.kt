@@ -1,18 +1,18 @@
 package com.welu.composenavdestinations.navargs
 
-import com.welu.composenavdestinations.extensions.emptyArrayReflect
+import com.welu.composenavdestinations.extensions.emptyArray
 import com.welu.composenavdestinations.extensions.toTypedArray
-import kotlin.reflect.KClass
 import com.welu.composenavdestinations.navargs.NavArgConstants.DECODED_NULL_VALUE
 import com.welu.composenavdestinations.navargs.NavArgConstants.DECODED_VALUE_SEPARATOR
 import com.welu.composenavdestinations.navargs.NavArgConstants.ENCODED_NULL_VALUE
 import com.welu.composenavdestinations.navargs.NavArgConstants.ENCODED_VALUE_SEPARATOR
+import kotlin.reflect.KClass
 
 sealed class ArrayNavArgType<T : Any>(
     private val parseValueAction: (value: String) -> T?,
     private val serializeValueTransformation: (T) -> String = Any?::toString,
     private val clazz: KClass<T>? = null,
-    private val emptyArrayProvider: () -> Array<T?> = { emptyArrayReflect(clazz!!) },
+    private val emptyArrayProvider: () -> Array<T?> = { emptyArray(clazz!!) },
     private val arrayProvider: (list: List<T?>) -> Array<T?> = { it.toTypedArray(clazz!!) }
 ) : NavArgType<Array<T?>?>() {
 
@@ -24,7 +24,7 @@ sealed class ArrayNavArgType<T : Any>(
         }.let(arrayProvider)
     }
 
-    @JvmName("serializeValue2")
+    @JvmName("serializeValueCast")
     @Suppress("UNCHECKED_CAST")
     fun serializeValue(value: Array<T>?) = serializeValue(value as Array<T?>?)
 

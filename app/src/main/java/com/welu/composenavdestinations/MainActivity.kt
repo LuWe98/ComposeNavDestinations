@@ -9,12 +9,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.welu.composenavdestinations.extensions.navigation.addNavComponents
+import com.welu.composenavdestinations.extensions.navigation.addNavGraph
 import com.welu.composenavdestinations.extensions.route
 import com.welu.composenavdestinations.navgraphs.DefaultNavGraphSpec
 import com.welu.composenavdestinations.screens.tests.FirstDestination
@@ -24,6 +26,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             ComposeNavDestinationsTheme {
@@ -41,13 +45,13 @@ private fun NavigationComp() {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberAnimatedNavController(bottomSheetNavigator)
 
-    ModalBottomSheetLayout(bottomSheetNavigator) {
+    ModalBottomSheetLayout(bottomSheetNavigator, scrimColor = Color.Black.copy(alpha = 0.5f)) {
         AnimatedNavHost(
             startDestination = FirstDestination.route,
             navController = navController,
             modifier = Modifier.fillMaxSize()
         ) {
-            addNavComponents(DefaultNavGraphSpec, navController)
+            addNavGraph(DefaultNavGraphSpec, navController)
         }
     }
 }

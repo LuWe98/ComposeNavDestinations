@@ -9,6 +9,7 @@ import com.welu.composenavdestinations.generation.component.FileGeneratorNavGrap
 import com.welu.composenavdestinations.generation.general.*
 import com.welu.composenavdestinations.model.components.ComposeDestinationInfo
 import com.welu.composenavdestinations.model.components.ComposeNavGraphInfo
+import com.welu.composenavdestinations.model.components.NavComponentInfo
 
 class ContentGenerator(
     private val resolver: Resolver,
@@ -16,26 +17,33 @@ class ContentGenerator(
     private val codeGenerator: CodeGenerator
 ) {
 
-    private val fileContentInfoOutputWriter: FileContentInfoOutputWriter by lazy {
-        FileContentInfoOutputWriter(codeGenerator, resolver)
-    }
-
     fun generate(
-        navDestinations: Sequence<ComposeDestinationInfo>,
+        destinations: Sequence<ComposeDestinationInfo>,
         navGraphs: Sequence<ComposeNavGraphInfo>
     ) {
 
+        val navComponents = destinations + navGraphs
+        val commonSuffix = findCommonNavComponentPackageSuffix(navComponents)
+        logger.warn("Common suffix: $commonSuffix")
+
+        //Hier sollte der Common PackageName übergeben werden
+        //In den FileGenerators sollte bei den FileContentInfos nur der additional suffix mitgegeben werden, der an den Common PackageName angehängt wird
+        val fileContentInfoOutputWriter = FileContentInfoOutputWriter(
+            codeGenerator,
+            resolver
+        )
+
         //Generates the custom NavArgs needed for Navigation
-        FileGeneratorCustomNavArgs.generate(navDestinations + navGraphs)?.let(fileContentInfoOutputWriter::writeFile)
+        FileGeneratorCustomNavArgs.generate(navComponents)?.let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavDestinationUtils File
-        FileGeneratorNavComponentUtils.generate(navDestinations + navGraphs).let(fileContentInfoOutputWriter::writeFile)
+        FileGeneratorNavComponentUtils.generate(navComponents).let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavDestinationsExt File
-        FileGeneratorDestinationExtensions.generate(navDestinations).let(fileContentInfoOutputWriter::writeFile)
+        FileGeneratorDestinationExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavDestinationsResultExt File
-        FileGeneratorResultExtensions.generate(navDestinations).let(fileContentInfoOutputWriter::writeFile)
+        FileGeneratorResultExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavControllerExtFile
         FileGeneratorNavControllerExtensions.generate().let(fileContentInfoOutputWriter::writeFile)
@@ -44,9 +52,89 @@ class ContentGenerator(
         FileGeneratorNavBackStackEntryExtensions.generate().let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the DestinationSpecs for all annotated destinations
-        navDestinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
+        destinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavGraphSpecs for all annotated NavGraphs
         navGraphs.map(FileGeneratorNavGraphSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
+
     }
+
+    private fun findCommonNavComponentPackageSuffix(navComponentInfos: Sequence<NavComponentInfo>): String {
+
+        val commonPrefix = navComponentInfos.map{ it.specImport.qualifiedName }.reduce { currentCommonPrefix, currentPackageName ->
+
+            if(currentCommonPrefix.isEmpty() || currentCommonPrefix == currentPackageName) return@reduce currentCommonPrefix
+
+            var newCommonPrefix = ""
+            var lastCommonDotIndex: Int? = null
+
+            for (charIndex in currentCommonPrefix.indices) {
+                val currentCommonPrefixChar = currentCommonPrefix[charIndex]
+                val currentPackageNameChar = currentPackageName.getOrNull(charIndex)
+
+                if(currentCommonPrefixChar == currentPackageNameChar) {
+                    if(charIndex == currentCommonPrefix.lastIndex) {
+                        val currentPackageNextChar = currentPackageName.getOrNull(charIndex + 1)
+                        if(currentPackageNextChar != null && currentPackageNextChar != '.' && lastCommonDotIndex != null) {
+                            newCommonPrefix = newCommonPrefix.substring(0, lastCommonDotIndex)
+                        } else {
+                            newCommonPrefix += currentCommonPrefixChar
+                        }
+                    } else {
+                        if (currentCommonPrefixChar == '.') lastCommonDotIndex = charIndex
+                        newCommonPrefix += currentCommonPrefixChar
+                    }
+
+                    continue
+                }
+
+//            val currentPackageNextChar = currentPackageName.getOrNull(charIndex + 1)
+                if ((currentCommonPrefixChar != '.' && currentPackageNameChar == null) || currentPackageNameChar != '.') {
+                    newCommonPrefix = if (lastCommonDotIndex == null) "" else newCommonPrefix.substring(0, lastCommonDotIndex)
+                }
+
+                break
+            }
+            newCommonPrefix
+        }.trim()
+
+        return when {
+            commonPrefix.isEmpty() -> "Default PackageName"
+            commonPrefix.endsWith('.') -> commonPrefix.substring(0, commonPrefix.lastIndex)
+            else -> commonPrefix
+        }
+    }
+
+    //TODO -> Es wurde gemacht: GetCommonPackageNamePart für die Destinations. Dort werden dann die DestinaionsDrin gespeichert.
+
+    /*
+        private fun List<DestinationGeneratingParams>.getCommonPackageNamePart(): String {
+        var currentCommonPackageName = ""
+        map { it.composableQualifiedName }
+            .forEachIndexed { idx, packageName ->
+                if (idx == 0) {
+                    currentCommonPackageName = packageName
+                    return@forEachIndexed
+                }
+                currentCommonPackageName = currentCommonPackageName.commonPrefixWith(packageName)
+            }
+
+        if (!currentCommonPackageName.endsWith(".")) {
+            currentCommonPackageName = currentCommonPackageName.split(".")
+                .dropLast(1)
+                .joinToString(".")
+        }
+
+        return currentCommonPackageName.removeSuffix(".")
+            .ifEmpty {
+                throw UnexpectedException(
+                    """Unable to get package name for module. Please specify a package name to use in the module's build.gradle file with:"
+                    ksp {
+                        arg("compose-destinations.codeGenPackageName", "your.preferred.package.name")
+                    }
+                    And report this issue (with steps to reproduce) if possible.
+                """.trimIndent())
+            }
+    }
+     */
 }

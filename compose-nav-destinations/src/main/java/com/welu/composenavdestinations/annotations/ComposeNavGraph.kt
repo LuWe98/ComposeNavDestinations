@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 annotation class ComposeNavGraph constructor(
     val route: String = "",
     val isDefaultNavGraph: Boolean = false,
-    val argsClass: KClass<*> = Unit::class,
     val transitionClass: KClass<out NavComponentTransitions> = NavComponentTransitions.Default::class,
+    val argsClass: KClass<*> = Unit::class,
     val deepLinks: Array<NavComponentDeepLink> = []
 )

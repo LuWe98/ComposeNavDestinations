@@ -81,4 +81,13 @@ sealed class ComplexParameterNavArgType(
         parameterTypeImport = parameterTypeImport,
         simpleName = "NavArgEnumSetType"
     )
+
+    class KotlinSerializableType(
+        generatedNavArgImport: ImportInfo,
+        parameterTypeImport: ImportInfo
+    ): ComplexParameterNavArgType(
+        generatedNavArgImport = generatedNavArgImport,
+        parameterTypeImport = parameterTypeImport,
+        simpleName = "NavArgKotlinSerializableType"
+    )
 }

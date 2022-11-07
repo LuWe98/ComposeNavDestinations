@@ -1,6 +1,6 @@
 package com.welu.composenavdestinations.extensions
 
-import com.welu.composenavdestinations.util.asBase64String
+import com.welu.composenavdestinations.util.toBase64String
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -11,6 +11,6 @@ internal fun <T: Serializable> T.serialize(): String {
             objectStream.writeObject(this)
             objectStream.flush()
         }
-        return byteStream.toByteArray().asBase64String
+        return byteStream.toByteArray().toBase64String()
     }
 }

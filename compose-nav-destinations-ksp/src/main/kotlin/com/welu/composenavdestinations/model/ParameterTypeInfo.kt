@@ -10,7 +10,7 @@ data class ParameterTypeInfo(
     val isEnum get() = type.isEnum
     val isParcelable get() = type.isParcelable
     val isSerializable get() = type.isSerializable
-    val isKtxSerializable get() = type.isKtxSerializable
+    val isKotlinSerializable get() = type.isKotlinSerializable
     val qualifiedName get() = type.import.qualifiedName
     val simpledName get() = type.import.simpleName
 

@@ -3,7 +3,7 @@ package com.welu.composenavdestinations.extensions
 import android.os.BadParcelableException
 import android.os.Parcel
 import android.os.Parcelable
-import com.welu.composenavdestinations.util.asBase64String
+import com.welu.composenavdestinations.util.toBase64String
 import com.welu.composenavdestinations.util.fromBase64ToByteArray
 import kotlin.reflect.KClass
 
@@ -19,13 +19,13 @@ internal val <T : Parcelable> KClass<T>.CREATOR
 
 internal fun Parcelable.marshall(): String = Parcel.obtain().let { parcel ->
     writeToParcel(parcel, 0)
-    parcel.marshall().asBase64String.also {
+    parcel.marshall().toBase64String().also {
         parcel.recycle()
     }
 }
 
 internal fun <T: Parcelable> Parcelable.Creator<T>.unmarshall(value: String): T = Parcel.obtain().let { parcel ->
-    parcel.unmarshall(value.fromBase64ToByteArray)
+    parcel.unmarshall(value.fromBase64ToByteArray())
     parcel.setDataPosition(0)
     createFromParcel(parcel).also {
         parcel.recycle()

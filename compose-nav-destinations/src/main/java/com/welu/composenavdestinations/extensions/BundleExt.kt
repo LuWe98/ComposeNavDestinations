@@ -9,20 +9,8 @@ import java.io.Serializable
 @Suppress("UNCHECKED_CAST", "DEPRECATION")
 internal fun <T> Bundle.getTyped(key: String): T? = get(key) as T?
 
-//@SuppressLint("DiscouragedPrivateApi")
-//private val mapField = lazy {
-//    BaseBundle::class.java.getDeclaredField("mMap").apply {
-//        isAccessible = true
-//    }
-//}
-
-//@Suppress("UNCHECKED_CAST")
-//fun <T: Any> Bundle.put(key: String, value: T?) {
-//    (mapField.value[this] as ArrayMap<String, Any>)[key] = value
-//}
-
-@Suppress("UNCHECKED_CAST")
 internal fun <T : Any> Bundle.put(key: String, value: T?) {
+    @Suppress("UNCHECKED_CAST")
     when (value) {
         null -> return
         is Boolean -> putBoolean(key, value)
@@ -52,7 +40,6 @@ internal fun <T : Any> Bundle.put(key: String, value: T?) {
         is Serializable -> putSerializable(key, value)
         is Size -> putSize(key, value)
         is Binder -> putBinder(key, value)
-        //TODO -> Noch implementieren für Parcelable - is SparseArray<*>
         is List<*> -> throw IllegalArgumentException("List must implement Serializable or Parcelable")
         is Set<*> -> throw IllegalArgumentException("Set must implement Serializable or Parcelable")
         else -> throw IllegalArgumentException("Unknown ValueType: ${value::class.simpleName}")

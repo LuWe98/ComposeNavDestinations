@@ -45,7 +45,7 @@ inline fun <reified T> NavController.sendDestinationResultTo(
 ) {
     getBackStackEntry(spec)?.let { entry ->
         entry.savedStateHandle[resultKey<T>(spec, keySpecification)] = ResultWrapper(value)
-    } ?: throw IllegalStateException("Could not find the BackStackEntry for the specified NavDestinationSpec")
+    } ?: throw IllegalStateException("Could not find the BackStackEntry for the specified ComposeDestinationSpec")
 }
 
 @Composable
@@ -76,14 +76,11 @@ inline fun <reified T> NavController.DestinationResultListener(
         ?.savedStateHandle
         ?.getStateFlow<ResultWrapper<T?>?>(resultKey<T>(forSpec, keySpecification), null)
         ?.collectOnLifecycle(minState = withLifecycleState) { wrapper ->
-            wrapper?.let {
-                if (wrapper.value is T) {
-                    callback(wrapper.value)
-                    getBackStackEntry(forSpec)?.savedStateHandle?.set<T>(resultKey<T>(forSpec, keySpecification), null)
-                } else {
-                    throw IllegalArgumentException("ResultWrapper value ${wrapper.value}, is not assignable!")
-                }
-            }
+            if (wrapper == null) return@collectOnLifecycle
+            if (wrapper.value !is T) throw IllegalArgumentException("ResultWrapper value ${wrapper.value}, is not assignable!")
+
+            callback(wrapper.value)
+            getBackStackEntry(forSpec)?.savedStateHandle?.set<T>(resultKey<T>(forSpec, keySpecification), null)
         }
 }
 
@@ -117,11 +114,8 @@ inline fun <reified T> NavController.LifecycleDestinationResultListener(
                         val key = resultKey<T>(forSpec, keySpecification)
                         if (currentBackStackEntry?.savedStateHandle?.contains(key) != true) return
                         currentBackStackEntry?.savedStateHandle?.remove<ResultWrapper<T?>>(key)?.let { wrapper ->
-                            if (wrapper.value is T) {
-                                callback(wrapper.value)
-                            } else {
-                                throw IllegalArgumentException("ResultWrapper value: ${wrapper.value}, is not assignable!")
-                            }
+                            if (wrapper.value !is T) throw IllegalArgumentException("ResultWrapper value: ${wrapper.value}, is not assignable!")
+                            callback(wrapper.value)
                         }
                     }
                     Lifecycle.Event.ON_DESTROY -> currentBackStackEntry?.lifecycle?.removeObserver(this)

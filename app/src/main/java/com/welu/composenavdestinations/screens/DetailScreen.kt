@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.welu.composenavdestinations.model.KotlinSerializableClass
 import com.welu.composenavdestinations.model.ParcelableObject
 import com.welu.composenavdestinations.model.TestEnum
 import java.util.*
@@ -72,7 +73,9 @@ class DetailScreenNavArgs(
 
     val serializable: UUID = UUID.randomUUID(),
 
-    val map: HashMap<String, Int> = hashMapOf("dsd" to 212)
+    val map: HashMap<String, Int> = hashMapOf("dsd" to 212),
+
+    val kotlinSerializable: KotlinSerializableClass = KotlinSerializableClass(23, TestEnum.HALLO)
 )
 
 
@@ -197,6 +200,8 @@ fun DetailScreen(
 
             Text(text = "Serializables:", fontSize = 20.sp, color = Color.Cyan)
             Text(text = "Serializable: $serializable")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "kotlin Serializable: $kotlinSerializable")
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Map: $map")
             Spacer(modifier = Modifier.height(25.dp))

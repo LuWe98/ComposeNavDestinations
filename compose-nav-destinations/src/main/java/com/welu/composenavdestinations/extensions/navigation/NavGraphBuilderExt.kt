@@ -13,7 +13,7 @@ import com.welu.composenavdestinations.navigation.scope.*
 import com.welu.composenavdestinations.navigation.spec.*
 
 //TODO -> Noch einbauen mit Dialog und BottomSheet sowie animation
-fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavComponents(
+fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavGraph(
     navGraphSpec: N,
     navController: NavHostController
 ) {
@@ -181,6 +181,6 @@ private fun NavGraphBuilder.addNestedNavigation(
             is NavGraphSpec -> emptyList()
         }
     ) {
-        addNavComponents(navGraphSpec, navController)
+        addNavGraph(navGraphSpec, navController)
     }
 }

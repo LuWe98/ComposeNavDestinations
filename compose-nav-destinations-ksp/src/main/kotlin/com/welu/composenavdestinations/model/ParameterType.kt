@@ -4,7 +4,7 @@ data class ParameterType(
     val import: ImportInfo,
     val isEnum: Boolean = false,
     val isSerializable: Boolean = false,
-    val isKtxSerializable: Boolean = false,
+    val isKotlinSerializable: Boolean = false,
     val isParcelable: Boolean = false,
     val isList: Boolean = false,
     val isSet: Boolean = false,

@@ -117,7 +117,7 @@ class RawNavComponentsExtractor(
 
         val annotatedGraphs = annotatedClassDeclarations.filter(annotatedNavGraphs::contains)
 
-        val annotatedDestinations = annotatedClassDeclarations.filter { it.isAnnotationPresentSimple(ComposeDestinationAnnotation.import) }
+        val annotatedDestinations = annotatedClassDeclarations.filter { it.hasAnnotationSimple(ComposeDestinationAnnotation.import) }
 
         val invalidComponents = annotatedClassDeclarations - annotatedGraphs.toSet() - annotatedDestinations.toSet()
 
@@ -129,7 +129,7 @@ class RawNavComponentsExtractor(
             )
         }
 
-        val parentNavGraphs = annotatedNavGraphs.filter(annotatedNavGraph::isAnnotationPresent)
+        val parentNavGraphs = annotatedNavGraphs.filter(annotatedNavGraph::hasAnnotation)
 
         if (parentNavGraphs.count() > 1) {
             throw IllegalStateException("The following NavGraph is a child of multiple NavGraphs: ${annotatedNavGraph.qualifiedName?.asString()}")

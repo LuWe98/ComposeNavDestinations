@@ -3,10 +3,12 @@ plugins {
     id("kotlin-android")
     //TODO -> Entfernen und Selbst schreiben
     id("kotlin-parcelize")
+    kotlin("plugin.serialization") version "1.7.10"
 }
 
 android {
     compileSdk = 33
+    namespace = "com.welu.composenavdestinations"
 
     defaultConfig {
         minSdk = 21
@@ -55,7 +57,16 @@ dependencies {
 //    implementation(project(":compose-nav-destinations-lint"))
 //    lintPublish(project(":compose-nav-destinations-lint"))
 
-    implementation("androidx.navigation:navigation-compose:2.5.2")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.26.4-beta")
-    implementation("com.google.accompanist:accompanist-navigation-material:0.26.4-beta")
+    //ComposeNavigation
+    val composeNavigationVersion = "2.5.2"
+    implementation("androidx.navigation:navigation-compose:$composeNavigationVersion")
+
+    //Accompanist
+    val accompanistVersion = "0.26.4-beta"
+    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-navigation-material:$accompanistVersion")
+
+    //Ktx Serialization
+    val ktxSerializableVersion = "1.4.0"
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktxSerializableVersion")
 }

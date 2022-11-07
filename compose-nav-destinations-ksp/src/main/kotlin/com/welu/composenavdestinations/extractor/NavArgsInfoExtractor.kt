@@ -16,23 +16,25 @@ import java.io.Serializable
 class NavArgsInfoExtractor(
     private val resolver: Resolver,
     private val logger: KSPLogger,
-    private val defaultValueExtractor: DefaultValueExtractor
+    private val defaultValueExtractor: DefaultValueExtractor = DefaultValueExtractor(resolver)
 ) {
 
     private val ksFileContentMap by lazy { mutableMapOf<KSFile, KSFileContent>() }
 
     private val parcelableType: KSType by lazy { resolver.getTypeWithImportInfo(PackageUtils.ANDROID_PARCELABLE_IMPORT) }
 
-    private val KSType?.isParcelable get() = this?.let(parcelableType::isAssignableFrom) ?: false
+    private val KSType?.isParcelable get() = this?.let(parcelableType::isAssignableFrom) == true
 
     private val serializableType: KSType by lazy { resolver.getTypeWithClass(Serializable::class) }
 
-    private val KSType?.isSerializable get() = this?.let(serializableType::isAssignableFrom) ?: false
+    private val KSType?.isSerializable get() = this?.let(serializableType::isAssignableFrom) == true
+
+    private val KSType?.isKotlinSerializable get() = this?.declaration?.hasAnnotation(PackageUtils.KOTLIN_SERIALIZABLE_IMPORT) == true
 
     private val listType: KSType by lazy { resolver.getStarProjectedTypeWithClass(List::class) }
 
     private val KSType?.isValidList
-        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*PackageUtils.VALID_LIST_QUALIFIERS) ?: false
+        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*PackageUtils.VALID_LIST_QUALIFIERS) == true
 
     private val KSType?.isList
         get() = this?.let(listType::isAssignableFrom)?.also {
@@ -46,7 +48,7 @@ class NavArgsInfoExtractor(
     private val setType: KSType by lazy { resolver.getStarProjectedTypeWithClass(Set::class) }
 
     private val KSType?.isValidSet
-        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*PackageUtils.VALID_SET_QUALIFIERS) ?: false
+        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*PackageUtils.VALID_SET_QUALIFIERS) == true
 
     private val KSType?.isSet
         get() = this?.let(setType::isAssignableFrom)?.also {
@@ -174,6 +176,7 @@ class NavArgsInfoExtractor(
                     typeArguments = extractParameterTypeArguments(),
                     isEnum = classDeclaration.isEnum,
                     isSerializable = classDeclarationType.isSerializable,
+                    isKotlinSerializable = classDeclarationType.isKotlinSerializable,
                     isParcelable = classDeclarationType.isParcelable,
                     isList = classDeclarationType.isList,
                     isSet = classDeclarationType.isSet
@@ -187,10 +190,4 @@ class NavArgsInfoExtractor(
         val typeInfo = it.toResolvedType()?.toParameterTypeInfo() ?: return@mapNotNull null
         ParameterTypeArgument(typeInfo, it.variance)
     }
-
-//    private fun KSTypeArgument.extractParameterTypeArgument(): ParameterTypeArgument? {
-//        if (variance == Variance.STAR) return ParameterTypeArgument.STAR
-//        val typeInfo = toResolvedType()?.toParameterTypeInfo() ?: return null
-//        return ParameterTypeArgument(typeInfo, variance)
-//    }
 }

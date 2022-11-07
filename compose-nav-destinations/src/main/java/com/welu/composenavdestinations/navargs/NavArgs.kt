@@ -1,11 +1,19 @@
 package com.welu.composenavdestinations.navargs
 
+import android.os.Bundle
 import android.os.Parcelable
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavBackStackEntry
 import com.welu.composenavdestinations.extensions.*
 import com.welu.composenavdestinations.extensions.marshall
-import com.welu.composenavdestinations.extensions.receiveValueOf
+import com.welu.composenavdestinations.extensions.findValueOf
+import com.welu.composenavdestinations.extensions.navigation.get
+import com.welu.composenavdestinations.extensions.serialize
+import com.welu.composenavdestinations.util.*
 import com.welu.composenavdestinations.util.Base64Util
-import com.welu.composenavdestinations.util.ParseUtil
+import com.welu.composenavdestinations.util.deserialize
+import com.welu.composenavdestinations.util.ktxSerializer
+import kotlinx.serialization.KSerializer
 import java.io.Serializable
 import kotlin.reflect.KClass
 
@@ -196,13 +204,13 @@ object NavArgPrimitiveDoubleArrayType : PrimitiveArrayNavArgType<DoubleArray, Do
 
 
 // Enum
-class NavArgEnumType<T : Enum<T>>(enumClass: KClass<T>) : SingleNavArgType<T>(enumClass::receiveValueOf, Enum<T>::name)
+class NavArgEnumType<T : Enum<T>>(enumClass: KClass<T>) : SingleNavArgType<T>(enumClass::findValueOf, Enum<T>::name)
 
-class NavArgEnumListType<T : Enum<T>>(enumClass: KClass<T>) : ListNavArgType<T>(enumClass::receiveValueOf, Enum<T>::name)
+class NavArgEnumListType<T : Enum<T>>(enumClass: KClass<T>) : ListNavArgType<T>(enumClass::findValueOf, Enum<T>::name)
 
-class NavArgEnumSetType<T : Enum<T>>(enumClass: KClass<T>) : SetNavArgType<T>(enumClass::receiveValueOf, Enum<T>::name)
+class NavArgEnumSetType<T : Enum<T>>(enumClass: KClass<T>) : SetNavArgType<T>(enumClass::findValueOf, Enum<T>::name)
 
-class NavArgEnumArrayType<T : Enum<T>>(enumClass: KClass<T>) : ArrayNavArgType<T>(enumClass::receiveValueOf, Enum<T>::name, enumClass)
+class NavArgEnumArrayType<T : Enum<T>>(enumClass: KClass<T>) : ArrayNavArgType<T>(enumClass::findValueOf, Enum<T>::name, enumClass)
 
 
 // Parcelable
@@ -226,5 +234,27 @@ class NavArgParcelableArrayType<T : Parcelable>(clazz: KClass<T>, creator: Parce
 )
 
 
+
 // Serializable
 object NavArgSerializableType : SingleNavArgType<Serializable>(Base64Util::deserialize, Serializable::serialize)
+
+
+
+//TODO -> Vllt nochmal anschauen
+// KotlinSerializable
+class NavArgKotlinSerializableType <T: Any>(private val serializer: KSerializer<T>): SingleNavArgType<T>(serializer::deserialize, serializer::serialize) {
+
+    constructor(clazz: KClass<T>): this(clazz.ktxSerializer)
+
+    override fun get(bundle: Bundle, key: String): T? = bundle.getString(key)?.let(serializer::deserialize)
+
+    override fun get(navBackStackEntry: NavBackStackEntry, key: String): T? = navBackStackEntry.get<String>(key)?.let(serializer::deserialize)
+
+    override fun get(savedStateHandle: SavedStateHandle, key: String): T? = savedStateHandle.get<String>(key)?.let(serializer::deserialize)
+
+    override fun put(bundle: Bundle, key: String, value: T?) {
+        value?.let {
+            bundle.putString(key, serializer.serialize(it))
+        }
+    }
+}

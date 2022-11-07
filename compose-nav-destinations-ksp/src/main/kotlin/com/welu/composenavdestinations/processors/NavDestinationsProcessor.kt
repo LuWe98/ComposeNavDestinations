@@ -9,12 +9,12 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.welu.composenavdestinations.annotations.DefaultComposeNavGraphAnnotation
 import com.welu.composenavdestinations.extensions.ksp.*
-import com.welu.composenavdestinations.extractor.DefaultValueExtractor
 import com.welu.composenavdestinations.extractor.NavArgsInfoExtractor
 import com.welu.composenavdestinations.extractor.RawNavComponentsExtractor
 import com.welu.composenavdestinations.generation.ContentGenerator
 import com.welu.composenavdestinations.mapper.ComposeDestinationMapper
 import com.welu.composenavdestinations.mapper.ComposeNavGraphMapper
+import kotlinx.coroutines.*
 
 class NavDestinationsProcessor(
     private val codeGenerator: CodeGenerator,
@@ -23,7 +23,7 @@ class NavDestinationsProcessor(
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val annotatedDestinations = findAnnotatedNavDestinations(resolver).takeIf(Sequence<KSClassDeclaration>::any) ?: return emptyList()
+        val annotatedDestinations = findAnnotatedNavDestinations(resolver).takeIf(Sequence<*>::any) ?: return emptyList()
         val annotatedNavGraphs = findAnnotatedNavGraphs(resolver)
 
         val rawNavComponents = RawNavComponentsExtractor(resolver, logger).extract(
@@ -31,42 +31,23 @@ class NavDestinationsProcessor(
             annotatedNavGraphs = annotatedNavGraphs
         )
 
-        val defaultValueExtractor = DefaultValueExtractor(resolver)
+        val navArgsInfoExtractor = NavArgsInfoExtractor(resolver, logger)
 
-        val navArgsInfoExtractor = NavArgsInfoExtractor(
-            resolver = resolver,
-            logger = logger,
-            defaultValueExtractor = defaultValueExtractor
-        )
-
-        val navDestinationInfoMapper = ComposeDestinationMapper(
-            resolver = resolver,
-            logger = logger,
-            navArgsInfoExtractor = navArgsInfoExtractor
-        )
-
-        val navGraphInfoMapper = ComposeNavGraphMapper(
-            resolver = resolver,
-            logger = logger,
-            navArgsInfoExtractor = navArgsInfoExtractor
-        )
+        val navDestinationInfoMapper = ComposeDestinationMapper(resolver, logger, navArgsInfoExtractor)
 
         val navDestinationInfos = rawNavComponents.rawDestinationInfos.map(navDestinationInfoMapper::map)
 
+        val navGraphInfoMapper = ComposeNavGraphMapper(resolver, logger, navArgsInfoExtractor)
+
         val navGraphInfos = rawNavComponents.rawNavGraphInfos.map(navGraphInfoMapper::map)
 
-//        NavDestinationValidator.validate(
-//            destinations = navDestinationInfos
-//        )
-
         ContentGenerator(resolver, logger, codeGenerator).generate(
-            navDestinations = navDestinationInfos,
+            destinations = navDestinationInfos,
             navGraphs = navGraphInfos
         )
 
         return emptyList()
     }
-
 
     /**
      * Returns the [KSClassDeclaration] of the DefaultNavGraph, if present. This is needed to check if the DefaultNavGraph is actually used on any NavDestination
@@ -92,28 +73,16 @@ class NavDestinationsProcessor(
         return annotatedNavGraphs
     }
 
-
     private fun findAnnotatedNavDestinations(resolver: Resolver): Sequence<KSClassDeclaration> {
         val annotatedNavDestinations = resolver.findNavDestinationDefinitions()
-        checkIfNavDestinationsAreOfTypeObject(annotatedNavDestinations)
+        checkIfDestinationsClassKindIsObject(annotatedNavDestinations)
         checkUniqueNavDestinationNames(annotatedNavDestinations)
         return annotatedNavDestinations
     }
 
-    /**
-     * Checkt ob es NavGraphDefinitions mit dem gleichen Namen gibt
-     */
-    @Throws(IllegalStateException::class)
-    private fun checkUniqueNavGraphNames(navGraphAnnotations: Sequence<KSClassDeclaration>) {
-        if (navGraphAnnotations.distinctBy { it.simpleName.asString() }.count() == navGraphAnnotations.count()) return
-        val navGraphNameDeclarationMap = navGraphAnnotations.groupBy { it.simpleName.asString() }.filter { it.value.size != 1 }
-        throw IllegalStateException(
-            "Multiple NavGraphs have the same name: ${navGraphNameDeclarationMap.keys.joinToString(", ") { it }}"
-        )
-    }
 
     @Throws(IllegalStateException::class)
-    private fun checkIfNavDestinationsAreOfTypeObject(navDestinations: Sequence<KSClassDeclaration>) {
+    private fun checkIfDestinationsClassKindIsObject(navDestinations: Sequence<KSClassDeclaration>) {
         //it.isCompanionObject since a CompanionObject does not have a name -> Will be maybe supported in the future
         val nonObjectNavDestinations = navDestinations.filter { it.classKind != ClassKind.OBJECT || it.isCompanionObject }
         if (nonObjectNavDestinations.any()) {
@@ -123,17 +92,6 @@ class NavDestinationsProcessor(
                 }
             )
         }
-    }
-
-    //TODO -> Checken dass es einzigartige DestinationNames gibt -> Es darf keine zwei mit dem selben Namen geben, sonst Error.
-    // Es darf auch keine NavGraphs geben mit dem gleichen Namen. Insgesamt müssen die Namen somit alle unique sein
-    @Throws(IllegalStateException::class)
-    private fun checkUniqueNavDestinationNames(navDestinations: Sequence<KSClassDeclaration>) {
-        if (navDestinations.distinctBy { it.simpleName }.count() == navDestinations.count()) return
-        val navGraphNameDeclarationMap = navDestinations.groupBy { it.simpleName.asString() }.filter { it.value.size != 1 }
-        throw IllegalStateException(
-            "Multiple NavDestinations have the same name: ${navGraphNameDeclarationMap.keys.joinToString(", ") { it }}"
-        )
     }
 
     /**
@@ -154,4 +112,38 @@ class NavDestinationsProcessor(
                     }
         )
     }
+
+    /**
+     * Checks if there are duplicate NavGraph names
+     */
+    @Throws(IllegalStateException::class)
+    private fun checkUniqueNavGraphNames(navGraphAnnotations: Sequence<KSClassDeclaration>) {
+        if (navGraphAnnotations.distinctBy { it.simpleName.asString() }.count() == navGraphAnnotations.count()) return
+        val navGraphNameDeclarationMap = navGraphAnnotations.groupBy { it.simpleName.asString() }.filter { it.value.size != 1 }
+        throw IllegalStateException(
+            "Multiple NavGraphs have the same name: ${navGraphNameDeclarationMap.keys.joinToString(", ") { it }}"
+        )
+    }
+
+    /**
+     * Checks if there are duplicate Destination names
+     */
+    @Throws(IllegalStateException::class)
+    private fun checkUniqueNavDestinationNames(navDestinations: Sequence<KSClassDeclaration>) {
+        if (navDestinations.distinctBy { it.simpleName.asString() }.count() == navDestinations.count()) return
+        val navGraphNameDeclarationMap = navDestinations.groupBy { it.simpleName.asString() }.filter { it.value.size != 1 }
+        throw IllegalStateException(
+            "Multiple NavDestinations have the same name: ${navGraphNameDeclarationMap.keys.joinToString(", ") { it }}"
+        )
+    }
+
+    //    @Throws(IllegalStateException::class)
+//    private fun checkUniqueNavComponentNames(navComponents: Sequence<KSClassDeclaration>) {
+//        if (navComponents.distinctBy { it.simpleName.asString() }.count() == navComponents.count()) return
+//        val nameDeclarationMap = navComponents.groupBy { it.simpleName.asString() }.filter { it.value.size != 1 }
+//        throw IllegalStateException(
+//            "Multiple Destinations or NavGraphs have the same name: ${nameDeclarationMap.keys.joinToString(", ") { it }}"
+//        )
+//    }
+
 }

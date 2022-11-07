@@ -16,22 +16,24 @@ sealed class NavArgType<T: Any?>: NavType<T>(true) {
 
     override fun get(bundle: Bundle, key: String): T? = bundle.getTyped(key)
 
-    fun get(navBackStackEntry: NavBackStackEntry, key: String): T? = navBackStackEntry[key]
+    open fun get(navBackStackEntry: NavBackStackEntry, key: String): T? = navBackStackEntry[key]
 
-    fun get(savedStateHandle: SavedStateHandle, key: String): T? = savedStateHandle[key]
+    open fun get(savedStateHandle: SavedStateHandle, key: String): T? = savedStateHandle[key]
 
     /**
      * Returns the NavArgument as a typed parameter from a [NavBackStackEntry].
      * This ensures that compiler Errors will not occur (Array<String> would not be compatible with Array<String?>?).
      * Should not be called otherwise.
      */
-    fun <R> getTyped(navBackStackEntry: NavBackStackEntry, key: String): R? = navBackStackEntry[key]
+    @Suppress("UNCHECKED_CAST")
+    fun <R> getTyped(navBackStackEntry: NavBackStackEntry, key: String): R? = get(navBackStackEntry, key) as R?
 
     /**
      * Returns the NavArgument as a typed parameter from a [SavedStateHandle].
      * This ensures that compiler Errors will not occur (Array<String> would not be compatible with Array<String?>?).
      * Should not be called otherwise.
      */
-    fun <R> getTyped(savedStateHandle: SavedStateHandle, key: String): R? = savedStateHandle[key]
+    @Suppress("UNCHECKED_CAST")
+    fun <R> getTyped(savedStateHandle: SavedStateHandle, key: String): R? = get(savedStateHandle, key) as R?
 
 }

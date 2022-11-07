@@ -47,8 +47,8 @@ object NavArgsGeneratorUtils {
     fun generateGetArgsBody(component: NavComponentInfo, argContainer: AndroidArgsContainer): String = component
         .navArgsInfo!!
         .parameters
-        .joinToString(",\n\t\t") {
-            val nonNullableClaim = if (it.typeInfo.isNullable) "" else "!!"
-            it.name + " = " + "${it.navArgType.actualTypeName}.getTyped(${argContainer.variableName}, \"${it.name}\")$nonNullableClaim"
+        .joinToString(",\n\t\t") { parameter ->
+            val nonNullableClaim = if (parameter.typeInfo.isNullable) "" else "!!"
+            parameter.name + " = " + "${parameter.navArgType.actualTypeName}.getTyped(${argContainer.variableName}, \"${parameter.name}\")$nonNullableClaim"
         }
 }
