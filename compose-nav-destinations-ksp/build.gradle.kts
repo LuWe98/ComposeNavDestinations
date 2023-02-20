@@ -3,6 +3,8 @@ plugins {
     id("maven-publish")
 }
 
+group = "com.github.LuWe98"
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 }
@@ -22,10 +24,10 @@ dependencies {
 afterEvaluate {
     publishing {
         publications {
-            create<MavenPublication>("maven") {
-                from(components["java"])
-                groupId = "com.github.luwe"
-                artifactId = "compose_nav_destinations_ksp"
+            create<MavenPublication>("ksp") {
+                //from(components["java"])
+                groupId = "com.github.LuWe98"
+                artifactId = "ComposeNavDestinations"
                 version = "1.0.0"
             }
         }

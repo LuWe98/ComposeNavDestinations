@@ -4,8 +4,11 @@ plugins {
     //TODO -> Entfernen und Selbst schreiben
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "1.7.10"
+
     id("maven-publish")
 }
+
+group = "com.github.LuWe98"
 
 android {
     compileSdk = 33
@@ -70,4 +73,17 @@ dependencies {
     //Ktx Serialization
     val ktxSerializableVersion = "1.4.0"
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktxSerializableVersion")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("core") {
+                //from(components["java"])
+                groupId = "com.github.LuWe98"
+                artifactId = "ComposeNavDestinations"
+                version = "1.0.0"
+            }
+        }
+    }
 }
