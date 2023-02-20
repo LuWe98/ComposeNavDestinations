@@ -4,6 +4,7 @@ plugins {
     //TODO -> Entfernen und Selbst schreiben
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "1.7.10"
+    id("maven-publish")
 }
 
 android {
@@ -54,11 +55,11 @@ android {
 }
 
 dependencies {
-//    implementation(project(":compose-nav-destinations-lint"))
-//    lintPublish(project(":compose-nav-destinations-lint"))
+    implementation(project(":compose-nav-destinations-lint"))
+    lintPublish(project(":compose-nav-destinations-lint"))
 
     //ComposeNavigation
-    val composeNavigationVersion = "2.5.2"
+    val composeNavigationVersion = "2.5.3"
     implementation("androidx.navigation:navigation-compose:$composeNavigationVersion")
 
     //Accompanist

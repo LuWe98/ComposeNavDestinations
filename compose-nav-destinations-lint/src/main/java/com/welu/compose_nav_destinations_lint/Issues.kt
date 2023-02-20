@@ -4,7 +4,6 @@ import com.android.tools.lint.detector.api.*
 import com.welu.compose_nav_destinations_lint.detectors.ComposeNavDestinationCodeDetector
 
 //TODO -> Noch die Explanations und Descriptions einbauen
-@Suppress("UnstableApiUsage")
 internal object Issues {
 
     val ANNOTATION_CHECK_ISSUE = Issue.create(

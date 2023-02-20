@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -76,8 +77,6 @@ object FirstDestination : Destination {
             parsedValue = it
         }
 
-        println("RECOMPOSITION FIRST SCREEN")
-
         StartDestinationComposable(parsedValue) {
             navigate(SecondDestination(User("123", "Lucha", 23)))
         }
@@ -107,34 +106,16 @@ object Lol : Destination {
 }
 
 @ComposeDestination
-object SecondDestination : DialogArgDestination<SecondDestination.NavArgs> {
+object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
 
     class NavArgs(val user: User)
 
-//    @ExperimentalAnimationApi
-//    override val transitions = object : NavComponentTransitions {
-//        override val enterTransition: EnterTransitionProvider = {
-//            when(targetState.composeDestination) {
-//                is SecondDestination -> slideIntoContainer(AnimatedContentScope.SlideDirection.Right)
-//                else -> null
-//            }
-//        }
-//
-//        override val exitTransition: ExitTransitionProvider = {
-//            when(targetState.composeDestination) {
-//                is SecondDestination -> slideOutOfContainer(AnimatedContentScope.SlideDirection.Right)
-//                else -> null
-//            }
-//        }
-//    }
-
-    override val Content: DialogArgDestinationCompositionScope<NavArgs> = {
+    override val Content: ArgDestinationCompositionScope<NavArgs> = {
         TestDestinationComposable(
             user = args.user,
             navigateBack = {
 //                navController::popBackStack
 //                           navController.navigate("lol/${Json.}")
-
                 /**
                  * Das hier noch generieren für alle DestinationScopes, damit man mit diesen auch navigieren kann.
                  * fun NavController.navigate(

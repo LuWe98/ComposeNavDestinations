@@ -76,7 +76,7 @@ internal object CodeTemplates {
     | fun NavController.navigate(
     |   destination: ComposeRoutableDestination<*>,
     |   builder: NavOptionsBuilder.() -> Unit = { }
-    | ) = navigate(destination.findSpec().route, builder)
+    | ) = navigate(destination.getSpec().route, builder)
     """.trimMargin("| ")
 
 

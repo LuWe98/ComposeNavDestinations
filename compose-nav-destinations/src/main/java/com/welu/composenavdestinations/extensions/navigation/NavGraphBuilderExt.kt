@@ -52,7 +52,12 @@ private fun NavGraphBuilder.addDestinationComposable(
                 animatedVisibilityScope = this
             )
         }
-        destinationSpec.destination.Content(scope)
+
+        val content = remember {
+            destinationSpec.destination.Content
+        }
+
+        content(scope)
     }
 }
 
@@ -176,7 +181,7 @@ private fun NavGraphBuilder.addNestedNavigation(
         route = navGraphSpec.route,
         startDestination = navGraphSpec.startComponentSpec.route,
         deepLinks = navGraphSpec.deepLinks,
-        arguments = when(navGraphSpec) {
+        arguments = when (navGraphSpec) {
             is ArgNavGraphSpec<*> -> navGraphSpec.arguments
             is NavGraphSpec -> emptyList()
         }
