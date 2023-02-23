@@ -53,11 +53,7 @@ private fun NavGraphBuilder.addDestinationComposable(
             )
         }
 
-        val content = remember {
-            destinationSpec.destination.Content
-        }
-
-        content(scope)
+        destinationSpec.destination.Content(scope)
     }
 }
 

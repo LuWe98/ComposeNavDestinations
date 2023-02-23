@@ -79,6 +79,8 @@ internal object PackageUtils {
     val ANDROID_NAVIGATION_NAMED_NAV_ARGUMENT_IMPORT = ImportInfo("NamedNavArgument", "androidx.navigation")
     val ANDROID_NAVIGATION_NAV_CONTROLLER_IMPORT = ImportInfo("NavController", "androidx.navigation")
     val ANDROID_NAVIGATION_NAV_OPTIONS_BUILDER_IMPORT = ImportInfo("NavOptionsBuilder", "androidx.navigation")
+    val ANDROID_NAVIGATION_NAV_OPTIONS_IMPORT = ImportInfo("NavOptions", "androidx.navigation")
+    val ANDROID_NAVIGATION_NAVIGATOR_IMPORT = ImportInfo("Navigator", "androidx.navigation")
     val ANDROID_COMPOSABLE_IMPORT = ImportInfo("Composable","androidx.compose.runtime")
     val ANDROID_LIVECYCLE_IMPORT = ImportInfo("Lifecycle","androidx.lifecycle")
     val SAVED_STATE_HANDLE_IMPORT = ImportInfo("SavedStateHandle","androidx.lifecycle")

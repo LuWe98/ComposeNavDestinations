@@ -74,9 +74,101 @@ internal object CodeTemplates {
     private val NAV_CONTROLLER_NAVIGATE_WITH_ROUTABLE_DESTINATION =
     """
     | fun NavController.navigate(
-    |   destination: ComposeRoutableDestination<*>,
-    |   builder: NavOptionsBuilder.() -> Unit = { }
-    | ) = navigate(destination.getSpec().route, builder)
+    |   toDestination: ComposeRoutableDestination<*>
+    | ) = navigate(toDestination.route)
+    | 
+    | fun ComposeDestinationScope.navigate(
+    |   toDestination: ComposeRoutableDestination<*>
+    | ) = navController.navigate(toDestination)
+    | 
+    | fun NavController.navigate(
+    |   toDestination: ComposeRoutableDestination<*>,
+    |   builder: NavOptionsBuilder.() -> Unit
+    | ) = navigate(toDestination.route, builder)
+    | 
+    | fun ComposeDestinationScope.navigate(
+    |   toDestination: ComposeRoutableDestination<*>,
+    |   builder: NavOptionsBuilder.() -> Unit
+    | ) = navController.navigate(toDestination, builder)
+    | 
+    | fun NavController.navigate(
+    |    toDestination: ComposeRoutableDestination<*>,
+    |    navOptions: NavOptions? = null,
+    |    navigatorExtras: Navigator.Extras? = null
+    | ) = navigate(toDestination.route, navOptions, navigatorExtras)
+    | 
+    | fun ComposeDestinationScope.navigate(
+    |    toDestination: ComposeRoutableDestination<*>,
+    |    navOptions: NavOptions? = null,
+    |    navigatorExtras: Navigator.Extras? = null
+    | ) = navController.navigate(toDestination, navOptions, navigatorExtras)
+    | 
+    | fun NavController.navigateAndPopUpTo(
+    |    toDestination: ComposeRoutableDestination<*>,
+    |    popUpTo: String,
+    |    inclusive: Boolean = true
+    | ) {
+    |    val extras = NavOptions.Builder().setPopUpTo(popUpTo, inclusive).build()
+    |    navigate(toDestination.route, extras)
+    | }
+    | 
+    | fun ComposeDestinationScope.navigateAndPopUpTo(
+    |    toDestination: ComposeRoutableDestination<*>,
+    |    popUpTo: String,
+    |    inclusive: Boolean = true
+    | ) = navController.navigateAndPopUpTo(toDestination, popUpTo, inclusive)
+    | 
+    | fun NavController.navigateAndPopUpTo(
+    |    toDestination: ComposeRoutableDestination<*>,
+    |    popUpToSpec: ComposeDestinationSpec<*>,
+    |    inclusive: Boolean = true
+    | ) = navigateAndPopUpTo(toDestination, popUpToSpec.route, inclusive)
+    | 
+    | fun ComposeDestinationScope.navigateAndPopUpTo(
+    |    toDestination: ComposeRoutableDestination<*>,
+    |    popUpToSpec: ComposeDestinationSpec<*>,
+    |    inclusive: Boolean = true
+    | ) = navController.navigateAndPopUpTo(toDestination, popUpToSpec, inclusive)
+    | 
+    | fun NavController.navigateAndPopUpTo(
+    |    toDestination: ComposeRoutableDestination<*>,
+    |    popUpToDestination: ComposeDestination<*>,
+    |    inclusive: Boolean = true
+    | ) = navigateAndPopUpTo(toDestination, popUpToDestination.route, inclusive)
+    | 
+    | fun ComposeDestinationScope.navigateAndPopUpTo(
+    |    toDestination: ComposeRoutableDestination<*>,
+    |    popUpToDestination: ComposeDestination<*>,
+    |    inclusive: Boolean = true
+    | ) = navController.navigateAndPopUpTo(toDestination, popUpToDestination.route, inclusive)
+    | 
+    | fun NavController.navigateAndPopUpTo(
+    |    toRoutable: Routable,
+    |    popUpTo: ComposeDestination<*>,
+    |    inclusive: Boolean = true
+    | ) {
+    |    val extras = NavOptions.Builder().setPopUpTo(popUpTo.route, inclusive).build()
+    |    navigate(toRoutable.parameterizedRoute, extras)
+    | }
+    | 
+    | fun ComposeDestinationScope.navigateAndPopUpTo(
+    |    toRoutable: Routable,
+    |    popUpTo: ComposeDestination<*>,
+    |    inclusive: Boolean = true
+    | ) = navController.navigateAndPopUpTo(toRoutable, popUpTo, inclusive)
+    | 
+    | fun NavController.popBackStack(
+    |    toDestination: ComposeDestination<*>,
+    |    inclusive: Boolean = false,
+    |    saveState: Boolean = false
+    | ) = popBackStack(toDestination.route, inclusive, saveState)
+    | 
+    | fun ComposeDestinationScope.popBackStack(
+    |    toDestination: ComposeDestination<*>,
+    |    inclusive: Boolean = false,
+    |    saveState: Boolean = false
+    | ) = navController.popBackStack(toDestination, inclusive, saveState)
+    | 
     """.trimMargin("| ")
 
 

@@ -13,7 +13,13 @@ object FileGeneratorNavControllerExtensions: FileContentInfoGenerator {
         imports = mutableSetOf(
             PackageUtils.ANDROID_NAVIGATION_NAV_CONTROLLER_IMPORT,
             PackageUtils.ANDROID_NAVIGATION_NAV_OPTIONS_BUILDER_IMPORT,
-            PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_IMPORT
+            PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_IMPORT,
+            PackageUtils.ANDROID_NAVIGATION_NAVIGATOR_IMPORT,
+            PackageUtils.ANDROID_NAVIGATION_NAV_OPTIONS_IMPORT,
+            PackageUtils.NAV_COMPOSE_DESTINATION_SCOPE_IMPORT,
+            PackageUtils.NAV_COMPOSE_DESTINATION_SPEC_IMPORT,
+            PackageUtils.NAV_COMPOSE_SEALED_DESTINATION_IMPORT,
+            PackageUtils.ROUTABLE_IMPORT
         ),
         code = CodeTemplates.NAV_CONTROLLER_EXTENSIONS_TEMPLATE
     )
