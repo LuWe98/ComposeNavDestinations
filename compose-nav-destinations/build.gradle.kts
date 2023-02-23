@@ -3,7 +3,7 @@ plugins {
     id("kotlin-android")
     //TODO -> Entfernen und Selbst schreiben
     id("kotlin-parcelize")
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.20"
 
     id("maven-publish")
 }
@@ -34,7 +34,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.0-beta01"
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
 
     compileOptions {
@@ -66,7 +66,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$composeNavigationVersion")
 
     //Accompanist
-    val accompanistVersion = "0.26.4-beta"
+    val accompanistVersion = "0.27.0"
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-navigation-material:$accompanistVersion")
 

@@ -21,12 +21,20 @@ fun KSNode.getRootKSFile(): KSFile = containingFile
 
 fun KSNode.getFileLines(): List<String> = findFileLocation()?.file?.reader?.use(BufferedReader::readLines) ?: emptyList()
 
-fun KSNode.firstNFileLines(lineCount: Int) = findFileLocation()?.file?.reader?.use {
-    //it.lines().limit(lineCount.toLong()).toList()
-    //val a = it.lines().limit(lineCount.toLong())
+fun KSNode.firstNFileLines(lineCount: Int): List<String> {
+    val reader = findFileLocation()?.file?.reader ?: return emptyList()
 
-    it.readLines().take(lineCount)
-} ?: emptyList()
+    return reader.useLines {
+        it.take(lineCount).toList()
+    }
+}
+
+//fun KSNode.firstNFileLines(lineCount: Int) = findFileLocation()?.file?.reader?.use {
+//    //it.lines().limit(lineCount.toLong()).toList()
+//    //val a = it.lines().limit(lineCount.toLong())
+//
+//    it.readLines().take(lineCount)
+//} ?: emptyList()
 
 //fun KSNode.firstNFileLines(lineCount: Int): List<String> = (location as FileLocation).file.reader.use {
 //    it.lineSequence().take(lineCount).toList()
