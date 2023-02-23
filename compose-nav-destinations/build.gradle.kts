@@ -36,7 +36,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.3.0-beta01"
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -75,14 +75,15 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktxSerializableVersion")
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("core") {
-                //from(components["java"])
-                groupId = "com.github.LuWe98"
-                artifactId = "ComposeNavDestinations"
-                version = "1.0.0"
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.LuWe98"
+            artifactId = "ComposeNavDestinations"
+            version = "1.0.0"
+
+            afterEvaluate {
+                from(components["release"])
             }
         }
     }

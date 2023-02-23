@@ -21,14 +21,16 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("ksp") {
-                //from(components["java"])
-                groupId = "com.github.LuWe98"
-                artifactId = "ComposeNavDestinations"
-                version = "1.0.0"
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            //from(components["java"])
+            groupId = "com.github.LuWe98"
+            artifactId = "ComposeNavDestinations"
+            version = "1.0.0"
+
+            afterEvaluate {
+                from(components["java"])
             }
         }
     }
