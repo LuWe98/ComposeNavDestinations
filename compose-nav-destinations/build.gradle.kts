@@ -79,7 +79,7 @@ publishing {
     publications {
         create<MavenPublication>("core") {
             groupId = "com.github.LuWe98"
-            artifactId = "ComposeNavDestinations"
+            artifactId = "Core"
             version = "1.0.0"
 
             afterEvaluate {

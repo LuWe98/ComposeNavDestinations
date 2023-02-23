@@ -24,9 +24,8 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("ksp") {
-            //from(components["java"])
             groupId = "com.github.LuWe98"
-            artifactId = "ComposeNavDestinations"
+            artifactId = "Ksp"
             version = "1.0.0"
 
             afterEvaluate {
