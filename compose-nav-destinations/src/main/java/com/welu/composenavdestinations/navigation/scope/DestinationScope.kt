@@ -2,7 +2,6 @@ package com.welu.composenavdestinations.navigation.scope
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.welu.composenavdestinations.navigation.spec.DestinationSpec
 
