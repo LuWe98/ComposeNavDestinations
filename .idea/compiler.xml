@@ -7,6 +7,9 @@
       <module name="ComposeNavDestinations.buildSrc.main" target="17" />
       <module name="ComposeNavDestinations.buildSrc.test" target="17" />
       <module name="ComposeNavDestinations.compose-nav-destinations" target="17" />
+      <module name="ComposeNavDestinations.compose-nav-destinations-ksp" target="16" />
+      <module name="ComposeNavDestinations.compose-nav-destinations-ksp.main" target="16" />
+      <module name="ComposeNavDestinations.compose-nav-destinations-ksp.test" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>
