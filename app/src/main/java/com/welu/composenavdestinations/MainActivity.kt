@@ -5,31 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.core.view.WindowCompat
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavGraph
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.welu.composenavdestinations.extensions.navigation.addNavGraph
-import com.welu.composenavdestinations.extensions.navigation.navArgument
-import com.welu.composenavdestinations.extensions.route
-import com.welu.composenavdestinations.navgraphs.DefaultNavGraphSpec
-import com.welu.composenavdestinations.screens.tests.FirstDestination
 import com.welu.composenavdestinations.ui.theme.ComposeNavDestinationsTheme
 
 class MainActivity : ComponentActivity() {
@@ -89,15 +71,15 @@ private fun NavigationComp() {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberAnimatedNavController(bottomSheetNavigator)
 
-    ModalBottomSheetLayout(bottomSheetNavigator, scrimColor = Color.Black.copy(alpha = 0.5f)) {
-        AnimatedNavHost(
-            startDestination = FirstDestination.route,
-            navController = navController,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            addNavGraph(DefaultNavGraphSpec, navController)
-        }
-    }
+//    ModalBottomSheetLayout(bottomSheetNavigator, scrimColor = Color.Black.copy(alpha = 0.5f)) {
+//        AnimatedNavHost(
+//            startDestination = "",
+//            navController = navController,
+//            modifier = Modifier.fillMaxSize()
+//        ) {
+//            addNavGraph(DefaultNavGraphSpec, navController)
+//        }
+//    }
 }
 
 

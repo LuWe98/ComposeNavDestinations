@@ -58,8 +58,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":compose-nav-destinations-lint"))
-    lintPublish(project(":compose-nav-destinations-lint"))
+//    implementation(project(":compose-nav-destinations-lint"))
+//    lintPublish(project(":compose-nav-destinations-lint"))
 
     //ComposeNavigation
     val composeNavigationVersion = "2.5.3"
