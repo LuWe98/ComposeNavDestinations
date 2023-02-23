@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations.ui.theme
+package com.welu.composenavdestinations.app.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

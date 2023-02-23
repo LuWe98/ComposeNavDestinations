@@ -1,4 +1,4 @@
-package com.welu.composenavdestinations
+package com.welu.composenavdestinations.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.welu.composenavdestinations.ui.theme.ComposeNavDestinationsTheme
+import com.welu.composenavdestinations.app.ui.theme.ComposeNavDestinationsTheme
 
 class MainActivity : ComponentActivity() {
 

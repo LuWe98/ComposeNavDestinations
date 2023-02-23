@@ -12,10 +12,10 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 
 android {
     compileSdk = 33
-    namespace = "com.welu.composenavdestinations"
+    namespace = "com.welu.composenavdestinations.app"
 
     defaultConfig {
-        applicationId = "com.welu.composenavdestinations"
+        applicationId = "com.welu.composenavdestinations.app"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
