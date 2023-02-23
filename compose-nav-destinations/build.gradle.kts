@@ -77,7 +77,7 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("core") {
             groupId = "com.github.LuWe98"
             artifactId = "ComposeNavDestinations"
             version = "1.0.0"

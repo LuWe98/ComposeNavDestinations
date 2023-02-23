@@ -23,7 +23,7 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("ksp") {
             //from(components["java"])
             groupId = "com.github.LuWe98"
             artifactId = "ComposeNavDestinations"
