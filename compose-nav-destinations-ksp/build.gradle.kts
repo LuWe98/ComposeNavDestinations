@@ -23,9 +23,9 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("ksp") {
+        create<MavenPublication>("maven") {
             groupId = "com.github.LuWe98"
-            artifactId = "Ksp"
+            artifactId = "ksp"
             version = "1.0.0"
 
             afterEvaluate {

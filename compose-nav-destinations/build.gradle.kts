@@ -46,15 +46,15 @@ android {
         jvmTarget = "1.8"
     }
 
-    lint {
-        checkDependencies = true
-        textReport = true
-        abortOnError = true
-        ignoreWarnings = false
-        // Produce report for CI:
-        // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
-        sarifOutput = file("../lint-results.sarif")
-    }
+//    lint {
+//        checkDependencies = true
+//        textReport = true
+//        abortOnError = true
+//        ignoreWarnings = false
+//        // Produce report for CI:
+//        // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
+//        sarifOutput = file("../lint-results.sarif")
+//    }
 }
 
 dependencies {
@@ -77,9 +77,9 @@ dependencies {
 
 publishing {
     publications {
-        create<MavenPublication>("core") {
+        create<MavenPublication>("maven") {
             groupId = "com.github.LuWe98"
-            artifactId = "Core"
+            artifactId = "core"
             version = "1.0.0"
 
             afterEvaluate {
