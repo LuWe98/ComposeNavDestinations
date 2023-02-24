@@ -22,7 +22,7 @@ object NavArgsGeneratorUtils {
 
     fun generateNamedNavArguments(sortedParams: List<Parameter>) = sortedParams.joinToString(",\n\t\t") { parameter ->
         val defaultValue = parameter.defaultValue?.let { "${it.value}, " } ?: ""
-        "navArgument(\"${parameter.name}\", ${parameter.navArgType.actualTypeName}, $defaultValue${parameter.typeInfo.isNullable})"
+        "navArgument(\"${parameter.name}\", ${parameter.navArgType.actualTypeName}, ${defaultValue}nullable=${parameter.typeInfo.isNullable})"
     }
 
     fun generateInvokeParameters(component: NavComponentInfo) = component
