@@ -24,7 +24,6 @@ fun ComposeDestinationScope.isOnBackStack(spec: NavComponentSpec) = navControlle
 fun NavController.isOnBackStack(spec: NavComponentSpec) = getBackStackEntry(spec) != null
 
 
-
 fun NavController.navigate(
     toRoutable: Routable
 ) = navigate(toRoutable.parameterizedRoute)

@@ -76,7 +76,6 @@ android {
 dependencies {
     val composeVersion = "1.3.0-alpha01"
 
-    //Eigene Module
     implementation(project(":compose-nav-destinations"))
     ksp(project(":compose-nav-destinations-ksp"))
 

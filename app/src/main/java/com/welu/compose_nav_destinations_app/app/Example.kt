@@ -37,6 +37,10 @@ import com.welu.composenavdestinations.extensions.navigation.popBackStack
 import com.welu.composenavdestinations.navigation.BottomSheetArgDestinationCompositionScope
 import com.welu.composenavdestinations.navigation.destinations.BottomSheetArgDestination
 import com.welu.composenavdestinations.navigation.spec.DestinationSpec
+import com.welu.composenavdestinations.result.IntResult
+import com.welu.composenavdestinations.result.LifecycleDestinationResultListener
+import com.welu.composenavdestinations.result.UntypedResult
+import com.welu.composenavdestinations.result.sendDestinationResultTo
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -65,9 +69,9 @@ object FirstDestination : Destination {
 
         //Hier muss man nochmal schauen wegen den Results -> Auch ResultTypes einbauen, dass es nicht zu crashes bei Runtime kommen kann
         //ResultTypes wie NavTypes für verschiedene Typen.
-        DestinationResultListener<Int> {
+        LifecycleDestinationResultListener<Long> {
             println("RESULT RECEIVED: $it")
-            parsedValue = it
+            parsedValue = it.toInt()
         }
 
         StartDestinationComposable(parsedValue) {
@@ -113,7 +117,7 @@ object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> 
                 navigateAndPopUpTo(ThirdDestination(), FirstDestination, false)
             },
             sendResult = {
-                sendDestinationResultTo(FirstDestination, Random.nextInt())
+                sendDestinationResultTo(FirstDestination, UntypedResult(Random.nextLong()))
             }
         )
     }

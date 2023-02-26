@@ -200,27 +200,23 @@ internal object CodeTemplates {
 
     private val DESTINATION_SCOPE_SEND_RESULT_TO_DESTINATION_EXTENSION_FUNCTION =
     """
-    | inline fun <reified T> ComposeDestinationScope.sendDestinationResultTo(
+    | inline fun <reified T: Any> ComposeDestinationScope.sendDestinationResultTo(
     |     destination: ComposeDestination<*>,
-    |     value: T,
-    |     key: String = value!!::class.java.name
+    |     result: DestinationResult<T>
     | ): Unit = navController.sendDestinationResultTo(
     |     spec = destination.findSpec(), 
-    |     value = value, 
-    |     key = key
+    |     result = result
     | )  
     """.trimMargin("| ")
 
     private val NAV_CONTROLLER_SEND_RESULT_TO_DESTINATION_EXTENSION_FUNCTION =
     """
-    | inline fun <reified T> NavController.sendDestinationResultTo(
+    | inline fun <reified T: Any> NavController.sendDestinationResultTo(
     |     destination: ComposeDestination<*>,
-    |     value: T,
-    |     key: String = value!!::class.java.name
+    |     result: DestinationResult<T>
     | ): Unit = sendDestinationResultTo(
     |     spec = destination.findSpec(), 
-    |     value = value, 
-    |     key = key
+    |     result = result
     | )  
     | 
     """.trimMargin("| ")
