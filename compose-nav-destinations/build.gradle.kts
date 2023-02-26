@@ -66,7 +66,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$composeNavigationVersion")
 
     //Accompanist
-    val accompanistVersion = "0.27.0"
+    val accompanistVersion = "0.29.1-alpha"
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-navigation-material:$accompanistVersion")
 

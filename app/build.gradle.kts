@@ -90,8 +90,11 @@ dependencies {
 
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.5.3")
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.27.0")
-    implementation("com.google.accompanist:accompanist-navigation-material:0.27.0")
+
+    //0.27.0
+    val accompanistVersion = "0.29.1-alpha"
+    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-navigation-material:$accompanistVersion")
 
     //Ktx Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
