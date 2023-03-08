@@ -73,6 +73,11 @@ internal object CodeTemplates {
 
     private val NAV_CONTROLLER_NAVIGATE_WITH_ROUTABLE_DESTINATION =
     """
+    | 
+    | val NavController.currentComposeDestination get() = currentBackStackEntry?.composeDestination
+    | 
+    | val NavController.previousComposeDestination get() = previousBackStackEntry?.composeDestination
+    | 
     | fun NavController.navigate(
     |   toDestination: ComposeRoutableDestination<*>
     | ) = navigate(toDestination.route)
@@ -195,28 +200,25 @@ internal object CodeTemplates {
 
     private val DESTINATION_SCOPE_SEND_RESULT_TO_DESTINATION_EXTENSION_FUNCTION =
     """
-    | inline fun <reified T> ComposeDestinationScope.sendDestinationResultTo(
+    | inline fun <reified T: Any> ComposeDestinationScope.sendDestinationResultTo(
     |     destination: ComposeDestination<*>,
-    |     value: T?,
-    |     keySpecification: String? = null
+    |     result: DestinationResult<T>
     | ): Unit = navController.sendDestinationResultTo(
     |     spec = destination.findSpec(), 
-    |     value = value, 
-    |     keySpecification = keySpecification
+    |     result = result
     | )  
     """.trimMargin("| ")
 
     private val NAV_CONTROLLER_SEND_RESULT_TO_DESTINATION_EXTENSION_FUNCTION =
     """
-    | inline fun <reified T> NavController.sendDestinationResultTo(
+    | inline fun <reified T: Any> NavController.sendDestinationResultTo(
     |     destination: ComposeDestination<*>,
-    |     value: T?,
-    |     keySpecification: String? = null
+    |     result: DestinationResult<T>
     | ): Unit = sendDestinationResultTo(
     |     spec = destination.findSpec(), 
-    |     value = value, 
-    |     keySpecification = keySpecification
+    |     result = result
     | )  
+    | 
     """.trimMargin("| ")
 
     private val NAV_CONTROLLER_FLOW_RESULT_LISTENER_WITH_DESTINATION =
@@ -224,12 +226,12 @@ internal object CodeTemplates {
     | @Composable
     | inline fun <reified T> NavController.DestinationResultListener(
     |     forDestination: ComposeDestination<*>,
-    |     keySpecification: String? = null,
+    |     key: String = T::class.java.name,
     |     withLifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     |     crossinline callback: (T) -> Unit
     | ) = DestinationResultListener(
     |     forSpec = forDestination.findSpec(),
-    |     keySpecification = keySpecification,
+    |     key = key,
     |     withLifecycleState = withLifecycleState,
     |     callback = callback
     | )
@@ -240,11 +242,11 @@ internal object CodeTemplates {
     | @Composable
     | inline fun <reified T> NavController.LifecycleDestinationResultListener(
     |     forDestination: ComposeDestination<*>,
-    |     keySpecification: String? = null,
+    |     key: String = T::class.java.name,
     |     crossinline callback: (T) -> Unit
     | ) = LifecycleDestinationResultListener(
     |     forSpec = forDestination.findSpec(),
-    |     keySpecification = keySpecification,
+    |     key = key,
     |     callback = callback
     | )
     """.trimMargin("| ")

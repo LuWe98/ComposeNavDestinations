@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.Navigator
 import com.welu.composenavdestinations.navigation.Routable
+import com.welu.composenavdestinations.navigation.destinations.ComposeDestination
 import com.welu.composenavdestinations.navigation.scope.ComposeDestinationScope
 import com.welu.composenavdestinations.navigation.spec.ComposeDestinationSpec
 import com.welu.composenavdestinations.navigation.spec.NavComponentSpec
@@ -21,12 +22,6 @@ fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? 
 fun ComposeDestinationScope.isOnBackStack(spec: NavComponentSpec) = navController.isOnBackStack(spec)
 
 fun NavController.isOnBackStack(spec: NavComponentSpec) = getBackStackEntry(spec) != null
-
-//    for (i in backQueue.lastIndex downTo 0) {
-//        if (backQueue[i].destination.route == spec.route) {
-//            return backQueue[i]
-//        }
-//    }
 
 
 fun NavController.navigate(

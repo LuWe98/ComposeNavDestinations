@@ -44,6 +44,9 @@ internal object PackageUtils {
     val NAV_BOTTOM_SHEET_DESTINATION_IMPORT = ImportInfo("BottomSheetDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
     val NAV_BOTTOM_SHEET_ARG_DESTINATION_IMPORT = ImportInfo("BottomSheetArgDestination", NAV_DESTINATION_DESTINATIONS_PACKAGE)
 
+    private const val NAV_DESTINATION_RESULT_PACKAGE = "$PACKAGE_NAME.result"
+    val NAV_DESTINATION_RESULT_IMPORT = ImportInfo("DestinationResult", NAV_DESTINATION_RESULT_PACKAGE)
+
     //TODO -> Alle Destinations in einen Folder machen und diese GeneratedDestination implementieren lassen.
     // -> Das gleiche mit NavGraphs -> GeneratedNavGraph
     private const val NAV_COMPONENT_SPEC_PACKAGE = "$NAV_DESTINATION_NAVIGATION_PACKAGE.spec"

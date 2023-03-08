@@ -22,6 +22,7 @@ object FileGeneratorResultExtensions : FileContentInfoTypedGenerator<Sequence<Co
             add(PackageUtils.NAV_DESTINATION_SEND_DESTINATION_RESULT_FUNCTION_IMPORT)
             add(PackageUtils.NAV_DESTINATION_RESULT_LISTENER_IMPORT)
             add(PackageUtils.NAV_DESTINATION_LIFECYCLE_RESULT_LISTENER_IMPORT)
+            add(PackageUtils.NAV_DESTINATION_RESULT_IMPORT)
         },
         code = CodeTemplates.NAV_DESTINATION_RESULT_EXTENSIONS_TEMPLATE
     )

@@ -34,8 +34,14 @@ import com.welu.compose_nav_destinations_app.app.screens.DetailScreen
 import com.welu.compose_nav_destinations_app.app.screens.DetailScreenNavArgs
 import com.welu.composenavdestinations.extensions.navigation.navigateAndPopUpTo
 import com.welu.composenavdestinations.extensions.navigation.popBackStack
+import com.welu.composenavdestinations.navigation.BottomSheetArgDestinationCompositionScope
+import com.welu.composenavdestinations.navigation.destinations.BottomSheetArgDestination
 import com.welu.composenavdestinations.navargs.com_welu_compose_nav_destinations_app_app_User_NavArgParcelableType
 import com.welu.composenavdestinations.navigation.spec.DestinationSpec
+import com.welu.composenavdestinations.result.IntResult
+import com.welu.composenavdestinations.result.LifecycleDestinationResultListener
+import com.welu.composenavdestinations.result.UntypedResult
+import com.welu.composenavdestinations.result.sendDestinationResultTo
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -64,9 +70,9 @@ object FirstDestination : Destination {
 
         //Hier muss man nochmal schauen wegen den Results -> Auch ResultTypes einbauen, dass es nicht zu crashes bei Runtime kommen kann
         //ResultTypes wie NavTypes für verschiedene Typen.
-        DestinationResultListener<Int> {
+        LifecycleDestinationResultListener<Long> {
             println("RESULT RECEIVED: $it")
-            parsedValue = it
+            parsedValue = it.toInt()
         }
 
         StartDestinationComposable(parsedValue) {
@@ -98,21 +104,21 @@ object Lol : Destination {
 }
 
 @ComposeDestination
-object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
+object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> {
 
     class NavArgs(val user: User)
 
-    override val Content: ArgDestinationCompositionScope<NavArgs> = {
+    override val Content: BottomSheetArgDestinationCompositionScope<NavArgs> = {
         TestDestinationComposable(
             user = args.user,
             navigateBack = {
-                popBackStack(FirstDestination)
+                popBackStack()
             },
             navigateToThirdScreen = {
                 navigateAndPopUpTo(ThirdDestination(), FirstDestination, false)
             },
             sendResult = {
-                sendDestinationResultTo(FirstDestination, Random.nextInt())
+                sendDestinationResultTo(FirstDestination, UntypedResult(Random.nextLong()))
             }
         )
     }
@@ -150,6 +156,7 @@ object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
             //navController.navigate(OtherGraphSpec())
             Log.d("TTT", "HALLO")
             popBackStack(FirstDestination)
+
             //navController.navigate("other/123")
         }
     }
