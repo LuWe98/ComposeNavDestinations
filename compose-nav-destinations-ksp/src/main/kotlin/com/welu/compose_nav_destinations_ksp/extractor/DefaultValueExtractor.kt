@@ -29,7 +29,6 @@ class DefaultValueExtractor(
         argQualifiedName: String,
         fileContent: KSFileContent
     ): ParameterDefaultValue? {
-
         if (!parameter.hasDefault) return null
 
         val argLineNumber = parameter.findFileLocation()?.lineNumber?.minus(1) ?: 0
@@ -63,26 +62,22 @@ class DefaultValueExtractor(
     private fun findDefaultValueSubString(parsedMatchedRange: String, argType: String): String? {
         val matchedRange = parsedMatchedRange.substring(parsedMatchedRange.indexOf(argType) + argType.length)
 
-        val indexOfParameterDeclarationEnd = findIndexOfParameterDeclarationEnd(matchedRange)
-        if (indexOfParameterDeclarationEnd == -1) return null
-
+        val indexOfParameterDeclarationEnd = findIndexOfParameterDeclarationEnd(matchedRange) ?: return null
         val indexOfParameterDefaultValueDeclaration = matchedRange.indexOfFirst('=')
-        val subMatchedRange = matchedRange.substring(indexOfParameterDefaultValueDeclaration + 1, indexOfParameterDeclarationEnd)
 
+        val subMatchedRange = matchedRange.substring(indexOfParameterDefaultValueDeclaration + 1, indexOfParameterDeclarationEnd)
         if (subMatchedRange.isBlank()) return null
+
         return subMatchedRange.reformatCodeWhitespaces()
     }
 
-    private fun findIndexOfParameterDeclarationEnd(matchedRange: String): Int {
+    private fun findIndexOfParameterDeclarationEnd(matchedRange: String): Int? {
         var isInsideChar = false
         var isInsideString = false
         var openCrockCounter = 0
         var openCurlyCounter = 0
-        var currentChar: Char
 
-        for (charIndex in matchedRange.indices) {
-            currentChar = matchedRange[charIndex]
-
+        matchedRange.forEachIndexed { charIndex, currentChar ->
             if (currentChar.isAnyOf(',', ')')
                 && !isInsideChar
                 && !isInsideString
@@ -108,35 +103,34 @@ class DefaultValueExtractor(
             }
         }
 
-        return -1
+        return null
     }
 
     private fun String.reformatCodeWhitespaces(): String {
         val reformatBuilder = StringBuilder()
         var isInsideString = false
-        var currentChar: Char
-        var lastChar: Char? = null
+        var previousChar: Char? = null
 
-        for (charIndex in indices) {
-            currentChar = get(charIndex)
+        forEachIndexed { charIndex, currentChar ->
             if (currentChar == '"' && (charIndex == 0 || get(charIndex - 1) != '\\')) {
                 isInsideString = !isInsideString
-                if (lastChar?.isWhitespace() == true) {
-                    reformatBuilder.append(lastChar)
+                if (previousChar?.isWhitespace() == true) {
+                    reformatBuilder.append(previousChar)
                 }
             } else if (!isInsideString && charIndex != 0) {
                 if (currentChar.isWhitespace() && get(charIndex - 1).isAnyOf(' ', '(', '<', '.')) {
-                    continue
+                    return@forEachIndexed
                 }
-                if (lastChar?.isWhitespace() == true && currentChar.isNoneOf(',', ')', '>', '.', ' ')) {
-                    reformatBuilder.append(lastChar)
+                if (previousChar?.isWhitespace() == true && currentChar.isNoneOf(',', ')', '>', '.', ' ')) {
+                    reformatBuilder.append(previousChar)
                 }
             }
 
             if (isInsideString || !currentChar.isWhitespace()) {
                 reformatBuilder.append(currentChar)
             }
-            lastChar = currentChar
+
+            previousChar = currentChar
         }
 
         return reformatBuilder.trim().toString()
@@ -147,7 +141,6 @@ class DefaultValueExtractor(
     private fun extractDefaultValueDeclarations(defaultValueString: String): List<ParameterDefaultValueDeclaration> {
         val declarationBuilder = StringBuilder()
         var isInsideString = false
-        var currentChar: Char
         var lastSeparatorCharacter: Char? = null
         val defaultValueDeclarations = mutableListOf<ParameterDefaultValueDeclaration>()
         var futureCallingDeclaration: ParameterDefaultValueDeclaration? = null
@@ -158,23 +151,20 @@ class DefaultValueExtractor(
             callingDeclaration = futureCallingDeclaration
         )
 
-        for (charIndex in defaultValueString.indices) {
-            currentChar = defaultValueString[charIndex]
-
+        defaultValueString.forEachIndexed { charIndex, currentChar ->
             if (currentChar == '"' && (charIndex == 0 || defaultValueString[charIndex - 1] != '\\')) {
                 if (!isInsideString && declarationBuilder.isNotEmpty()) {
-                    currentPotentialDeclaration(charIndex).let { declaration ->
-                        defaultValueDeclarations.add(declaration)
-                        futureCallingDeclaration = null
-                        declarationBuilder.clear()
-                    }
+                    val declaration = currentPotentialDeclaration(charIndex)
+                    defaultValueDeclarations.add(declaration)
+                    futureCallingDeclaration = null
+                    declarationBuilder.clear()
                 }
                 isInsideString = !isInsideString
             }
 
-            if (isInsideString){
+            if (isInsideString) {
                 //Hier noch auf $ überprüfen -> Nach einem Dollarsign können Deklarationen kommen
-                continue
+                return@forEachIndexed
             }
 
             if (currentChar.isLetterOrDigitOrUnderscore()) {
@@ -183,30 +173,29 @@ class DefaultValueExtractor(
                 if (charIndex == defaultValueString.lastIndex && lastSeparatorCharacter == '.') {
                     defaultValueDeclarations.add(currentPotentialDeclaration(charIndex))
                 }
-                continue
+                return@forEachIndexed
             }
 
             // Um Parameternamen zu filtern
-            if(currentChar == '='){
+            if (currentChar == '=') {
                 declarationBuilder.clear()
-                continue
+                return@forEachIndexed
             }
 
             if (currentChar.isAnyOf(',', '.', ':', '<', '>', '(', ')', '{', '}')) {
                 lastSeparatorCharacter = currentChar
 
-                if (declarationBuilder.isEmpty()) continue
+                if (declarationBuilder.isEmpty()) return@forEachIndexed
 
                 if (declarationBuilder.first().isDigit()) {
                     declarationBuilder.clear()
-                    continue
+                    return@forEachIndexed
                 }
 
-                currentPotentialDeclaration(charIndex).let { declaration ->
-                    defaultValueDeclarations.add(declaration)
-                    futureCallingDeclaration = if (currentChar == '.') declaration else null
-                    declarationBuilder.clear()
-                }
+                val declaration = currentPotentialDeclaration(charIndex)
+                defaultValueDeclarations.add(declaration)
+                futureCallingDeclaration = if (currentChar == '.') declaration else null
+                declarationBuilder.clear()
             }
         }
 

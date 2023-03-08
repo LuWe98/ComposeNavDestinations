@@ -34,6 +34,7 @@ import com.welu.compose_nav_destinations_app.app.screens.DetailScreen
 import com.welu.compose_nav_destinations_app.app.screens.DetailScreenNavArgs
 import com.welu.composenavdestinations.extensions.navigation.navigateAndPopUpTo
 import com.welu.composenavdestinations.extensions.navigation.popBackStack
+import com.welu.composenavdestinations.navargs.com_welu_compose_nav_destinations_app_app_User_NavArgParcelableType
 import com.welu.composenavdestinations.navigation.spec.DestinationSpec
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
@@ -149,12 +150,14 @@ object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
             //navController.navigate(OtherGraphSpec())
             Log.d("TTT", "HALLO")
             popBackStack(FirstDestination)
-
             //navController.navigate("other/123")
         }
     }
 
 }
+
+//Bei den generierten Methoden kann man einfach die argsFrom Methode für SaveStateHandle aufrufen von NavBackstackEntry
+//Testen ob das geht
 
 
 @OtherGraph(true)

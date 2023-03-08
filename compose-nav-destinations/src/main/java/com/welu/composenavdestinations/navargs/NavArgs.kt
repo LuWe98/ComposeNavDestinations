@@ -240,8 +240,7 @@ object NavArgSerializableType : SingleNavArgType<Serializable>(Base64Util::deser
 
 
 
-//TODO -> Vllt nochmal anschauen
-// KotlinSerializable
+//TODO -> Nochmal anschauen mit KotlinSerializable
 class NavArgKotlinSerializableType <T: Any>(private val serializer: KSerializer<T>): SingleNavArgType<T>(serializer::deserialize, serializer::serialize) {
 
     constructor(clazz: KClass<T>): this(clazz.ktxSerializer)
