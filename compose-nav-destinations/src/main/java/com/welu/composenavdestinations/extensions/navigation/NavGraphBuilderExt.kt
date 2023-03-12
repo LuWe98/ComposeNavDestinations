@@ -11,9 +11,21 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.bottomSheet
 import com.welu.composenavdestinations.navigation.scope.*
 import com.welu.composenavdestinations.navigation.spec.*
+import com.welu.composenavdestinations.service.ServiceLocator
 
-//TODO -> Noch einbauen mit Dialog und BottomSheet sowie animation
 fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavGraph(
+    navGraphSpec: N,
+    navController: NavHostController
+) {
+    ServiceLocator.composeDestinationService.registerComposeNavGraphSpec(navGraphSpec)
+
+    addNavGraphInternal(
+        navGraphSpec = navGraphSpec,
+        navController = navController
+    )
+}
+
+private fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavGraphInternal(
     navGraphSpec: N,
     navController: NavHostController
 ) {
@@ -168,6 +180,7 @@ private fun NavGraphBuilder.addBottomSheetArgDestination(
 }
 
 
+//TODO -> Das vllt noch oben einbauen?
 @OptIn(ExperimentalAnimationApi::class)
 private fun NavGraphBuilder.addNestedNavigation(
     navGraphSpec: ComposeNavGraphSpec,
@@ -182,6 +195,6 @@ private fun NavGraphBuilder.addNestedNavigation(
             is NavGraphSpec -> emptyList()
         }
     ) {
-        addNavGraph(navGraphSpec, navController)
+        addNavGraphInternal(navGraphSpec, navController)
     }
 }

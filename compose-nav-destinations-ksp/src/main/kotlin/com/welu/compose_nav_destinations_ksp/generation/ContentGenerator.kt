@@ -7,10 +7,6 @@ import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorD
 import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorDestinationSpec
 import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorNavGraphSpec
 import com.welu.compose_nav_destinations_ksp.generation.general.FileGeneratorCustomNavArgs
-import com.welu.compose_nav_destinations_ksp.generation.general.FileGeneratorNavBackStackEntryExtensions
-import com.welu.compose_nav_destinations_ksp.generation.general.FileGeneratorNavComponentUtils
-import com.welu.compose_nav_destinations_ksp.generation.general.FileGeneratorNavControllerExtensions
-import com.welu.compose_nav_destinations_ksp.generation.general.FileGeneratorResultExtensions
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeNavGraphInfo
 import com.welu.compose_nav_destinations_ksp.model.components.NavComponentInfo
@@ -27,8 +23,10 @@ class ContentGenerator(
     ) {
 
         val navComponents = destinations + navGraphs
-        val commonSuffix = findCommonNavComponentPackageSuffix(navComponents)
-        logger.warn("Common suffix: $commonSuffix")
+
+        //TODO -> Das vllt mal noch anschauen
+//        val commonSuffix = findCommonNavComponentPackageSuffix(navComponents)
+//        logger.warn("Common suffix: $commonSuffix")
 
         //Hier sollte der Common PackageName übergeben werden
         //In den FileGenerators sollte bei den FileContentInfos nur der additional suffix mitgegeben werden, der an den Common PackageName angehängt wird
@@ -40,20 +38,8 @@ class ContentGenerator(
         //Generates the custom NavArgs needed for Navigation
         FileGeneratorCustomNavArgs.generate(navComponents)?.let(fileContentInfoOutputWriter::writeFile)
 
-        //Generates the NavDestinationUtils File
-        FileGeneratorNavComponentUtils.generate(navComponents).let(fileContentInfoOutputWriter::writeFile)
-
         //Generates the NavDestinationsExt File
         FileGeneratorDestinationExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
-
-        //Generates the NavDestinationsResultExt File
-        FileGeneratorResultExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
-
-        //Generates the NavControllerExtFile
-        FileGeneratorNavControllerExtensions.generate().let(fileContentInfoOutputWriter::writeFile)
-
-        //Generates the NavBackStackEntryExtFile
-        FileGeneratorNavBackStackEntryExtensions.generate().let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the DestinationSpecs for all annotated destinations
         destinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
@@ -61,6 +47,20 @@ class ContentGenerator(
         //Generates the NavGraphSpecs for all annotated NavGraphs
         navGraphs.map(FileGeneratorNavGraphSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
 
+
+        //Generates the NavDestinationUtils File
+        // TODO -> No longer needed, because the destination will be found in a Service Locator type of way in order for the Methods to be available instantly
+        //  Die Files unten braucht man auch nicht mehr generieren und kann stattdessen direkt darauf zugreifen.
+        // FileGeneratorNavComponentUtils.generate(navComponents).let(fileContentInfoOutputWriter::writeFile)
+
+        //Generates the NavDestinationsResultExt File
+        //FileGeneratorResultExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
+
+        //Generates the NavControllerExtFile
+        //FileGeneratorNavControllerExtensions.generate().let(fileContentInfoOutputWriter::writeFile)
+
+        //Generates the NavBackStackEntryExtFile
+        //FileGeneratorNavBackStackEntryExtensions.generate().let(fileContentInfoOutputWriter::writeFile)
     }
 
     private fun findCommonNavComponentPackageSuffix(navComponentInfos: Sequence<NavComponentInfo>): String {

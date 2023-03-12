@@ -11,7 +11,7 @@ object FileGeneratorNavBackStackEntryExtensions: FileContentInfoGenerator {
         fileImportInfo = PackageUtils.NAV_BACK_STACK_ENTRY_EXTENSIONS_FILE_IMPORT,
         imports = mutableSetOf(
             PackageUtils.ANDROID_NAVIGATION_NAV_BACK_STACK_ENTRY_IMPORT,
-            PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT,
+//            PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT,
             PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_IMPORT
         ),
         code = CodeTemplates.NAV_BACK_STACK_ENTRY_EXTENSIONS_TEMPLATE

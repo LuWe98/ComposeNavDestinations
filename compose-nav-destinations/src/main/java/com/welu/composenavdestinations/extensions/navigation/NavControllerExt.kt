@@ -7,11 +7,13 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.Navigator
 import com.welu.composenavdestinations.navigation.Routable
 import com.welu.composenavdestinations.navigation.destinations.ComposeDestination
-import com.welu.composenavdestinations.navigation.scope.ComposeDestinationScope
+import com.welu.composenavdestinations.navigation.destinations.ComposeRoutableDestination
 import com.welu.composenavdestinations.navigation.spec.ComposeDestinationSpec
 import com.welu.composenavdestinations.navigation.spec.NavComponentSpec
 
-fun ComposeDestinationScope.getBackStackEntry(spec: NavComponentSpec) = navController.getBackStackEntry(spec)
+val NavController.currentComposeDestination get() = currentBackStackEntry?.composeDestination
+
+val NavController.previousComposeDestination get() = previousBackStackEntry?.composeDestination
 
 fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? = try {
     getBackStackEntry(spec.route)
@@ -19,7 +21,11 @@ fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? 
     null
 }
 
-fun ComposeDestinationScope.isOnBackStack(spec: NavComponentSpec) = navController.isOnBackStack(spec)
+fun NavController.getBackStackEntry(destination: ComposeDestination<*>): NavBackStackEntry? = try {
+    getBackStackEntry(destination.route)
+} catch (e: IllegalArgumentException) {
+    null
+}
 
 fun NavController.isOnBackStack(spec: NavComponentSpec) = getBackStackEntry(spec) != null
 
@@ -28,31 +34,16 @@ fun NavController.navigate(
     toRoutable: Routable
 ) = navigate(toRoutable.parameterizedRoute)
 
-fun ComposeDestinationScope.navigate(
-    toRoutable: Routable
-) = navController.navigate(toRoutable)
-
 fun NavController.navigate(
     toRoutable: Routable,
     builder: NavOptionsBuilder.() -> Unit
 ) = navigate(toRoutable.parameterizedRoute, builder)
-
-fun ComposeDestinationScope.navigate(
-    toRoutable: Routable,
-    builder: NavOptionsBuilder.() -> Unit
-) = navController.navigate(toRoutable, builder)
 
 fun NavController.navigate(
     toRoutable: Routable,
     navOptions: NavOptions? = null,
     navigatorExtras: Navigator.Extras? = null
 ) = navigate(toRoutable.parameterizedRoute, navOptions, navigatorExtras)
-
-fun ComposeDestinationScope.navigate(
-    toRoutable: Routable,
-    navOptions: NavOptions? = null,
-    navigatorExtras: Navigator.Extras? = null
-) = navController.navigate(toRoutable, navOptions, navigatorExtras)
 
 fun NavController.navigateAndPopUpTo(
     toRoutable: Routable,
@@ -63,23 +54,11 @@ fun NavController.navigateAndPopUpTo(
     navigate(toRoutable.parameterizedRoute, extras)
 }
 
-fun ComposeDestinationScope.navigateAndPopUpTo(
-    toRoutable: Routable,
-    popUpTo: String,
-    inclusive: Boolean = true
-) = navController.navigateAndPopUpTo(toRoutable, popUpTo, inclusive)
-
 fun NavController.navigateAndPopUpTo(
     toRoutable: Routable,
     popUpTo: ComposeDestinationSpec<*>,
     inclusive: Boolean = true
 ) = navigateAndPopUpTo(toRoutable, popUpTo.route, inclusive)
-
-fun ComposeDestinationScope.navigateAndPopUpTo(
-    toRoutable: Routable,
-    popUpTo: ComposeDestinationSpec<*>,
-    inclusive: Boolean = true
-) = navController.navigateAndPopUpTo(toRoutable, popUpTo, inclusive)
 
 fun NavController.popBackStack(
     toDestinationSpec: ComposeDestinationSpec<*>,
@@ -87,12 +66,53 @@ fun NavController.popBackStack(
     saveState: Boolean = false
 ) = popBackStack(toDestinationSpec.route, inclusive, saveState)
 
-fun ComposeDestinationScope.popBackStack(
-    toDestinationSpec: ComposeDestinationSpec<*>,
+fun NavController.navigate(
+    toDestination: ComposeRoutableDestination<*>
+) = navigate(toDestination.route)
+
+fun NavController.navigate(
+    toDestination: ComposeRoutableDestination<*>,
+    builder: NavOptionsBuilder.() -> Unit
+) = navigate(toDestination.route, builder)
+
+fun NavController.navigate(
+    toDestination: ComposeRoutableDestination<*>,
+    navOptions: NavOptions? = null,
+    navigatorExtras: Navigator.Extras? = null
+) = navigate(toDestination.route, navOptions, navigatorExtras)
+
+fun NavController.navigateAndPopUpTo(
+    toDestination: ComposeRoutableDestination<*>,
+    popUpTo: String,
+    inclusive: Boolean = true
+) {
+    val extras = NavOptions.Builder().setPopUpTo(popUpTo, inclusive).build()
+    navigate(toDestination.route, extras)
+}
+
+fun NavController.navigateAndPopUpTo(
+    toDestination: ComposeRoutableDestination<*>,
+    popUpToSpec: ComposeDestinationSpec<*>,
+    inclusive: Boolean = true
+) = navigateAndPopUpTo(toDestination, popUpToSpec.route, inclusive)
+
+fun NavController.navigateAndPopUpTo(
+    toDestination: ComposeRoutableDestination<*>,
+    popUpToDestination: ComposeDestination<*>,
+    inclusive: Boolean = true
+) = navigateAndPopUpTo(toDestination, popUpToDestination.route, inclusive)
+
+fun NavController.navigateAndPopUpTo(
+    toRoutable: Routable,
+    popUpTo: ComposeDestination<*>,
+    inclusive: Boolean = true
+) {
+    val extras = NavOptions.Builder().setPopUpTo(popUpTo.route, inclusive).build()
+    navigate(toRoutable.parameterizedRoute, extras)
+}
+
+fun NavController.popBackStack(
+    toDestination: ComposeDestination<*>,
     inclusive: Boolean = false,
     saveState: Boolean = false
-) = navController.popBackStack(toDestinationSpec, inclusive, saveState)
-
-fun ComposeDestinationScope.navigateUp() = navController.navigateUp()
-
-fun ComposeDestinationScope.popBackStack() = navController.popBackStack()
+) = popBackStack(toDestination.route, inclusive, saveState)

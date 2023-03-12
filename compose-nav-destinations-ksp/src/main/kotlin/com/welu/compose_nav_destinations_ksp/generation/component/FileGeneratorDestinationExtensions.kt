@@ -16,7 +16,7 @@ object FileGeneratorDestinationExtensions : FileContentInfoTypedGenerator<Sequen
         return FileContentInfo(
             fileImportInfo = PackageUtils.NAV_DESTINATION_EXTENSIONS_FILE_IMPORT,
             imports = mutableSetOf(
-                PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT,
+//                PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT,
                 PackageUtils.NAV_COMPOSE_DESTINATION_SPEC_IMPORT,
                 PackageUtils.NAV_COMPOSE_SEALED_DESTINATION_IMPORT,
                 PackageUtils.NAV_ROUTABLE_COMPOSE_DESTINATION_SPEC_IMPORT,

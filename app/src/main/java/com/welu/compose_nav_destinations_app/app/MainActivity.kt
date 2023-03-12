@@ -50,6 +50,7 @@ private fun NavigationComp() {
         ) {
             addNavGraph(DefaultNavGraphSpec, navController)
 
+
 //            composable("One"){
 //                Text(text = "One", modifier = Modifier.clickable { navController.navigate("Two") })
 //            }

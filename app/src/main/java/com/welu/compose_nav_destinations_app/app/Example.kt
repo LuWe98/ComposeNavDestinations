@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.welu.compose_nav_destinations_app.app.screens.DetailScreen
+import com.welu.compose_nav_destinations_app.app.screens.DetailScreenNavArgs
 import com.welu.composenavdestinations.annotations.ComposeDestination
 import com.welu.composenavdestinations.annotations.ComposeNavGraph
 import com.welu.composenavdestinations.annotations.DefaultNavGraph
@@ -22,26 +24,20 @@ import com.welu.composenavdestinations.extensions.*
 import com.welu.composenavdestinations.extensions.navigation.areArgumentsSetCorrectly
 import com.welu.composenavdestinations.extensions.navigation.getBackStackEntry
 import com.welu.composenavdestinations.extensions.navigation.navigate
+import com.welu.composenavdestinations.extensions.navigation.navigateAndPopUpTo
+import com.welu.composenavdestinations.extensions.navigation.popBackStack
 import com.welu.composenavdestinations.navgraphs.OtherGraphSpec
 import com.welu.composenavdestinations.navigation.ArgDestinationCompositionScope
+import com.welu.composenavdestinations.navigation.BottomSheetArgDestinationCompositionScope
 import com.welu.composenavdestinations.navigation.DestinationCompositionScope
 import com.welu.composenavdestinations.navigation.DialogArgDestinationCompositionScope
 import com.welu.composenavdestinations.navigation.destinations.ArgDestination
+import com.welu.composenavdestinations.navigation.destinations.BottomSheetArgDestination
 import com.welu.composenavdestinations.navigation.destinations.Destination
 import com.welu.composenavdestinations.navigation.destinations.DialogArgDestination
-import com.welu.composenavdestinations.result.DestinationResultListener
-import com.welu.compose_nav_destinations_app.app.screens.DetailScreen
-import com.welu.compose_nav_destinations_app.app.screens.DetailScreenNavArgs
-import com.welu.composenavdestinations.extensions.navigation.navigateAndPopUpTo
-import com.welu.composenavdestinations.extensions.navigation.popBackStack
-import com.welu.composenavdestinations.navigation.BottomSheetArgDestinationCompositionScope
-import com.welu.composenavdestinations.navigation.destinations.BottomSheetArgDestination
-import com.welu.composenavdestinations.navargs.com_welu_compose_nav_destinations_app_app_User_NavArgParcelableType
-import com.welu.composenavdestinations.navigation.spec.DestinationSpec
-import com.welu.composenavdestinations.result.IntResult
-import com.welu.composenavdestinations.result.LifecycleDestinationResultListener
+import com.welu.composenavdestinations.result.LifecycleResultListener
 import com.welu.composenavdestinations.result.UntypedResult
-import com.welu.composenavdestinations.result.sendDestinationResultTo
+import com.welu.composenavdestinations.result.sendResultTo
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
@@ -70,7 +66,7 @@ object FirstDestination : Destination {
 
         //Hier muss man nochmal schauen wegen den Results -> Auch ResultTypes einbauen, dass es nicht zu crashes bei Runtime kommen kann
         //ResultTypes wie NavTypes für verschiedene Typen.
-        LifecycleDestinationResultListener<Long> {
+        LifecycleResultListener<Long> {
             println("RESULT RECEIVED: $it")
             parsedValue = it.toInt()
         }
@@ -118,7 +114,7 @@ object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> 
                 navigateAndPopUpTo(ThirdDestination(), FirstDestination, false)
             },
             sendResult = {
-                sendDestinationResultTo(FirstDestination, UntypedResult(Random.nextLong()))
+                sendResultTo(FirstDestination, UntypedResult(Random.nextLong()))
             }
         )
     }
