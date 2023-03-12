@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorDestinationExtensions
 import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorDestinationSpec
 import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorNavGraphSpec
+import com.welu.compose_nav_destinations_ksp.generation.general.FileComposeNavDestinationsExtensions
 import com.welu.compose_nav_destinations_ksp.generation.general.FileGeneratorCustomNavArgs
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeNavGraphInfo
@@ -40,6 +41,9 @@ class ContentGenerator(
 
         //Generates the NavDestinationsExt File
         FileGeneratorDestinationExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
+
+        //Generates Code for ComposeNavDestinations init
+        FileComposeNavDestinationsExtensions.generate(navGraphs).let(fileContentInfoOutputWriter::writeFile)
 
         //Generates the DestinationSpecs for all annotated destinations
         destinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)

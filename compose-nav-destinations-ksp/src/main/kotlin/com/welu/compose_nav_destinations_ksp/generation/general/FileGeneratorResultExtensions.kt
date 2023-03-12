@@ -11,7 +11,7 @@ import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
 object FileGeneratorResultExtensions : FileContentInfoTypedGenerator<Sequence<ComposeDestinationInfo>> {
 
     override fun generate(instance: Sequence<ComposeDestinationInfo>) = FileContentInfo(
-        fileImportInfo = PackageUtils.NAV_DESTINATION_RESULT_EXTENSIONS_FILE_IMPORT,
+        fileImportInfo = PackageUtils.COMPOSE_NAV_DESTINATIONS_EXTENSION_FILE_IMPORT,
         imports = mutableSetOf<ImportInfo>().apply {
             add(PackageUtils.ANDROID_NAVIGATION_NAV_CONTROLLER_IMPORT)
             add(PackageUtils.ANDROID_COMPOSABLE_IMPORT)
@@ -22,7 +22,7 @@ object FileGeneratorResultExtensions : FileContentInfoTypedGenerator<Sequence<Co
             add(PackageUtils.NAV_DESTINATION_SEND_DESTINATION_RESULT_FUNCTION_IMPORT)
             add(PackageUtils.NAV_DESTINATION_RESULT_LISTENER_IMPORT)
             add(PackageUtils.NAV_DESTINATION_LIFECYCLE_RESULT_LISTENER_IMPORT)
-            add(PackageUtils.NAV_DESTINATION_RESULT_IMPORT)
+            add(PackageUtils.COMPOSE_NAV_DESTINATIONS_IMPORT)
         },
         code = CodeTemplates.NAV_DESTINATION_RESULT_EXTENSIONS_TEMPLATE
     )

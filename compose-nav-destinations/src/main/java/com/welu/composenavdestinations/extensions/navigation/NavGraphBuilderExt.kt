@@ -17,8 +17,6 @@ fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavGraph(
     navGraphSpec: N,
     navController: NavHostController
 ) {
-    ServiceLocator.composeDestinationService.registerComposeNavGraphSpec(navGraphSpec)
-
     addNavGraphInternal(
         navGraphSpec = navGraphSpec,
         navController = navController
@@ -40,6 +38,25 @@ private fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavGraphInternal(
             is BottomSheetArgDestinationSpec<*> -> addBottomSheetArgDestination(navComponent as BottomSheetArgDestinationSpec<Any>, navController)
             is ComposeNavGraphSpec -> addNestedNavigation(navComponent, navController)
         }
+    }
+}
+
+//TODO -> Das vllt noch oben einbauen?
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addNestedNavigation(
+    navGraphSpec: ComposeNavGraphSpec,
+    navController: NavHostController
+) {
+    navigation(
+        route = navGraphSpec.route,
+        startDestination = navGraphSpec.startComponentSpec.route,
+        deepLinks = navGraphSpec.deepLinks,
+        arguments = when (navGraphSpec) {
+            is ArgNavGraphSpec<*> -> navGraphSpec.arguments
+            is NavGraphSpec -> emptyList()
+        }
+    ) {
+        addNavGraphInternal(navGraphSpec, navController)
     }
 }
 
@@ -176,25 +193,5 @@ private fun NavGraphBuilder.addBottomSheetArgDestination(
             )
         }
         bottomSheetArgDestinationSpec.destination.Content(scope)
-    }
-}
-
-
-//TODO -> Das vllt noch oben einbauen?
-@OptIn(ExperimentalAnimationApi::class)
-private fun NavGraphBuilder.addNestedNavigation(
-    navGraphSpec: ComposeNavGraphSpec,
-    navController: NavHostController
-) {
-    navigation(
-        route = navGraphSpec.route,
-        startDestination = navGraphSpec.startComponentSpec.route,
-        deepLinks = navGraphSpec.deepLinks,
-        arguments = when (navGraphSpec) {
-            is ArgNavGraphSpec<*> -> navGraphSpec.arguments
-            is NavGraphSpec -> emptyList()
-        }
-    ) {
-        addNavGraphInternal(navGraphSpec, navController)
     }
 }

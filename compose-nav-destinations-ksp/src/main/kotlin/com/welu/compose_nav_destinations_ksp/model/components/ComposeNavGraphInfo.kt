@@ -24,6 +24,7 @@ data class ComposeNavGraphInfo(
     val simpleName get() = specImport.simpleName
     val packageDir get() = specImport.packageDir
     val isArgNavGraph get() = navArgsInfo != null
+    val isRoot get() = parentNavGraphSpecImport == null
 
     val allChildNavComponentSpecImports get() = childDestinationSpecImports + childNavGraphSpecImports
 

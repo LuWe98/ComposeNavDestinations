@@ -12,18 +12,18 @@ internal class ComposeDestinationService {
 
     private val routeNavComponentMap = mutableMapOf<String, NavComponentSpec>()
 
-    fun registerComposeNavGraphSpec(navGraphSpec: ComposeNavGraphSpec) {
+    internal fun registerComposeNavGraphSpec(navGraphSpec: ComposeNavGraphSpec) {
         if(routeNavComponentMap.containsKey(navGraphSpec.route)) return
 
         routeNavComponentMap[navGraphSpec.route] = navGraphSpec
 
         navGraphSpec.childNavGraphSpecs.forEach {
-            routeNavComponentMap[it.route] = it
+            registerComposeNavGraphSpec(it)
         }
 
         navGraphSpec.childDestinationSpecs.forEach {
-            navDestinationMap[it.destination::class] = it
             routeNavComponentMap[it.route] = it
+            navDestinationMap[it.destination::class] = it
         }
     }
 
