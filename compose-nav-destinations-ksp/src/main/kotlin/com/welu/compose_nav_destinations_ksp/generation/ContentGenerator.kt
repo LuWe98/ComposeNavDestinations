@@ -3,11 +3,13 @@ package com.welu.compose_nav_destinations_ksp.generation
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
-import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorDestinationExtensions
+import com.squareup.kotlinpoet.ksp.writeTo
+import com.welu.compose_nav_destinations_ksp.extensions.ksp.dependencies
 import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorDestinationSpec
 import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorNavGraphSpec
-import com.welu.compose_nav_destinations_ksp.generation.general.FileComposeNavDestinationsExtensions
-import com.welu.compose_nav_destinations_ksp.generation.general.FileGeneratorCustomNavArgs
+import com.welu.compose_nav_destinations_ksp.generation.extensions.FileComposeNavDestinationsExtensions
+import com.welu.compose_nav_destinations_ksp.generation.extensions.FileGeneratorCustomNavArgs
+import com.welu.compose_nav_destinations_ksp.generation.extensions.FileGeneratorDestinationExtensions
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeNavGraphInfo
 import com.welu.compose_nav_destinations_ksp.model.components.NavComponentInfo
@@ -23,8 +25,6 @@ class ContentGenerator(
         navGraphs: Sequence<ComposeNavGraphInfo>
     ) {
 
-        val navComponents = destinations + navGraphs
-
         //TODO -> Das vllt mal noch anschauen
 //        val commonSuffix = findCommonNavComponentPackageSuffix(navComponents)
 //        logger.warn("Common suffix: $commonSuffix")
@@ -37,35 +37,30 @@ class ContentGenerator(
         )
 
         //Generates the custom NavArgs needed for Navigation
-        FileGeneratorCustomNavArgs.generate(navComponents)?.let(fileContentInfoOutputWriter::writeFile)
-
-        //Generates the NavDestinationsExt File
-        FileGeneratorDestinationExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
+        FileGeneratorCustomNavArgs.generate(destinations + navGraphs)?.writeTo(
+            codeGenerator,
+            resolver.dependencies
+        )
 
         //Generates Code for ComposeNavDestinations init
-        FileComposeNavDestinationsExtensions.generate(navGraphs).let(fileContentInfoOutputWriter::writeFile)
+        FileComposeNavDestinationsExtensions.generate(navGraphs)?.writeTo(
+            codeGenerator,
+            resolver.dependencies
+        )
+
+        //Generates the NavDestinationsExt File
+        FileGeneratorDestinationExtensions.generate(destinations)?.writeTo(
+            codeGenerator,
+            resolver.dependencies
+        )
 
         //Generates the DestinationSpecs for all annotated destinations
         destinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
 
         //Generates the NavGraphSpecs for all annotated NavGraphs
         navGraphs.map(FileGeneratorNavGraphSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
-
-
-        //Generates the NavDestinationUtils File
-        // TODO -> No longer needed, because the destination will be found in a Service Locator type of way in order for the Methods to be available instantly
-        //  Die Files unten braucht man auch nicht mehr generieren und kann stattdessen direkt darauf zugreifen.
-        // FileGeneratorNavComponentUtils.generate(navComponents).let(fileContentInfoOutputWriter::writeFile)
-
-        //Generates the NavDestinationsResultExt File
-        //FileGeneratorResultExtensions.generate(destinations).let(fileContentInfoOutputWriter::writeFile)
-
-        //Generates the NavControllerExtFile
-        //FileGeneratorNavControllerExtensions.generate().let(fileContentInfoOutputWriter::writeFile)
-
-        //Generates the NavBackStackEntryExtFile
-        //FileGeneratorNavBackStackEntryExtensions.generate().let(fileContentInfoOutputWriter::writeFile)
     }
+
 
     private fun findCommonNavComponentPackageSuffix(navComponentInfos: Sequence<NavComponentInfo>): String {
 

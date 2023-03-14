@@ -72,8 +72,7 @@ object FirstDestination : Destination {
         }
 
         StartDestinationComposable(parsedValue) {
-//            navigate(SecondDestination(User("123", "Lucha", 23)))
-            navigate(Lol)
+            navigate(SecondDestination(User("123", "Lucha", 23)))
         }
     }
 

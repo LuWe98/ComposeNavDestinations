@@ -1,5 +1,6 @@
 package com.welu.compose_nav_destinations_ksp.model
 
+import com.squareup.kotlinpoet.ClassName
 import com.welu.compose_nav_destinations_ksp.extensions.isAnyOf
 import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
 
@@ -35,5 +36,4 @@ data class ImportInfo(
             return ImportInfo(qualifiedName.trim(), importedAs)
         }
     }
-
 }

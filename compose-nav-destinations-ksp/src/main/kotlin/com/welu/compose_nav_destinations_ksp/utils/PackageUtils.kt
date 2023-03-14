@@ -1,6 +1,5 @@
 package com.welu.compose_nav_destinations_ksp.utils
 
-import com.welu.compose_nav_destinations_ksp.extensions.asParamTypeInfo
 import com.welu.compose_nav_destinations_ksp.extensions.asParameterTypeInfo
 import com.welu.compose_nav_destinations_ksp.model.ImportInfo
 import com.welu.compose_nav_destinations_ksp.model.ParameterTypeInfo
@@ -23,7 +22,7 @@ internal object PackageUtils {
     private const val NAV_DESTINATIONS_UTILS_PACKAGE = "$PACKAGE_NAME.utils"
     val NAV_COMPONENT_UTILS_FILE_IMPORT = ImportInfo("NavComponentUtils", NAV_DESTINATIONS_UTILS_PACKAGE)
 
-    private const val NAV_DESTINATIONS_EXTENSIONS_PACKAGE = "$PACKAGE_NAME.extensions"
+    const val NAV_DESTINATIONS_EXTENSIONS_PACKAGE = "$PACKAGE_NAME.extensions"
     val NAV_DESTINATION_EXTENSIONS_FILE_IMPORT = ImportInfo("NavDestinationExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
     val NAV_DESTINATION_RESULT_EXTENSIONS_FILE_IMPORT = ImportInfo("NavDestinationResultExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
     val NAV_CONTROLLER_EXTENSIONS_FILE_IMPORT = ImportInfo("NavControllerExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
@@ -165,12 +164,12 @@ internal object PackageUtils {
     ): List<Pair<ParameterTypeInfo, ParameterNavArgType>> {
         val listType = BasicParameterNavArgType.valueOf(name + NAV_ARGS_LIST_SUFFIX)
         val setType = BasicParameterNavArgType.valueOf(name + NAV_ARGS_SET_SUFFIX)
-        val listImports = VALID_LIST_IMPORT_INFOS.map { it.asParamTypeInfo(clazz) to listType }
-        val setImports = VALID_SET_IMPORT_INFOS.map { it.asParamTypeInfo(clazz) to setType }
+        val listImports = VALID_LIST_IMPORT_INFOS.map { it.asParameterTypeInfo(clazz) to listType }
+        val setImports = VALID_SET_IMPORT_INFOS.map { it.asParameterTypeInfo(clazz) to setType }
 
         return mutableListOf<Pair<ParameterTypeInfo, ParameterNavArgType>>(
-            clazz.asParamTypeInfo() to BasicParameterNavArgType.valueOf(name + NAV_ARGS_SUFFIX),
-            Array::class.asParamTypeInfo(clazz) to BasicParameterNavArgType.valueOf(name + NAV_ARGS_ARRAY_SUFFIX)
+            clazz.asParameterTypeInfo() to BasicParameterNavArgType.valueOf(name + NAV_ARGS_SUFFIX),
+            Array::class.asParameterTypeInfo(clazz) to BasicParameterNavArgType.valueOf(name + NAV_ARGS_ARRAY_SUFFIX)
         ).apply {
             addAll(listImports)
             addAll(setImports)

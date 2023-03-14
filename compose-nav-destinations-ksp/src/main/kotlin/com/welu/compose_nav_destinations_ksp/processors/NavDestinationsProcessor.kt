@@ -18,7 +18,6 @@ import com.welu.compose_nav_destinations_ksp.extractor.RawNavComponentsExtractor
 import com.welu.compose_nav_destinations_ksp.generation.ContentGenerator
 import com.welu.compose_nav_destinations_ksp.mapper.ComposeDestinationMapper
 import com.welu.compose_nav_destinations_ksp.mapper.ComposeNavGraphMapper
-import kotlinx.coroutines.*
 
 class NavDestinationsProcessor(
     private val codeGenerator: CodeGenerator,
