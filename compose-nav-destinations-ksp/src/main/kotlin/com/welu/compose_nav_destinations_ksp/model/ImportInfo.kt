@@ -1,8 +1,7 @@
 package com.welu.compose_nav_destinations_ksp.model
 
-import com.squareup.kotlinpoet.ClassName
 import com.welu.compose_nav_destinations_ksp.extensions.isAnyOf
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 data class ImportInfo(
     val simpleName: String,
@@ -16,10 +15,12 @@ data class ImportInfo(
     val asImportLine get() = "import $qualifiedName${importedAs?.let { " as $it" } ?: ""}"
     val isWholePackageImport get() = simpleName == "*"
     val isNonDefaultPackage get() = !isDefaultPackage
-    val isDefaultPackage get() =  packageDir.isAnyOf(*PackageUtils.KOTLIN_DEFAULT_PACKAGE_DIRECTORIES)
-            || qualifiedName.isAnyOf(*PackageUtils.VALID_LIST_QUALIFIERS)
-            || qualifiedName.isAnyOf(*PackageUtils.VALID_SET_QUALIFIERS)
-            || qualifiedName.isAnyOf(*PackageUtils.MAP_QUALIFIERS)
+
+    val hasAlias get() = importedAs != null
+    val isDefaultPackage get() =  packageDir.isAnyOf(*ImportUtils.KOTLIN_DEFAULT_PACKAGE_DIRECTORIES)
+            || qualifiedName.isAnyOf(*ImportUtils.VALID_LIST_QUALIFIERS)
+            || qualifiedName.isAnyOf(*ImportUtils.VALID_SET_QUALIFIERS)
+            || qualifiedName.isAnyOf(*ImportUtils.MAP_QUALIFIERS)
 
     companion object {
         val FILE_IMPORT_REGEX = Regex("(import)\\s+\\w+(\\s*\\.\\s*\\w+)*(\\s*\\.\\s*(\\w+|\\*))?\\s*(as\\s+\\w*)?")

@@ -3,12 +3,12 @@ package com.welu.compose_nav_destinations_ksp.generation.component
 import com.welu.compose_nav_destinations_ksp.extensions.div
 import com.welu.compose_nav_destinations_ksp.generation.FileContentInfoTypedGenerator
 import com.welu.compose_nav_destinations_ksp.generation.templates.NavDestinationCodeTemplates
-import com.welu.compose_nav_destinations_ksp.model.AndroidArgsContainer
+import com.welu.compose_nav_destinations_ksp.model.ArgumentContainer
 import com.welu.compose_nav_destinations_ksp.model.FileContentInfo
 import com.welu.compose_nav_destinations_ksp.model.Parameter
 import com.welu.compose_nav_destinations_ksp.model.ParameterTypeInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<ComposeDestinationInfo> {
 
@@ -25,7 +25,7 @@ object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<ComposeDesti
             plainDestinationInfo.destinationImport,
             plainDestinationInfo.parentNavGraphSpecImport,
             plainDestinationInfo.destinationType.specImportInfo,
-            PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT
+            ImportUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT
         ),
         code = NavDestinationCodeTemplates.NAV_DESTINATION_PLAIN_SPEC_TEMPLATE
             .replace(
@@ -61,12 +61,12 @@ object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<ComposeDesti
             imports = mutableSetOf(
                 argDestinationInfo.parentNavGraphSpecImport,
                 argDestinationInfo.destinationType.specImportInfo,
-                PackageUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT,
-                PackageUtils.ANDROID_NAVIGATION_NAV_BACK_STACK_ENTRY_IMPORT,
-                PackageUtils.NAV_ARGUMENT_IMPORT,
-                PackageUtils.ANDROID_NAVIGATION_NAMED_NAV_ARGUMENT_IMPORT,
-                PackageUtils.SAVED_STATE_HANDLE_IMPORT,
-                PackageUtils.ROUTABLE_IMPORT
+                ImportUtils.ANDROID_NAVIGATION_DEEP_LINK_IMPORT,
+                ImportUtils.ANDROID_NAVIGATION_NAV_BACK_STACK_ENTRY_IMPORT,
+                ImportUtils.NAV_ARGUMENT_IMPORT,
+                ImportUtils.ANDROID_NAVIGATION_NAMED_NAV_ARGUMENT_IMPORT,
+                ImportUtils.SAVED_STATE_HANDLE_IMPORT,
+                ImportUtils.ROUTABLE_IMPORT
             ).apply {
                 addAll(argDestinationInfo.imports)
             },
@@ -100,10 +100,10 @@ object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<ComposeDesti
                     newValue = NavArgsGeneratorUtils.generateNamedNavArguments(sortedParams)
                 ).replace(
                     oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_BACKSTACK,
-                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, AndroidArgsContainer.NabBackStackEntry)
+                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, ArgumentContainer.NabBackStackEntry)
                 ).replace(
                     oldValue = NavDestinationCodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GET_ARGS_SAVED_STATE,
-                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, AndroidArgsContainer.SaveStateHandle)
+                    newValue = NavArgsGeneratorUtils.generateGetArgsBody(argDestinationInfo, ArgumentContainer.SaveStateHandle)
                 ).replace(
                     oldValue = NavDestinationCodeTemplates.PLACEHOLDER_DESTINATION_TYPE_SPEC_NAME,
                     newValue = argDestinationInfo.destinationType.specImportInfo.simpleName
@@ -113,61 +113,4 @@ object FileGeneratorDestinationSpec : FileContentInfoTypedGenerator<ComposeDesti
                 )
         )
     }
-
-
-//    private fun generateRoute(sortedParams: List<Parameter>): String {
-//        var optionalNavSeparator = '?'
-//        return sortedParams.joinToString(" +\n\t\t") {
-//            if (it.typeInfo.isNullable || it.hasDefaultValue) {
-//                "\"$optionalNavSeparator${it.name}={${it.name}}\"".also {
-//                    optionalNavSeparator = '&'
-//                }
-//            } else {
-//                "\"/{${it.name}}\""
-//            }
-//        }
-//    }
-//
-//    private fun generateNamedNavArguments(sortedParams: List<Parameter>) = sortedParams.joinToString(",\n\t\t") { parameter ->
-//        val defaultValue = parameter.defaultValue?.let { ", ${it.value}" } ?: ""
-//        "navArgument(\"${parameter.name}\", ${parameter.navArgTypeInfo.simpleName}$defaultValue,${parameter.typeInfo.isNullable})"
-//    }
-//
-//    private fun generateInvokeParameters(component: NavComponentInfo) = component
-//        .navArgsInfo!!
-//        .parameters
-//        .joinToString(",\n\t\t", transform = Parameter::fullDeclarationName)
-//
-//    private fun generateInvokeBody(routeName: String, sortedParams: List<Parameter>): String {
-//        var optionalNavSeparator = '?'
-//        return "\"$routeName\" +\n\t\t" + sortedParams.joinToString(" +\n\t\t") {
-//            val serializeSnipped = "\${${it.navArgTypeInfo.simpleName}.serializeValue(${it.name})}"
-//            if (it.typeInfo.isNullable || it.hasDefaultValue) {
-//                "\"$optionalNavSeparator${it.name}=$serializeSnipped\"".also {
-//                    optionalNavSeparator = '&'
-//                }
-//            } else {
-//                "\"/$serializeSnipped\""
-//            }
-//        }
-//    }
-//
-//    private fun generateGetArgsBody(component: NavComponentInfo, argContainer: ArgContainer): String = component
-//        .navArgsInfo!!
-//        .parameters
-//        .joinToString(",\n\t\t") {
-//        val nonNullableClaim = if (it.typeInfo.isNullable) "" else "!!"
-//        it.name + " = " + "${it.navArgTypeInfo.simpleName}.getTyped(${argContainer.variableName}, \"${it.name}\")$nonNullableClaim"
-//    }
-
 }
-
-
-//    //.replace(CodeTemplates.PLACEHOLDER_NAV_ARG_SPEC_GENERATED_NAV_ARG, generateCustomNavArgClass(instance))
-//    private fun generateCustomNavArgClass(instance: NavDestinationInfo): String {
-//        if (instance.navArgsInfo != null) return ""
-//        val args = instance.navArgsInfo?.parameters?.joinToString(",\n\t\t") {
-//            "val " + it.fullDeclarationName
-//        }
-//        return "data class NavArgs(\n\t\t$args\n\t)".trimIndent()
-//    }

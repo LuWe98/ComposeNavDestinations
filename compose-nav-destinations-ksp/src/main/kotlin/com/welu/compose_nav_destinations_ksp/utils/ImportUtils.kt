@@ -7,7 +7,7 @@ import com.welu.compose_nav_destinations_ksp.model.navargs.BasicParameterNavArgT
 import com.welu.compose_nav_destinations_ksp.model.navargs.ParameterNavArgType
 import kotlin.reflect.KClass
 
-internal object PackageUtils {
+internal object ImportUtils {
 
     const val NAV_COMPONENT_SPEC_SUFFIX = "Spec"
 

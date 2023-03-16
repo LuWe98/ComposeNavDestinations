@@ -1,11 +1,11 @@
 package com.welu.compose_nav_destinations_ksp.model.navargs
 
 import com.welu.compose_nav_destinations_ksp.model.ImportInfo
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 enum class BasicParameterNavArgType(
     simpleName: String,
-    override val importInfo: ImportInfo = ImportInfo(simpleName, PackageUtils.NAV_ARGS_PACKAGE)
+    override val importInfo: ImportInfo = ImportInfo(simpleName, ImportUtils.NAV_ARGS_PACKAGE)
 ): ParameterNavArgType {
 
     StringType("NavArgStringType"),

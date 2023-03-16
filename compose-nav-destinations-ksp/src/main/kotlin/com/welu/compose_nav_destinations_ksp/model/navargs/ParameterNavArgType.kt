@@ -22,7 +22,6 @@ sealed interface ParameterNavArgType {
 val ParameterNavArgType.actualTypeImport get() = when(this){
     is BasicParameterNavArgType -> importInfo
     is ComplexParameterNavArgType -> generatedNavArgImport
-    else -> throw IllegalArgumentException()
 }
 
-val ParameterNavArgType.actualTypeName get() = actualTypeImport.simpleName
+val ParameterNavArgType.actualTypeSimpleName get() = actualTypeImport.simpleName

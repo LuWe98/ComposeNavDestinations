@@ -9,11 +9,11 @@ import com.welu.compose_nav_destinations_ksp.generation.FileSpecGenerator
 import com.welu.compose_nav_destinations_ksp.model.ImportInfo
 import com.welu.compose_nav_destinations_ksp.model.components.NavComponentInfo
 import com.welu.compose_nav_destinations_ksp.model.navargs.ComplexParameterNavArgType
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 object FileGeneratorCustomNavArgs : FileSpecGenerator<Sequence<NavComponentInfo>> {
 
-    private val FILE_IMPORT = ImportInfo("NavDestinationCustomNavArgs", PackageUtils.NAV_ARGS_PACKAGE)
+    private val FILE_IMPORT = ImportInfo("NavDestinationCustomNavArgs", ImportUtils.NAV_ARGS_PACKAGE)
 
     override fun generate(input: Sequence<NavComponentInfo>): FileSpec? {
         val complexNavArgTypes = extractComplexNavArgTypes(input)
@@ -21,9 +21,7 @@ object FileGeneratorCustomNavArgs : FileSpecGenerator<Sequence<NavComponentInfo>
         if (complexNavArgTypes.none()) return null
 
         return FileSpec.build(FILE_IMPORT) {
-            complexNavArgTypes.map(::generateCustomNavArgParameter).forEach {
-                addProperty(it)
-            }
+            complexNavArgTypes.map(::generateCustomNavArgParameter).forEach(::addProperty)
         }
     }
 
@@ -35,12 +33,12 @@ object FileGeneratorCustomNavArgs : FileSpecGenerator<Sequence<NavComponentInfo>
             }
         }.distinctBy { it.generatedNavArgImport }
 
-    private fun generateCustomNavArgParameter(complexNavArgType: ComplexParameterNavArgType): PropertySpec {
-        val customNavArgsTypeName = complexNavArgType.parameterTypeImport.toClassName()
-        val typeName = complexNavArgType.importInfo.toClassName().parameterizedBy(customNavArgsTypeName)
+    private fun generateCustomNavArgParameter(argType: ComplexParameterNavArgType): PropertySpec {
+        val customNavArgsTypeName = argType.parameterTypeImport.toClassName()
+        val typeName = argType.importInfo.toClassName().parameterizedBy(customNavArgsTypeName)
 
-        return PropertySpec.build(complexNavArgType.generatedNavArgImport.simpleName, typeName) {
-            initializer(format = "${complexNavArgType.simpleName}(%T::class)", customNavArgsTypeName)
+        return PropertySpec.build(argType.generatedNavArgImport.simpleName, typeName) {
+            initializer("${argType.simpleName}(%T::class)", customNavArgsTypeName)
         }
     }
 }

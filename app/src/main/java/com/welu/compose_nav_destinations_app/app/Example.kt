@@ -111,7 +111,8 @@ object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> 
                 popBackStack()
             },
             navigateToThirdScreen = {
-                navigateAndPopUpTo(ThirdDestination(), FirstDestination, false)
+                navigateAndPopUpTo(ThirdDestination(otherString = "fd"), FirstDestination, false)
+                OtherGraphSpec("")
             },
             sendResult = {
                 sendResultTo(FirstDestination, UntypedResult(Random.nextLong()))

@@ -1,14 +1,15 @@
 package com.welu.compose_nav_destinations_ksp.model.navargs
 
 import com.welu.compose_nav_destinations_ksp.model.ImportInfo
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 sealed class ComplexParameterNavArgType(
     val generatedNavArgImport: ImportInfo,
     val parameterTypeImport: ImportInfo,
-    simpleName: String,
-    override val importInfo: ImportInfo = ImportInfo(simpleName, PackageUtils.NAV_ARGS_PACKAGE)
+    simpleName: String
 ): ParameterNavArgType {
+
+    override val importInfo: ImportInfo = ImportInfo(simpleName, ImportUtils.NAV_ARGS_PACKAGE)
 
     class ParcelableType(
         generatedNavArgImport: ImportInfo,

@@ -75,7 +75,9 @@ class DetailScreenNavArgs(
 
     val map: HashMap<String, Int> = hashMapOf("dsd" to 212),
 
-    val kotlinSerializable: KotlinSerializableClass = KotlinSerializableClass(23, TestEnum.HALLO)
+    val kotlinSerializable: KotlinSerializableClass = KotlinSerializableClass(23, TestEnum.HALLO),
+
+    val otherString: String
 )
 
 

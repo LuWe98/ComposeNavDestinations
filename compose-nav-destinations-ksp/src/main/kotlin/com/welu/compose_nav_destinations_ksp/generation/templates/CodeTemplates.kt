@@ -1,7 +1,5 @@
 package com.welu.compose_nav_destinations_ksp.generation.templates
 
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils.NAV_COMPONENT_UTILS_FILE_IMPORT
-
 internal object CodeTemplates {
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------

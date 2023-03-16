@@ -1,9 +1,9 @@
 package com.welu.compose_nav_destinations_ksp.generation.component
 
-import com.welu.compose_nav_destinations_ksp.model.AndroidArgsContainer
+import com.welu.compose_nav_destinations_ksp.model.ArgumentContainer
 import com.welu.compose_nav_destinations_ksp.model.Parameter
 import com.welu.compose_nav_destinations_ksp.model.components.NavComponentInfo
-import com.welu.compose_nav_destinations_ksp.model.navargs.actualTypeName
+import com.welu.compose_nav_destinations_ksp.model.navargs.actualTypeSimpleName
 
 object NavArgsGeneratorUtils {
 
@@ -22,7 +22,7 @@ object NavArgsGeneratorUtils {
 
     fun generateNamedNavArguments(sortedParams: List<Parameter>) = sortedParams.joinToString(",\n\t\t") { parameter ->
         val defaultValue = parameter.defaultValue?.let { "${it.value}, " } ?: ""
-        "navArgument(\"${parameter.name}\", ${parameter.navArgType.actualTypeName}, ${defaultValue}nullable=${parameter.typeInfo.isNullable})"
+        "navArgument(\"${parameter.name}\", ${parameter.navArgType.actualTypeSimpleName}, ${defaultValue}nullable=${parameter.typeInfo.isNullable})"
     }
 
     fun generateInvokeParameters(component: NavComponentInfo) = component
@@ -33,7 +33,7 @@ object NavArgsGeneratorUtils {
     fun generateInvokeBody(routeName: String, sortedParams: List<Parameter>): String {
         var optionalNavSeparator = '?'
         return "\"$routeName\" +\n\t\t" + sortedParams.joinToString(" +\n\t\t") {
-            val serializeSnipped = "\${${it.navArgType.actualTypeName}.serializeValue(${it.name})}"
+            val serializeSnipped = "\${${it.navArgType.actualTypeSimpleName}.serializeValue(${it.name})}"
             if (it.typeInfo.isNullable || it.hasDefaultValue) {
                 "\"$optionalNavSeparator${it.name}=$serializeSnipped\"".also {
                     optionalNavSeparator = '&'
@@ -44,11 +44,11 @@ object NavArgsGeneratorUtils {
         }
     }
 
-    fun generateGetArgsBody(component: NavComponentInfo, argContainer: AndroidArgsContainer): String = component
+    fun generateGetArgsBody(component: NavComponentInfo, argContainer: ArgumentContainer): String = component
         .navArgsInfo!!
         .parameters
         .joinToString(",\n\t\t") { parameter ->
             val nonNullableClaim = if (parameter.typeInfo.isNullable) "" else "!!"
-            parameter.name + " = " + "${parameter.navArgType.actualTypeName}.getTyped(${argContainer.variableName}, \"${parameter.name}\")$nonNullableClaim"
+            parameter.name + " = " + "${parameter.navArgType.actualTypeSimpleName}.getTyped(${argContainer.variableName}, \"${parameter.name}\")$nonNullableClaim"
         }
 }

@@ -8,14 +8,14 @@ import com.welu.compose_nav_destinations_ksp.extensions.kotlinpoet.addImports
 import com.welu.compose_nav_destinations_ksp.extensions.kotlinpoet.build
 import com.welu.compose_nav_destinations_ksp.extensions.toClassName
 import com.welu.compose_nav_destinations_ksp.generation.FileSpecGenerator
-import com.welu.compose_nav_destinations_ksp.model.AndroidArgsContainer
+import com.welu.compose_nav_destinations_ksp.model.ArgumentContainer
 import com.welu.compose_nav_destinations_ksp.model.ImportInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 object FileGeneratorDestinationExtensions : FileSpecGenerator<Sequence<ComposeDestinationInfo>> {
 
-    private val FILE_IMPORT = ImportInfo("NavDestinationExt", PackageUtils.NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
+    private val FILE_IMPORT = ImportInfo("NavDestinationExt", ImportUtils.NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
     private const val ARGS_FROM_FUNCTION_NAME = "argsFrom"
     private const val INVOKE_FUNCTION_NAME = "invoke"
 
@@ -27,8 +27,8 @@ object FileGeneratorDestinationExtensions : FileSpecGenerator<Sequence<ComposeDe
             argDestinations.flatMap(ComposeDestinationInfo::typeImports).distinct().let(::addImports)
 
             argDestinations.forEach {
-                generateArgsFromFunction(it, AndroidArgsContainer.SaveStateHandle).let(::addFunction)
-                generateArgsFromFunction(it, AndroidArgsContainer.NabBackStackEntry).let(::addFunction)
+                generateArgsFromFunction(it, ArgumentContainer.SaveStateHandle).let(::addFunction)
+                generateArgsFromFunction(it, ArgumentContainer.NabBackStackEntry).let(::addFunction)
                 generateInvokeFunction(it).let(::addFunction)
             }
         }
@@ -36,7 +36,7 @@ object FileGeneratorDestinationExtensions : FileSpecGenerator<Sequence<ComposeDe
 
     private fun generateArgsFromFunction(
         argDestination: ComposeDestinationInfo,
-        argsContainer: AndroidArgsContainer
+        argsContainer: ArgumentContainer
     ) = FunSpec.build(ARGS_FROM_FUNCTION_NAME) {
         receiver(argDestination.destinationImport.toClassName())
         returns(argDestination.navArgsInfo!!.typeInfo.type.import.toClassName())
@@ -46,7 +46,7 @@ object FileGeneratorDestinationExtensions : FileSpecGenerator<Sequence<ComposeDe
 
     private fun generateInvokeFunction(argDestination: ComposeDestinationInfo) = FunSpec.build(INVOKE_FUNCTION_NAME) {
         receiver(argDestination.destinationImport.toClassName())
-        returns(PackageUtils.ROUTABLE_IMPORT.toClassName())
+        returns(ImportUtils.ROUTABLE_IMPORT.toClassName())
         addModifiers(KModifier.OPERATOR)
 
         argDestination.navArgsInfo!!.parameters.forEach {

@@ -26,7 +26,7 @@ import com.welu.compose_nav_destinations_ksp.model.ParameterTypeInfo
 import com.welu.compose_nav_destinations_ksp.model.ParameterTypeInfoAndDeclaration
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationType
 import com.welu.compose_nav_destinations_ksp.model.navargs.NavArgsInfo
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 import java.io.Serializable
 
 class NavArgsInfoExtractor(
@@ -37,7 +37,7 @@ class NavArgsInfoExtractor(
 
     private val ksFileContentMap by lazy { mutableMapOf<KSFile, KSFileContent>() }
 
-    private val parcelableType: KSType by lazy { resolver.getTypeWithImportInfo(PackageUtils.ANDROID_PARCELABLE_IMPORT) }
+    private val parcelableType: KSType by lazy { resolver.getTypeWithImportInfo(ImportUtils.ANDROID_PARCELABLE_IMPORT) }
 
     private val KSType?.isParcelable get() = this?.let(parcelableType::isAssignableFrom) == true
 
@@ -45,12 +45,12 @@ class NavArgsInfoExtractor(
 
     private val KSType?.isSerializable get() = this?.let(serializableType::isAssignableFrom) == true
 
-    private val KSType?.isKotlinSerializable get() = this?.declaration?.hasAnnotation(PackageUtils.KOTLIN_SERIALIZABLE_IMPORT) == true
+    private val KSType?.isKotlinSerializable get() = this?.declaration?.hasAnnotation(ImportUtils.KOTLIN_SERIALIZABLE_IMPORT) == true
 
     private val listType: KSType by lazy { resolver.getStarProjectedTypeWithClass(List::class) }
 
     private val KSType?.isValidList
-        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*PackageUtils.VALID_LIST_QUALIFIERS) == true
+        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*ImportUtils.VALID_LIST_QUALIFIERS) == true
 
     private val KSType?.isList
         get() = this?.let(listType::isAssignableFrom)?.also {
@@ -64,7 +64,7 @@ class NavArgsInfoExtractor(
     private val setType: KSType by lazy { resolver.getStarProjectedTypeWithClass(Set::class) }
 
     private val KSType?.isValidSet
-        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*PackageUtils.VALID_SET_QUALIFIERS) == true
+        get(): Boolean = this?.declaration?.qualifiedName?.asString()?.isAnyOf(*ImportUtils.VALID_SET_QUALIFIERS) == true
 
     private val KSType?.isSet
         get() = this?.let(setType::isAssignableFrom)?.also {

@@ -5,8 +5,8 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import com.welu.compose_nav_destinations_ksp.extensions.ksp.dependencies
-import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorDestinationSpec
-import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorNavGraphSpec
+import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorDestinationSpecNew
+import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorNavGraphSpecNew
 import com.welu.compose_nav_destinations_ksp.generation.extensions.FileComposeNavDestinationsExtensions
 import com.welu.compose_nav_destinations_ksp.generation.extensions.FileGeneratorCustomNavArgs
 import com.welu.compose_nav_destinations_ksp.generation.extensions.FileGeneratorDestinationExtensions
@@ -55,10 +55,23 @@ class ContentGenerator(
         )
 
         //Generates the DestinationSpecs for all annotated destinations
-        destinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
+        //destinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
+        destinations.map(FileGeneratorDestinationSpecNew::generate).forEach {
+            it.writeTo(
+                codeGenerator,
+                resolver.dependencies
+            )
+        }
 
         //Generates the NavGraphSpecs for all annotated NavGraphs
-        navGraphs.map(FileGeneratorNavGraphSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
+        //navGraphs.map(FileGeneratorNavGraphSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
+
+        navGraphs.map(FileGeneratorNavGraphSpecNew::generate).forEach {
+            it.writeTo(
+                codeGenerator,
+                resolver.dependencies
+            )
+        }
     }
 
 

@@ -54,4 +54,6 @@ sealed interface ComposeNavGraphSpec: NavComponentSpec {
      */
     val childDestinationSpecs: List<ComposeDestinationSpec<*>> get() = childNavComponentSpecs.filterIsInstance<ComposeDestinationSpec<*>>()
 
+    override val parentNavGraphSpec: ComposeNavGraphSpec? get() = null
+
 }

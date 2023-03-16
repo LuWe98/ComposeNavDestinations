@@ -5,8 +5,8 @@ import com.welu.compose_nav_destinations_ksp.model.ParameterTypeInfo
 import com.welu.compose_nav_destinations_ksp.model.navargs.BasicParameterNavArgType
 import com.welu.compose_nav_destinations_ksp.model.navargs.ComplexParameterNavArgType
 import com.welu.compose_nav_destinations_ksp.model.navargs.ParameterNavArgType
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils.BASIC_NAV_ARGS_MAP
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils.BASIC_NAV_ARGS_MAP
 
 object NavArgTypeInfoExtractor {
 
@@ -73,7 +73,7 @@ object NavArgTypeInfoExtractor {
     ): T {
         val generatedCustomNavArgTypeImport = ImportInfo(
             simpleName = typeInfo.qualifiedName.replace(".", "_") + "_" + "NavArg" + T::class.simpleName,
-            packageDir = PackageUtils.NAV_ARGS_PACKAGE
+            packageDir = ImportUtils.NAV_ARGS_PACKAGE
         )
         return customNavArgTypeProvider(generatedCustomNavArgTypeImport, typeInfo.type.import)
     }

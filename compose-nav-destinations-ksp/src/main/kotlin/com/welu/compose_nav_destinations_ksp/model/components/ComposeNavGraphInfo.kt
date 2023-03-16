@@ -4,7 +4,6 @@ import com.welu.compose_nav_destinations_ksp.model.ImportInfo
 import com.welu.compose_nav_destinations_ksp.model.Parameter
 import com.welu.compose_nav_destinations_ksp.model.navargs.NavArgsInfo
 
-
 /**
  * @property startComponentDeclaration The [ImportInfo] of this [NavComponentInfo] - Is the startDestination of this NavGraph
  * @property childNavGraphSpecImports The [ImportInfo]s of the child [ComposeNavGraphInfo]s
@@ -28,13 +27,14 @@ data class ComposeNavGraphInfo(
 
     val allChildNavComponentSpecImports get() = childDestinationSpecImports + childNavGraphSpecImports
 
-    val allImports get() = mutableSetOf(startComponentDeclaration).apply {
-        parentNavGraphSpecImport?.let(::add)
-        addAll(childNavGraphSpecImports)
-        addAll(childDestinationSpecImports)
-        navArgsInfo?.let {
-            addAll(it.parameters.flatMap(Parameter::imports).filter(ImportInfo::isNonDefaultPackage))
-            addAll(it.typeInfo.imports)
+    val imports
+        get() = mutableSetOf(startComponentDeclaration).apply {
+            parentNavGraphSpecImport?.let(::add)
+            addAll(childNavGraphSpecImports)
+            addAll(childDestinationSpecImports)
+            navArgsInfo?.let {
+                addAll(it.parameters.flatMap(Parameter::imports).filter(ImportInfo::isNonDefaultPackage))
+                addAll(it.typeInfo.imports)
+            }
         }
-    }
 }

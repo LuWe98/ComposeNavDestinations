@@ -12,7 +12,7 @@ import com.welu.compose_nav_destinations_ksp.model.components.ComposeNavGraphInf
 import com.welu.compose_nav_destinations_ksp.model.components.rawcomponents.RawComposeDestinationInfo
 import com.welu.compose_nav_destinations_ksp.model.components.rawcomponents.RawComposeNavGraphInfo
 import com.welu.compose_nav_destinations_ksp.model.navargs.NavArgsInfo
-import com.welu.compose_nav_destinations_ksp.utils.PackageUtils
+import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 class ComposeNavGraphMapper(
     private val resolver: Resolver,
@@ -32,32 +32,32 @@ class ComposeNavGraphMapper(
     )
 
     private fun mapNavGraphSpecDeclarationToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = ImportInfo(
-        simpleName = rawNavGraphInfo.simpleName + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
-        packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE
+        simpleName = rawNavGraphInfo.simpleName + ImportUtils.NAV_COMPONENT_SPEC_SUFFIX,
+        packageDir = ImportUtils.NAV_GRAPH_SPEC_PACKAGE
     )
 
     private fun mapStartComponentDeclarationToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = rawNavGraphInfo.startComponentDeclaration!!.let { component ->
         when (component) {
             is RawComposeNavGraphInfo -> ImportInfo(
-                simpleName = component.simpleName + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX,
-                packageDir = PackageUtils.NAV_GRAPH_SPEC_PACKAGE
+                simpleName = component.simpleName + ImportUtils.NAV_COMPONENT_SPEC_SUFFIX,
+                packageDir = ImportUtils.NAV_GRAPH_SPEC_PACKAGE
             )
             is RawComposeDestinationInfo -> {
-                component.classDeclaration.asImportInfo(PackageUtils.NAV_COMPONENT_SPEC_SUFFIX)!!
+                component.classDeclaration.asImportInfo(ImportUtils.NAV_COMPONENT_SPEC_SUFFIX)!!
             }
         }
     }
 
     private fun mapParentNavGraphSpecToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = rawNavGraphInfo.parentNavGraphSpecDeclaration?.let {
-        ImportInfo(it.simpleName.asString() + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX, PackageUtils.NAV_GRAPH_SPEC_PACKAGE)
+        ImportInfo(it.simpleName.asString() + ImportUtils.NAV_COMPONENT_SPEC_SUFFIX, ImportUtils.NAV_GRAPH_SPEC_PACKAGE)
     }
 
     private fun mapChildNavGraphSpecsToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = rawNavGraphInfo.childNavGraphSpecDeclarations.map {
-        ImportInfo(it.simpleName.asString() + PackageUtils.NAV_COMPONENT_SPEC_SUFFIX, PackageUtils.NAV_GRAPH_SPEC_PACKAGE)
+        ImportInfo(it.simpleName.asString() + ImportUtils.NAV_COMPONENT_SPEC_SUFFIX, ImportUtils.NAV_GRAPH_SPEC_PACKAGE)
     }.toList()
 
     private fun mapChildNavDestinationSpecsToImport(rawNavGraphInfo: RawComposeNavGraphInfo) = rawNavGraphInfo.childNavDestinationSpecDeclarations.mapNotNull {
-        it.asImportInfo(PackageUtils.NAV_COMPONENT_SPEC_SUFFIX)
+        it.asImportInfo(ImportUtils.NAV_COMPONENT_SPEC_SUFFIX)
     }.toList()
 
 
