@@ -153,7 +153,10 @@ class NavArgsInfoExtractor(
     /**
      * Maps the NavArgs parameter to an Parameter representation for Code Generation
      */
-    private fun mapToParameter(valueParameter: KSValueParameter, fileContent: KSFileContent): Parameter {
+    private fun mapToParameter(
+        valueParameter: KSValueParameter,
+        fileContent: KSFileContent
+    ): Parameter {
         //Das ist der Name von der Property
         val parameterName = valueParameter.name!!.asString()
         //Das ist der resolved Type

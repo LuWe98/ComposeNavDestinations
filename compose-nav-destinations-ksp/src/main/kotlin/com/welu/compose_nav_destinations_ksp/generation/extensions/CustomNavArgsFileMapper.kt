@@ -5,13 +5,13 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.welu.compose_nav_destinations_ksp.extensions.kotlinpoet.build
 import com.welu.compose_nav_destinations_ksp.extensions.toClassName
-import com.welu.compose_nav_destinations_ksp.generation.FileSpecGenerator
+import com.welu.compose_nav_destinations_ksp.generation.FileSpecMapper
 import com.welu.compose_nav_destinations_ksp.model.ImportInfo
 import com.welu.compose_nav_destinations_ksp.model.components.NavComponentInfo
 import com.welu.compose_nav_destinations_ksp.model.navargs.ComplexParameterNavArgType
 import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
-object FileGeneratorCustomNavArgs : FileSpecGenerator<Sequence<NavComponentInfo>> {
+object CustomNavArgsFileMapper : FileSpecMapper<Sequence<NavComponentInfo>> {
 
     private val FILE_IMPORT = ImportInfo("NavDestinationCustomNavArgs", ImportUtils.NAV_ARGS_PACKAGE)
 

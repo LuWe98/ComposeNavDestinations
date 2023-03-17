@@ -7,13 +7,13 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.welu.compose_nav_destinations_ksp.extensions.kotlinpoet.addImports
 import com.welu.compose_nav_destinations_ksp.extensions.kotlinpoet.build
 import com.welu.compose_nav_destinations_ksp.extensions.toClassName
-import com.welu.compose_nav_destinations_ksp.generation.FileSpecGenerator
+import com.welu.compose_nav_destinations_ksp.generation.FileSpecMapper
 import com.welu.compose_nav_destinations_ksp.model.ArgumentContainer
 import com.welu.compose_nav_destinations_ksp.model.ImportInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
 import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
-object FileGeneratorDestinationExtensions : FileSpecGenerator<Sequence<ComposeDestinationInfo>> {
+object DestinationExtensionsFileMapper : FileSpecMapper<Sequence<ComposeDestinationInfo>> {
 
     private val FILE_IMPORT = ImportInfo("NavDestinationExt", ImportUtils.NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
     private const val ARGS_FROM_FUNCTION_NAME = "argsFrom"

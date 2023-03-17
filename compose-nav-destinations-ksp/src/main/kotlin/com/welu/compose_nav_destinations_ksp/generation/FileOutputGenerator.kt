@@ -5,16 +5,16 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import com.welu.compose_nav_destinations_ksp.extensions.ksp.dependencies
-import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorDestinationSpecNew
-import com.welu.compose_nav_destinations_ksp.generation.component.FileGeneratorNavGraphSpecNew
-import com.welu.compose_nav_destinations_ksp.generation.extensions.FileComposeNavDestinationsExtensions
-import com.welu.compose_nav_destinations_ksp.generation.extensions.FileGeneratorCustomNavArgs
-import com.welu.compose_nav_destinations_ksp.generation.extensions.FileGeneratorDestinationExtensions
+import com.welu.compose_nav_destinations_ksp.generation.component.DestinationSpecFileMapper
+import com.welu.compose_nav_destinations_ksp.generation.component.NavGraphSpecFileMapper
+import com.welu.compose_nav_destinations_ksp.generation.extensions.NavDestinationsExtensionsFileMapper
+import com.welu.compose_nav_destinations_ksp.generation.extensions.CustomNavArgsFileMapper
+import com.welu.compose_nav_destinations_ksp.generation.extensions.DestinationExtensionsFileMapper
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeNavGraphInfo
 import com.welu.compose_nav_destinations_ksp.model.components.NavComponentInfo
 
-class ContentGenerator(
+class FileOutputGenerator(
     private val resolver: Resolver,
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator
@@ -25,38 +25,26 @@ class ContentGenerator(
         navGraphs: Sequence<ComposeNavGraphInfo>
     ) {
 
-        //TODO -> Das vllt mal noch anschauen
-//        val commonSuffix = findCommonNavComponentPackageSuffix(navComponents)
-//        logger.warn("Common suffix: $commonSuffix")
-
-        //Hier sollte der Common PackageName übergeben werden
-        //In den FileGenerators sollte bei den FileContentInfos nur der additional suffix mitgegeben werden, der an den Common PackageName angehängt wird
-        val fileContentInfoOutputWriter = FileContentInfoOutputWriter(
-            codeGenerator,
-            resolver
-        )
-
         //Generates the custom NavArgs needed for Navigation
-        FileGeneratorCustomNavArgs.generate(destinations + navGraphs)?.writeTo(
+        CustomNavArgsFileMapper.generate(destinations + navGraphs)?.writeTo(
             codeGenerator,
             resolver.dependencies
         )
 
         //Generates Code for ComposeNavDestinations init
-        FileComposeNavDestinationsExtensions.generate(navGraphs)?.writeTo(
+        NavDestinationsExtensionsFileMapper.generate(navGraphs)?.writeTo(
             codeGenerator,
             resolver.dependencies
         )
 
         //Generates the NavDestinationsExt File
-        FileGeneratorDestinationExtensions.generate(destinations)?.writeTo(
+        DestinationExtensionsFileMapper.generate(destinations)?.writeTo(
             codeGenerator,
             resolver.dependencies
         )
 
         //Generates the DestinationSpecs for all annotated destinations
-        //destinations.map(FileGeneratorDestinationSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
-        destinations.map(FileGeneratorDestinationSpecNew::generate).forEach {
+        destinations.map(DestinationSpecFileMapper::generate).forEach {
             it.writeTo(
                 codeGenerator,
                 resolver.dependencies
@@ -64,9 +52,7 @@ class ContentGenerator(
         }
 
         //Generates the NavGraphSpecs for all annotated NavGraphs
-        //navGraphs.map(FileGeneratorNavGraphSpec::generate).forEach(fileContentInfoOutputWriter::writeFile)
-
-        navGraphs.map(FileGeneratorNavGraphSpecNew::generate).forEach {
+        navGraphs.map(NavGraphSpecFileMapper::generate).forEach {
             it.writeTo(
                 codeGenerator,
                 resolver.dependencies
@@ -75,6 +61,10 @@ class ContentGenerator(
     }
 
 
+
+    //TODO -> Das vllt mal noch anschauen
+//        val commonSuffix = findCommonNavComponentPackageSuffix(navComponents)
+//        logger.warn("Common suffix: $commonSuffix")
     private fun findCommonNavComponentPackageSuffix(navComponentInfos: Sequence<NavComponentInfo>): String {
 
         val commonPrefix = navComponentInfos.map{ it.specImport.qualifiedName }.reduce { currentCommonPrefix, currentPackageName ->
