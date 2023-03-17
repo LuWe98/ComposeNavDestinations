@@ -10,11 +10,11 @@ import com.welu.compose_nav_destinations_ksp.model.components.ComposeNavGraphInf
 import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 import com.welu.compose_nav_destinations_ksp.utils.ImportUtils.NAV_DESTINATIONS_EXTENSIONS_PACKAGE
 
-object NavDestinationsExtensionsFileMapper : FileSpecMapper<Sequence<ComposeNavGraphInfo>> {
+object NavDestinationsExtensionsFileMapper : FileSpecMapper<List<ComposeNavGraphInfo>> {
 
     private val FILE_IMPORT = ImportInfo("ComposeNavDestinationsExt", NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
 
-    override fun generate(input: Sequence<ComposeNavGraphInfo>): FileSpec? {
+    override fun generate(input: List<ComposeNavGraphInfo>): FileSpec? {
         val rootNavGraphs = input.filter(ComposeNavGraphInfo::isRoot)
 
         if (rootNavGraphs.none()) return null
@@ -26,7 +26,7 @@ object NavDestinationsExtensionsFileMapper : FileSpecMapper<Sequence<ComposeNavG
     }
 
     private fun generateInitExtension(
-        rootNavGraphs: Sequence<ComposeNavGraphInfo>
+        rootNavGraphs: List<ComposeNavGraphInfo>
     ): FunSpec {
         val placeHolders = rootNavGraphs.joinToString(",") { "%T" }
         val specClassNames = rootNavGraphs.map { it.specImport.toClassName() }.toList().toTypedArray()

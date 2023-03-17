@@ -9,8 +9,8 @@ data class RawComposeNavGraphInfo(
     val isDefaultNavGraph: Boolean,
     val startComponentDeclaration: RawNavComponentInfo? = null,
     val parentNavGraphSpecDeclaration: KSClassDeclaration? = null,
-    val childNavGraphSpecDeclarations: Sequence<KSClassDeclaration> = emptySequence(),
-    val childNavDestinationSpecDeclarations: Sequence<KSClassDeclaration> = emptySequence()
+    val childNavGraphSpecDeclarations: List<KSClassDeclaration> = emptyList(),
+    val childNavDestinationSpecDeclarations: List<KSClassDeclaration> = emptyList()
 ): RawNavComponentInfo {
     val simpleName get() = classDeclaration.simpleName.asString()
 }

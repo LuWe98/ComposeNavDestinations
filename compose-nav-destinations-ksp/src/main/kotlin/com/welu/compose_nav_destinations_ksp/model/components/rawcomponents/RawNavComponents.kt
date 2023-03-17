@@ -7,6 +7,6 @@ import com.welu.compose_nav_destinations_ksp.model.components.ComposeNavGraphInf
  * [ComposeNavGraphInfo] and [ComposeDestinationInfo] can then be generated with this information.
  */
 data class RawNavComponents(
-    val rawNavGraphInfos: Sequence<RawComposeNavGraphInfo>,
-    val rawDestinationInfos: Sequence<RawComposeDestinationInfo>
+    val rawNavGraphInfos: List<RawComposeNavGraphInfo>,
+    val rawDestinationInfos: List<RawComposeDestinationInfo>
 )

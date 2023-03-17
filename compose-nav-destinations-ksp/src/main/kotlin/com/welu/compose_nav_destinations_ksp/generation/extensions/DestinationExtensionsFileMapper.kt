@@ -13,13 +13,13 @@ import com.welu.compose_nav_destinations_ksp.model.ImportInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
 import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
-object DestinationExtensionsFileMapper : FileSpecMapper<Sequence<ComposeDestinationInfo>> {
+object DestinationExtensionsFileMapper : FileSpecMapper<List<ComposeDestinationInfo>> {
 
     private val FILE_IMPORT = ImportInfo("NavDestinationExt", ImportUtils.NAV_DESTINATIONS_EXTENSIONS_PACKAGE)
     private const val ARGS_FROM_FUNCTION_NAME = "argsFrom"
     private const val INVOKE_FUNCTION_NAME = "invoke"
 
-    override fun generate(input: Sequence<ComposeDestinationInfo>): FileSpec? {
+    override fun generate(input: List<ComposeDestinationInfo>): FileSpec? {
         val argDestinations = input.filter(ComposeDestinationInfo::isArgDestination)
         if (argDestinations.none()) return null
 

@@ -27,7 +27,7 @@ class NavDestinationsProcessor(
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val annotatedDestinations = findAnnotatedNavDestinations(resolver).takeIf(Sequence<*>::any) ?: return emptyList()
+        val annotatedDestinations = findAnnotatedNavDestinations(resolver).takeIf(List<*>::any) ?: return emptyList()
 
         val annotatedNavGraphs = findAnnotatedNavGraphs(resolver)
 
@@ -67,20 +67,20 @@ class NavDestinationsProcessor(
             ?.declaration as KSClassDeclaration?
     }
 
-    private fun findAnnotatedNavGraphs(resolver: Resolver): Sequence<KSClassDeclaration> {
+    private fun findAnnotatedNavGraphs(resolver: Resolver): List<KSClassDeclaration> {
         val annotatedNavGraphs = resolver.findNavGraphDefinitions().let { navGraphs ->
             findDefaultNavGraphAnnotation(resolver)?.let { navGraphs + it } ?: navGraphs
         }
         checkUniqueNavGraphNames(annotatedNavGraphs)
         checkContainsIsStartParameter(annotatedNavGraphs)
-        return annotatedNavGraphs
+        return annotatedNavGraphs.toList()
     }
 
-    private fun findAnnotatedNavDestinations(resolver: Resolver): Sequence<KSClassDeclaration> {
+    private fun findAnnotatedNavDestinations(resolver: Resolver): List<KSClassDeclaration> {
         val annotatedNavDestinations = resolver.findNavDestinationDefinitions()
         checkIfDestinationsClassKindIsObject(annotatedNavDestinations)
         checkUniqueNavDestinationNames(annotatedNavDestinations)
-        return annotatedNavDestinations
+        return annotatedNavDestinations.toList()
     }
 
 
@@ -118,7 +118,6 @@ class NavDestinationsProcessor(
                     }
         )
     }
-
 
 
     //Use this, instead of the Methods below

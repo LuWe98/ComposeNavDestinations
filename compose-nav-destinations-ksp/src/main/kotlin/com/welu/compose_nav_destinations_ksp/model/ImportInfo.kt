@@ -3,6 +3,7 @@ package com.welu.compose_nav_destinations_ksp.model
 import com.welu.compose_nav_destinations_ksp.extensions.isAnyOf
 import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
+//TODO -> Das vllt ersetzen mit [ClassName] von KotlinPoet
 data class ImportInfo(
     val simpleName: String,
     val packageDir: String,

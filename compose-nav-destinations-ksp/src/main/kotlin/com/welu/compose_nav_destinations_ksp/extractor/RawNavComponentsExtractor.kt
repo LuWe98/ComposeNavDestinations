@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.welu.compose_nav_destinations_ksp.annotations.ComposeDestinationAnnotation
+import com.welu.compose_nav_destinations_ksp.annotations.ComposeNavGraphAnnotation
 import com.welu.compose_nav_destinations_ksp.extensions.ksp.findAnnotatedNodesWith
 import com.welu.compose_nav_destinations_ksp.extensions.ksp.getAnnotationArgument
 import com.welu.compose_nav_destinations_ksp.extensions.ksp.getFileReferenceText
@@ -14,7 +15,7 @@ import com.welu.compose_nav_destinations_ksp.model.components.rawcomponents.RawC
 import com.welu.compose_nav_destinations_ksp.model.components.rawcomponents.RawNavComponentInfo
 import com.welu.compose_nav_destinations_ksp.model.components.rawcomponents.RawNavComponents
 
-typealias RawNavGraphWithRawNavDestinations = Pair<RawComposeNavGraphInfo, Sequence<RawComposeDestinationInfo>>
+typealias RawNavGraphWithRawNavDestinations = Pair<RawComposeNavGraphInfo, List<RawComposeDestinationInfo>>
 
 //TODO -> NextStep:
 // 1. Implementierung von einem Validator, welcher das checking, welches noch hier drin steht übernimmt. Dadurch ist der Code besser aufgeräumt
@@ -28,8 +29,8 @@ class RawNavComponentsExtractor(
 ) {
 
     fun extract(
-        annotatedNavDestinations: Sequence<KSClassDeclaration>,
-        annotatedNavGraphs: Sequence<KSClassDeclaration>
+        annotatedNavDestinations: List<KSClassDeclaration>,
+        annotatedNavGraphs: List<KSClassDeclaration>
     ): RawNavComponents {
         val navGraphWithDestinationsSequence = extractRawNavGraphsWithRawNavDestinations(annotatedNavGraphs)
         val rawNavGraphs = navGraphWithDestinationsSequence.map(RawNavGraphWithRawNavDestinations::first)
@@ -90,10 +91,10 @@ class RawNavComponentsExtractor(
     }
 
     private fun createRawNavGraphComponentsMap(
-        rawNavGraphs: Sequence<RawComposeNavGraphInfo>,
-        rawNavDestinations: Sequence<RawComposeDestinationInfo>,
+        rawNavGraphs: List<RawComposeNavGraphInfo>,
+        rawNavDestinations: List<RawComposeDestinationInfo>,
         rawNavGraphMap: MutableMap<KSClassDeclaration, RawComposeNavGraphInfo>
-    ): Map<KSClassDeclaration, Sequence<RawNavComponentInfo>> = rawNavGraphs.map { rawNavGraph ->
+    ): Map<KSClassDeclaration, List<RawNavComponentInfo>> = rawNavGraphs.map { rawNavGraph ->
         val nestedNavGraphs = rawNavGraph.childNavGraphSpecDeclarations.mapNotNull(rawNavGraphMap::get)
         val destinations = rawNavDestinations.filter { rawNavGraph.childNavDestinationSpecDeclarations.contains(it.classDeclaration) }
         rawNavGraph.classDeclaration to (nestedNavGraphs + destinations)
@@ -103,11 +104,11 @@ class RawNavComponentsExtractor(
     /**
      * Gibt [NavGraphStructure] instanzen zurück, welche die Verbindungen zwischen den einzelnen NavGraphs wiedergeben und die NavDestinations bündeln.
      */
-    private fun extractRawNavGraphsWithRawNavDestinations(annotatedNavGraphs: Sequence<KSClassDeclaration>) = annotatedNavGraphs.map { annotatedNavGraph ->
+    private fun extractRawNavGraphsWithRawNavDestinations(annotatedNavGraphs: List<KSClassDeclaration>) = annotatedNavGraphs.map { annotatedNavGraph ->
 
         val annotatedNodes = resolver.findAnnotatedNodesWith(annotatedNavGraph.qualifiedName!!.asString())
 
-        val annotatedClassDeclarations = annotatedNodes.filterIsInstance<KSClassDeclaration>()
+        val annotatedClassDeclarations = annotatedNodes.filterIsInstance<KSClassDeclaration>().toList()
 
         val unknownNodes = annotatedNodes - annotatedClassDeclarations.toSet()
 
@@ -175,10 +176,10 @@ class RawNavComponentsExtractor(
      * They will be added to the DefaultNavGraphSpec or to a custom NavGraphSpec which has the "default" (default = true) parameter set tot true
      */
     private fun extractRawRootDestinations(
-        navDestinations: Sequence<KSClassDeclaration>,
-        rawNavGraphs: Sequence<RawComposeNavGraphInfo>,
+        navDestinations: List<KSClassDeclaration>,
+        rawNavGraphs: List<RawComposeNavGraphInfo>,
         defaultNavGraph: RawComposeNavGraphInfo
-    ): Sequence<RawComposeDestinationInfo> = navDestinations.filter { destination ->
+    ): List<RawComposeDestinationInfo> = navDestinations.filter { destination ->
         rawNavGraphs.none { navGraph ->
             navGraph.childNavDestinationSpecDeclarations.contains(destination)
         }
@@ -193,7 +194,7 @@ class RawNavComponentsExtractor(
     /**
      * Das sind die NavGraphs, die in keinem anderen NavGraph enthalten sind und somit eine Navigation Root bilden
      */
-    private fun findRootNavGraphs(rawNavGraphs: Sequence<RawComposeNavGraphInfo>) = rawNavGraphs.filter { rawNavGraph ->
+    private fun findRootNavGraphs(rawNavGraphs: List<RawComposeNavGraphInfo>) = rawNavGraphs.filter { rawNavGraph ->
         rawNavGraphs.none { it.childNavGraphSpecDeclarations.contains(rawNavGraph.classDeclaration) }
     }
 
@@ -202,7 +203,7 @@ class RawNavComponentsExtractor(
      */
     @Throws(IllegalStateException::class)
     private fun validateIfNoCircularDependenciesArePresent(
-        rawNavGraphs: Sequence<RawComposeNavGraphInfo>,
+        rawNavGraphs: List<RawComposeNavGraphInfo>,
         rawNavGraphMap: Map<KSClassDeclaration, RawComposeNavGraphInfo>
     ) {
 
@@ -228,7 +229,7 @@ class RawNavComponentsExtractor(
      * Checks if a default NavGraph is defined in the Hierarchy
      */
     @Throws(IllegalStateException::class)
-    private fun validateDefaultNavGraphDefinition(defaultNavGraphs: Sequence<RawComposeNavGraphInfo>) {
+    private fun validateDefaultNavGraphDefinition(defaultNavGraphs: List<RawComposeNavGraphInfo>) {
         if (defaultNavGraphs.none()) {
             throw IllegalStateException(
                 "There is no valid default NavGraphDefinition defined. Change 'isDefault = true' in one of your root NavGraphs " +
@@ -249,7 +250,7 @@ class RawNavComponentsExtractor(
     //TODO -> stattdessen NonRootNavGraphs übergeben und die hier dann verwendet. Dadurch braucht man keine rekursion mehr
     @Throws(IllegalStateException::class)
     private fun validateForNestedDefaultNavGraphs(
-        rootNavGraphs: Sequence<RawComposeNavGraphInfo>,
+        rootNavGraphs: List<RawComposeNavGraphInfo>,
         rawNavGraphMap: Map<KSClassDeclaration, RawComposeNavGraphInfo>
     ) {
         rootNavGraphs.forEach { rawNavGraph ->
@@ -274,8 +275,8 @@ class RawNavComponentsExtractor(
      */
     @Throws(IllegalStateException::class)
     private fun validateIfStartingParameterIsSetForEachNavGraph(
-        rawNavGraphs: Sequence<RawComposeNavGraphInfo>,
-        rawNavGraphComponentsMap: Map<KSClassDeclaration, Sequence<RawNavComponentInfo>>
+        rawNavGraphs: List<RawComposeNavGraphInfo>,
+        rawNavGraphComponentsMap: Map<KSClassDeclaration, List<RawNavComponentInfo>>
     ) {
         rawNavGraphs.forEach { navGraph ->
             val connectedRawComponents = rawNavGraphComponentsMap[navGraph.classDeclaration]!!
@@ -297,7 +298,7 @@ class RawNavComponentsExtractor(
      * Checkt ob eine Destination in genau einem oder keinem NavGraph vorhanden ist
      */
     @Throws(IllegalStateException::class)
-    private fun validateIfDestinationIsDefinedInExactlyOneNavGraph(rawNavGraphs: Sequence<RawComposeNavGraphInfo>) {
+    private fun validateIfDestinationIsDefinedInExactlyOneNavGraph(rawNavGraphs: List<RawComposeNavGraphInfo>) {
         rawNavGraphs
             .flatMap(RawComposeNavGraphInfo::childNavDestinationSpecDeclarations)
             .groupingBy { it }
@@ -315,7 +316,7 @@ class RawNavComponentsExtractor(
      * Checkt ob ein NavGraph in genau einem oder keinem NavGraph vorhanden ist
      */
     @Throws(IllegalStateException::class)
-    private fun validateIfNavGraphIsDefinedInAtMostOneNavGraph(rawNavGraphs: Sequence<RawComposeNavGraphInfo>) {
+    private fun validateIfNavGraphIsDefinedInAtMostOneNavGraph(rawNavGraphs: List<RawComposeNavGraphInfo>) {
         rawNavGraphs
             .flatMap(RawComposeNavGraphInfo::childNavGraphSpecDeclarations)
             .groupingBy { it }
@@ -333,7 +334,7 @@ class RawNavComponentsExtractor(
      * Checkt ob ein End NavGraph (nestedNavGraphs.size == 0) mindestens eine Destination besitzt.
      */
     @Throws(IllegalStateException::class)
-    private fun validateIfLeafNavGraphsContainDestination(rawNavGraphs: Sequence<RawComposeNavGraphInfo>) {
+    private fun validateIfLeafNavGraphsContainDestination(rawNavGraphs: List<RawComposeNavGraphInfo>) {
         rawNavGraphs.forEach {
             if (it.childNavGraphSpecDeclarations.any() || it.childNavDestinationSpecDeclarations.any()) return@forEach
             throw IllegalStateException("The following NavGraph does not contain any Children: ${it.simpleName}")
@@ -343,8 +344,8 @@ class RawNavComponentsExtractor(
 
     @Throws(IllegalStateException::class)
     private fun validateIfAllRoutesAreUnique(
-        rawNavGraphs: Sequence<RawNavComponentInfo>,
-        rawNavDestinations: Sequence<RawComposeDestinationInfo>
+        rawNavGraphs: List<RawNavComponentInfo>,
+        rawNavDestinations: List<RawComposeDestinationInfo>
     ) {
         val routeNames = mutableSetOf<String>()
 
@@ -362,8 +363,8 @@ class RawNavComponentsExtractor(
 
 
     private fun KSClassDeclaration.getNavGraphRouteParameter() = getAnnotationArgument<String>(
-        argName = com.welu.compose_nav_destinations_ksp.annotations.ComposeNavGraphAnnotation.ROUTE_ARG,
-        annotation = com.welu.compose_nav_destinations_ksp.annotations.ComposeNavGraphAnnotation
+        argName = ComposeNavGraphAnnotation.ROUTE_ARG,
+        annotation = ComposeNavGraphAnnotation
     ).ifBlank { simpleName.asString() }
 
     private fun KSClassDeclaration.getNavDestinationRouteParameter(): String = getAnnotationArgument<String>(
@@ -372,8 +373,8 @@ class RawNavComponentsExtractor(
     ).ifBlank { simpleName.asString() }
 
     private fun KSClassDeclaration.getIsDefaultNavGraphParameter() = getAnnotationArgument<Boolean>(
-        argName = com.welu.compose_nav_destinations_ksp.annotations.ComposeNavGraphAnnotation.IS_DEFAULT_NAV_GRAPH,
-        annotation = com.welu.compose_nav_destinations_ksp.annotations.ComposeNavGraphAnnotation
+        argName = ComposeNavGraphAnnotation.IS_DEFAULT_NAV_GRAPH,
+        annotation = ComposeNavGraphAnnotation
     )
 
     private fun KSClassDeclaration.getIsStartParameter(annotation: KSClassDeclaration) = getAnnotationArgument<Boolean>(

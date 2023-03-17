@@ -11,11 +11,11 @@ import com.welu.compose_nav_destinations_ksp.model.components.NavComponentInfo
 import com.welu.compose_nav_destinations_ksp.model.navargs.ComplexParameterNavArgType
 import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
-object CustomNavArgsFileMapper : FileSpecMapper<Sequence<NavComponentInfo>> {
+object CustomNavArgsFileMapper : FileSpecMapper<List<NavComponentInfo>> {
 
     private val FILE_IMPORT = ImportInfo("NavDestinationCustomNavArgs", ImportUtils.NAV_ARGS_PACKAGE)
 
-    override fun generate(input: Sequence<NavComponentInfo>): FileSpec? {
+    override fun generate(input: List<NavComponentInfo>): FileSpec? {
         val complexNavArgTypes = extractComplexNavArgTypes(input)
 
         if (complexNavArgTypes.none()) return null
@@ -25,7 +25,7 @@ object CustomNavArgsFileMapper : FileSpecMapper<Sequence<NavComponentInfo>> {
         }
     }
 
-    private fun extractComplexNavArgTypes(navComponents: Sequence<NavComponentInfo>): Sequence<ComplexParameterNavArgType> = navComponents
+    private fun extractComplexNavArgTypes(navComponents: List<NavComponentInfo>): List<ComplexParameterNavArgType> = navComponents
         .filter { it.navArgsInfo != null }
         .flatMap {
             it.navArgsInfo!!.parameters.mapNotNull { parameter ->

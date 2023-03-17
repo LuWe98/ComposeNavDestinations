@@ -2,7 +2,12 @@ package com.welu.compose_nav_destinations_ksp.extractor
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
+import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSValueParameter
+import com.google.devtools.ksp.symbol.Variance
 import com.welu.compose_nav_destinations_ksp.extensions.isAnyOf
 import com.welu.compose_nav_destinations_ksp.extensions.ksp.asImportInfo
 import com.welu.compose_nav_destinations_ksp.extensions.ksp.asType

@@ -7,9 +7,9 @@ import com.squareup.kotlinpoet.ksp.writeTo
 import com.welu.compose_nav_destinations_ksp.extensions.ksp.dependencies
 import com.welu.compose_nav_destinations_ksp.generation.component.DestinationSpecFileMapper
 import com.welu.compose_nav_destinations_ksp.generation.component.NavGraphSpecFileMapper
-import com.welu.compose_nav_destinations_ksp.generation.extensions.NavDestinationsExtensionsFileMapper
 import com.welu.compose_nav_destinations_ksp.generation.extensions.CustomNavArgsFileMapper
 import com.welu.compose_nav_destinations_ksp.generation.extensions.DestinationExtensionsFileMapper
+import com.welu.compose_nav_destinations_ksp.generation.extensions.NavDestinationsExtensionsFileMapper
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeDestinationInfo
 import com.welu.compose_nav_destinations_ksp.model.components.ComposeNavGraphInfo
 import com.welu.compose_nav_destinations_ksp.model.components.NavComponentInfo
@@ -21,8 +21,8 @@ class FileOutputGenerator(
 ) {
 
     fun generate(
-        destinations: Sequence<ComposeDestinationInfo>,
-        navGraphs: Sequence<ComposeNavGraphInfo>
+        destinations: List<ComposeDestinationInfo>,
+        navGraphs: List<ComposeNavGraphInfo>
     ) {
 
         //Generates the custom NavArgs needed for Navigation
