@@ -10,7 +10,7 @@ import com.welu.composenavdestinations.navigation.scope.ComposeDestinationScope
 import com.welu.composenavdestinations.navigation.spec.ComposeDestinationSpec
 import com.welu.composenavdestinations.navigation.spec.NavComponentSpec
 
-fun ComposeDestinationScope.getBackStackEntry(spec: NavComponentSpec) = navController.getBackStackEntry(spec)
+fun ComposeDestinationScope.findBackStackEntry(spec: NavComponentSpec) = navController.findBackStackEntry(spec)
 
 fun ComposeDestinationScope.isOnBackStack(spec: NavComponentSpec) = navController.isOnBackStack(spec)
 

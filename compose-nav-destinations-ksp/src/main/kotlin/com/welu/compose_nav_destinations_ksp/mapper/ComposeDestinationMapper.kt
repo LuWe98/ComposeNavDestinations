@@ -14,7 +14,6 @@ import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 //TODO -> Man muss nur noch deep Links einbauen, kann man auch als extra Extractor wieder machen
 class ComposeDestinationMapper(
-    private val resolver: Resolver,
     private val logger: KSPLogger,
     private val navArgsInfoExtractor: NavArgsInfoExtractor
 ) : NavComponentMapper<RawComposeDestinationInfo, ComposeDestinationInfo> {

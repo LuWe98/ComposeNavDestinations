@@ -74,24 +74,24 @@ android {
 }
 
 dependencies {
-    val composeVersion = "1.3.0-alpha01"
+    val composeVersion = "1.5.0-alpha02"
 
     implementation(project(":compose-nav-destinations"))
     ksp(project(":compose-nav-destinations-ksp"))
 
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.activity:activity-compose:1.7.0")
 
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.5.3")
 
     //0.27.0
-    val accompanistVersion = "0.29.1-alpha"
+    val accompanistVersion = "0.31.0-alpha"
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
     implementation("com.google.accompanist:accompanist-navigation-material:$accompanistVersion")
 

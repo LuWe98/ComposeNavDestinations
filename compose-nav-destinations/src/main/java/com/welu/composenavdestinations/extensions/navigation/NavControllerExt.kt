@@ -15,19 +15,27 @@ val NavController.currentComposeDestination get() = currentBackStackEntry?.compo
 
 val NavController.previousComposeDestination get() = previousBackStackEntry?.composeDestination
 
-fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? = try {
+
+fun NavController.findBackStackEntry(spec: NavComponentSpec): NavBackStackEntry? = try {
     getBackStackEntry(spec.route)
 } catch (e: IllegalArgumentException) {
     null
 }
 
-fun NavController.getBackStackEntry(destination: ComposeDestination<*>): NavBackStackEntry? = try {
+fun NavController.findBackStackEntry(destination: ComposeDestination<*>): NavBackStackEntry? = try {
     getBackStackEntry(destination.route)
 } catch (e: IllegalArgumentException) {
     null
 }
 
-fun NavController.isOnBackStack(spec: NavComponentSpec) = getBackStackEntry(spec) != null
+fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry = findBackStackEntry(spec) ?:
+    throw IllegalStateException("Could not find the BackStackEntry for the specified ComposeDestinationSpec")
+
+fun NavController.getBackStackEntry(destination: ComposeDestination<*>): NavBackStackEntry = findBackStackEntry(destination) ?:
+    throw IllegalStateException("Could not find the BackStackEntry for the specified ComposeDestinationSpec")
+
+
+fun NavController.isOnBackStack(spec: NavComponentSpec) = findBackStackEntry(spec) != null
 
 
 fun NavController.navigate(

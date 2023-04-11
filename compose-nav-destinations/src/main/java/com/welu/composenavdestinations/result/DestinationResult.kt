@@ -6,7 +6,7 @@ import java.io.Serializable
 /**
  * Marker Interface for DestinationResults
  */
-sealed interface DestinationResult<out T: Any> {
+sealed interface DestinationResult<out T> {
     val value: T
     val key: String
 }
@@ -113,7 +113,7 @@ class ParcelableListResult<T: Parcelable>(
 
 
 /**
- * This should only be used, when a generic solution is needed and it is possible to add this value to a Bundle
+ * This should only be used, when a generic solution is needed and if it is possible to add this [value] to a Bundle.
  */
 class UntypedResult(
     override val value: Any,

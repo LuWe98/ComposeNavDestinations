@@ -15,7 +15,6 @@ import com.welu.compose_nav_destinations_ksp.model.navargs.NavArgsInfo
 import com.welu.compose_nav_destinations_ksp.utils.ImportUtils
 
 class ComposeNavGraphMapper(
-    private val resolver: Resolver,
     private val logger: KSPLogger,
     private val navArgsInfoExtractor: NavArgsInfoExtractor
 ) : NavComponentMapper<RawComposeNavGraphInfo, ComposeNavGraphInfo> {

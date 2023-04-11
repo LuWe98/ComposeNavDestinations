@@ -1,7 +1,6 @@
 package com.welu.compose_nav_destinations_app.app
 
 import android.os.Parcelable
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -22,7 +20,7 @@ import com.welu.composenavdestinations.annotations.ComposeNavGraph
 import com.welu.composenavdestinations.annotations.DefaultNavGraph
 import com.welu.composenavdestinations.extensions.*
 import com.welu.composenavdestinations.extensions.navigation.areArgumentsSetCorrectly
-import com.welu.composenavdestinations.extensions.navigation.getBackStackEntry
+import com.welu.composenavdestinations.extensions.navigation.findBackStackEntry
 import com.welu.composenavdestinations.extensions.navigation.navigate
 import com.welu.composenavdestinations.extensions.navigation.navigateAndPopUpTo
 import com.welu.composenavdestinations.extensions.navigation.popBackStack
@@ -35,8 +33,8 @@ import com.welu.composenavdestinations.navigation.destinations.ArgDestination
 import com.welu.composenavdestinations.navigation.destinations.BottomSheetArgDestination
 import com.welu.composenavdestinations.navigation.destinations.Destination
 import com.welu.composenavdestinations.navigation.destinations.DialogArgDestination
-import com.welu.composenavdestinations.result.LifecycleResultListener
-import com.welu.composenavdestinations.result.UntypedResult
+import com.welu.composenavdestinations.result.LongResult
+import com.welu.composenavdestinations.result.receiveResult
 import com.welu.composenavdestinations.result.sendResultTo
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
@@ -62,27 +60,29 @@ annotation class OtherGraph(
 object FirstDestination : Destination {
 
     override val Content: DestinationCompositionScope = {
-        var parsedValue: Int? by rememberSaveable { mutableStateOf(null) }
+//        var parsedValue: Long? by rememberSaveable { mutableStateOf(null) }
 
-        //Hier muss man nochmal schauen wegen den Results -> Auch ResultTypes einbauen, dass es nicht zu crashes bei Runtime kommen kann
-        //ResultTypes wie NavTypes für verschiedene Typen.
-        LifecycleResultListener<Long> {
-            println("RESULT RECEIVED: $it")
-            parsedValue = it.toInt()
-        }
+//        LifecycleResultListener<Long> {
+//            println("RESULT RECEIVED: $it")
+//            parsedValue = it
+//        }
 
-        StartDestinationComposable(parsedValue) {
+        val state by receiveResult<Long?>(null)
+
+
+
+        StartDestinationComposable({ state }) {
             navigate(SecondDestination(User("123", "Lucha", 23)))
         }
     }
 
     @Composable
     fun StartDestinationComposable(
-        currentValue: Int?,
+        currentValueProvider: () -> Long?,
         onClick: () -> Unit
     ) {
         Column {
-            Text(text = "Current Value: $currentValue")
+            Text(text = "Current Value: ${currentValueProvider()}")
             Button(onClick = onClick) {
                 Text(text = "Navigate to Second")
             }
@@ -112,10 +112,9 @@ object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> 
             },
             navigateToThirdScreen = {
                 navigateAndPopUpTo(ThirdDestination(otherString = "fd"), FirstDestination, false)
-                OtherGraphSpec("")
             },
             sendResult = {
-                sendResultTo(FirstDestination, UntypedResult(Random.nextLong()))
+                sendResultTo(FirstDestination, LongResult(Random.nextLong()))
             }
         )
     }
@@ -151,18 +150,11 @@ object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
         DetailScreen(args = vm.args) {
             //navigate to nested Graph
             //navController.navigate(OtherGraphSpec())
-            Log.d("TTT", "HALLO")
-            popBackStack(FirstDestination)
 
-            //navController.navigate("other/123")
+            popBackStack(FirstDestination)
         }
     }
-
 }
-
-//Bei den generierten Methoden kann man einfach die argsFrom Methode für SaveStateHandle aufrufen von NavBackstackEntry
-//Testen ob das geht
-
 
 @OtherGraph(true)
 @ComposeDestination
@@ -173,14 +165,13 @@ object FourthDestination : DialogArgDestination<FourthDestination.NavArgs> {
     override val Content: DialogArgDestinationCompositionScope<NavArgs> = {
 
         val parentNavArgs = remember {
-            OtherGraphSpec.argsFrom(getBackStackEntry(OtherGraphSpec)!!)
+            OtherGraphSpec.argsFrom(findBackStackEntry(OtherGraphSpec)!!)
         }
 
         //TODO -> Das schauen - Was machen wenn die nicht richtig gesetzt wurden?
         // -> Dann mit dem Import bei den DestinationExt
         // -> Dann Lint checks
-        println("HALLO: ${areArgumentsSetCorrectly()}")
-        //println("TEST: $args")
+        println("ARE ARGUMENTS SET CORRECTLY: ${areArgumentsSetCorrectly()}")
 
         Column(
             modifier = Modifier
