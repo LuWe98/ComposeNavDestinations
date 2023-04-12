@@ -211,184 +211,183 @@ inline fun <reified T> NavController.ResultListener(
 //------------------------------------------------------------------------------------
 // LifecycleResult State-Collection functions
 //------------------------------------------------------------------------------------
-
-@Composable
-inline fun <reified T> ComposeDestinationScope.receiveResultWithLifecycle(
-    initialValue: T,
-    forSpec: ComposeDestinationSpec<*> = relatedSpec,
-    key: String = T::class.qualifiedName!!
-): State<T> = navController.receiveResultWithLifecycle(
-    initialValue = initialValue,
-    forSpec = forSpec,
-    key = key
-)
-
-@Composable
-inline fun <reified T> ComposeDestinationScope.receiveResultWithLifecycle(
-    initialValue: T,
-    forDestination: ComposeDestination<*>,
-    key: String = T::class.qualifiedName!!
-): State<T> = navController.receiveResultWithLifecycle(
-    initialValue = initialValue,
-    forDestination = forDestination,
-    key = key
-)
-
-@Composable
-inline fun <reified T> ComposeDestinationScope.receiveResultWithLifecycle(
-    initialValue: T,
-    forNavBackStackEntry: NavBackStackEntry,
-    key: String = T::class.qualifiedName!!
-): State<T> = navController.receiveResultWithLifecycle(
-    initialValue = initialValue,
-    forNavBackStackEntry = forNavBackStackEntry,
-    key = key
-)
-
-@Composable
-inline fun <reified T> NavController.receiveResultWithLifecycle(
-    initialValue: T,
-    forDestination: ComposeDestination<*>,
-    key: String = T::class.qualifiedName!!
-): State<T> = receiveResultWithLifecycle(
-    initialValue = initialValue,
-    forNavBackStackEntry = getBackStackEntry(forDestination),
-    key = key
-)
-@Composable
-inline fun <reified T> NavController.receiveResultWithLifecycle(
-    initialValue: T,
-    forSpec: ComposeDestinationSpec<*>,
-    key: String = T::class.qualifiedName!!
-): State<T> = receiveResultWithLifecycle(
-    initialValue = initialValue,
-    forNavBackStackEntry = getBackStackEntry(forSpec),
-    key = key
-)
-
-@Composable
-inline fun <reified T> NavController.receiveResultWithLifecycle(
-    initialValue: T,
-    forNavBackStackEntry: NavBackStackEntry = currentBackStackEntry!!,
-    key: String = T::class.qualifiedName!!
-): State<T> {
-    val state = remember {
-        mutableStateOf(initialValue)
-    }
-
-    LifecycleResultListener(
-        forNavBackStackEntry = forNavBackStackEntry,
-        key = key,
-        callback = state::value::set
-    )
-
-    return state
-}
+//
+//@Composable
+//inline fun <reified T> ComposeDestinationScope.receiveResultWithLifecycle(
+//    initialValue: T,
+//    forSpec: ComposeDestinationSpec<*> = relatedSpec,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = navController.receiveResultWithLifecycle(
+//    initialValue = initialValue,
+//    forSpec = forSpec,
+//    key = key
+//)
+//
+//@Composable
+//inline fun <reified T> ComposeDestinationScope.receiveResultWithLifecycle(
+//    initialValue: T,
+//    forDestination: ComposeDestination<*>,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = navController.receiveResultWithLifecycle(
+//    initialValue = initialValue,
+//    forDestination = forDestination,
+//    key = key
+//)
+//
+//@Composable
+//inline fun <reified T> ComposeDestinationScope.receiveResultWithLifecycle(
+//    initialValue: T,
+//    forNavBackStackEntry: NavBackStackEntry,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = navController.receiveResultWithLifecycle(
+//    initialValue = initialValue,
+//    forNavBackStackEntry = forNavBackStackEntry,
+//    key = key
+//)
+//
+//@Composable
+//inline fun <reified T> NavController.receiveResultWithLifecycle(
+//    initialValue: T,
+//    forDestination: ComposeDestination<*>,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = receiveResultWithLifecycle(
+//    initialValue = initialValue,
+//    forNavBackStackEntry = getBackStackEntry(forDestination),
+//    key = key
+//)
+//@Composable
+//inline fun <reified T> NavController.receiveResultWithLifecycle(
+//    initialValue: T,
+//    forSpec: ComposeDestinationSpec<*>,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = receiveResultWithLifecycle(
+//    initialValue = initialValue,
+//    forNavBackStackEntry = getBackStackEntry(forSpec),
+//    key = key
+//)
+//
+//@Composable
+//inline fun <reified T> NavController.receiveResultWithLifecycle(
+//    initialValue: T,
+//    forNavBackStackEntry: NavBackStackEntry = currentBackStackEntry!!,
+//    key: String = T::class.qualifiedName!!
+//): State<T> {
+//    val state = remember {
+//        mutableStateOf(initialValue)
+//    }
+//
+//    LifecycleResultListener(
+//        forNavBackStackEntry = forNavBackStackEntry,
+//        key = key,
+//        callback = state::value::set
+//    )
+//
+//    return state
+//}
 
 
 
 //------------------------------------------------------------------------------------
 // FlowResult State-Collection functions
 //------------------------------------------------------------------------------------
-
-@Composable
-inline fun <reified T> ComposeDestinationScope.receiveResult(
-    initialValue: T,
-    forSpec: ComposeDestinationSpec<*> = relatedSpec,
-    key: String = T::class.qualifiedName!!
-): State<T> = navController.receiveResult(
-    initialValue = initialValue,
-    forSpec = forSpec,
-    key = key
-)
-
-@Composable
-inline fun <reified T> ComposeDestinationScope.receiveResult(
-    initialValue: T,
-    forDestination: ComposeDestination<*>,
-    key: String = T::class.qualifiedName!!
-): State<T> = navController.receiveResult(
-    initialValue = initialValue,
-    forDestination = forDestination,
-    key = key
-)
-
-@Composable
-inline fun <reified T> ComposeDestinationScope.receiveResult(
-    initialValue: T,
-    forNavBackStackEntry: NavBackStackEntry,
-    key: String = T::class.qualifiedName!!
-): State<T> = navController.receiveResult(
-    initialValue = initialValue,
-    forNavBackStackEntry = forNavBackStackEntry,
-    key = key
-)
-
-
-@Composable
-inline fun <reified T> NavController.receiveResult(
-    initialValue: T,
-    forSpec: ComposeDestinationSpec<*>,
-    key: String = T::class.qualifiedName!!
-): State<T> = receiveResult(
-    initialValue = initialValue,
-    forNavBackStackEntry = getBackStackEntry(forSpec),
-    key = key
-)
-
-@Composable
-inline fun <reified T> NavController.receiveResult(
-    initialValue: T,
-    forDestination: ComposeDestination<*>,
-    key: String = T::class.qualifiedName!!
-): State<T> = receiveResult(
-    initialValue = initialValue,
-    forNavBackStackEntry = getBackStackEntry(forDestination),
-    key = key
-)
-
-@Composable
-inline fun <reified T> NavController.receiveResult(
-    initialValue: T,
-    forNavBackStackEntry: NavBackStackEntry = currentBackStackEntry!!,
-    key: String = T::class.qualifiedName!!
-): State<T> {
-    val state = remember {
-        mutableStateOf(initialValue)
-    }
-
-    ResultListener(
-        forNavBackStackEntry = forNavBackStackEntry,
-        key = key,
-        callback = state::value::set
-    )
-
-    return state
-}
-
-
-@Composable
-inline fun <reified T> NavController.receiveSaveableResult(
-    initialValue: T,
-    forNavBackStackEntry: NavBackStackEntry = currentBackStackEntry!!,
-    key: String = T::class.qualifiedName!!,
-    saver: Saver<MutableState<T>, out Any>? = null
-): State<T> {
-    val state = if(saver != null) {
-        rememberSaveable(saver = saver) {
-            mutableStateOf(initialValue)
-        }
-    } else {
-        rememberSaveable {
-            mutableStateOf(initialValue)
-        }
-    }
-
-    ResultListener(
-        forNavBackStackEntry = forNavBackStackEntry,
-        key = key,
-        callback = state::value::set
-    )
-
-    return state
-}
+//@Composable
+//inline fun <reified T> ComposeDestinationScope.receiveResult(
+//    initialValue: T,
+//    forSpec: ComposeDestinationSpec<*> = relatedSpec,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = navController.receiveResult(
+//    initialValue = initialValue,
+//    forSpec = forSpec,
+//    key = key
+//)
+//
+//@Composable
+//inline fun <reified T> ComposeDestinationScope.receiveResult(
+//    initialValue: T,
+//    forDestination: ComposeDestination<*>,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = navController.receiveResult(
+//    initialValue = initialValue,
+//    forDestination = forDestination,
+//    key = key
+//)
+//
+//@Composable
+//inline fun <reified T> ComposeDestinationScope.receiveResult(
+//    initialValue: T,
+//    forNavBackStackEntry: NavBackStackEntry,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = navController.receiveResult(
+//    initialValue = initialValue,
+//    forNavBackStackEntry = forNavBackStackEntry,
+//    key = key
+//)
+//
+//
+//@Composable
+//inline fun <reified T> NavController.receiveResult(
+//    initialValue: T,
+//    forSpec: ComposeDestinationSpec<*>,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = receiveResult(
+//    initialValue = initialValue,
+//    forNavBackStackEntry = getBackStackEntry(forSpec),
+//    key = key
+//)
+//
+//@Composable
+//inline fun <reified T> NavController.receiveResult(
+//    initialValue: T,
+//    forDestination: ComposeDestination<*>,
+//    key: String = T::class.qualifiedName!!
+//): State<T> = receiveResult(
+//    initialValue = initialValue,
+//    forNavBackStackEntry = getBackStackEntry(forDestination),
+//    key = key
+//)
+//
+//@Composable
+//inline fun <reified T> NavController.receiveResult(
+//    initialValue: T,
+//    forNavBackStackEntry: NavBackStackEntry = currentBackStackEntry!!,
+//    key: String = T::class.qualifiedName!!
+//): State<T> {
+//    val state = remember {
+//        mutableStateOf(initialValue)
+//    }
+//
+//    ResultListener(
+//        forNavBackStackEntry = forNavBackStackEntry,
+//        key = key,
+//        callback = state::value::set
+//    )
+//
+//    return state
+//}
+//
+//
+//@Composable
+//inline fun <reified T> NavController.receiveSaveableResult(
+//    initialValue: T,
+//    forNavBackStackEntry: NavBackStackEntry = currentBackStackEntry!!,
+//    key: String = T::class.qualifiedName!!,
+//    saver: Saver<MutableState<T>, out Any>? = null
+//): State<T> {
+//    val state = if(saver != null) {
+//        rememberSaveable(saver = saver) {
+//            mutableStateOf(initialValue)
+//        }
+//    } else {
+//        rememberSaveable {
+//            mutableStateOf(initialValue)
+//        }
+//    }
+//
+//    ResultListener(
+//        forNavBackStackEntry = forNavBackStackEntry,
+//        key = key,
+//        callback = state::value::set
+//    )
+//
+//    return state
+//}

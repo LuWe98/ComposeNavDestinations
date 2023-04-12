@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -33,8 +34,8 @@ import com.welu.composenavdestinations.navigation.destinations.ArgDestination
 import com.welu.composenavdestinations.navigation.destinations.BottomSheetArgDestination
 import com.welu.composenavdestinations.navigation.destinations.Destination
 import com.welu.composenavdestinations.navigation.destinations.DialogArgDestination
+import com.welu.composenavdestinations.result.LifecycleResultListener
 import com.welu.composenavdestinations.result.LongResult
-import com.welu.composenavdestinations.result.receiveResult
 import com.welu.composenavdestinations.result.sendResultTo
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
@@ -60,18 +61,13 @@ annotation class OtherGraph(
 object FirstDestination : Destination {
 
     override val Content: DestinationCompositionScope = {
-//        var parsedValue: Long? by rememberSaveable { mutableStateOf(null) }
+        var parsedValue: Long? by rememberSaveable { mutableStateOf(null) }
 
-//        LifecycleResultListener<Long> {
-//            println("RESULT RECEIVED: $it")
-//            parsedValue = it
-//        }
+        LifecycleResultListener<Long> {
+            parsedValue = it
+        }
 
-        val state by receiveResult<Long?>(null)
-
-
-
-        StartDestinationComposable({ state }) {
+        StartDestinationComposable({ parsedValue }) {
             navigate(SecondDestination(User("123", "Lucha", 23)))
         }
     }
