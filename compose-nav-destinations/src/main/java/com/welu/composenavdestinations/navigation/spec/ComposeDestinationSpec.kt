@@ -13,7 +13,7 @@ sealed interface ComposeDestinationSpec<D: ComposeDestination<*>>: NavComponentS
     override val parentNavGraphSpec: ComposeNavGraphSpec
 
     /**
-     * The [com.welu.composenavdestinations.navigation.destinations.ComposeDestination] this [ComposeDestinationSpec] is connected with.
+     * The [ComposeDestination] this [ComposeDestinationSpec] is connected with.
      */
     val destination: D
 

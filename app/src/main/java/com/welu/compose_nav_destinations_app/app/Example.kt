@@ -21,16 +21,13 @@ import com.welu.composenavdestinations.annotations.ComposeNavGraph
 import com.welu.composenavdestinations.annotations.DefaultNavGraph
 import com.welu.composenavdestinations.extensions.*
 import com.welu.composenavdestinations.extensions.navigation.areArgumentsSetCorrectly
-import com.welu.composenavdestinations.extensions.navigation.findBackStackEntry
+import com.welu.composenavdestinations.extensions.navigation.getBackStackEntry
 import com.welu.composenavdestinations.extensions.navigation.navigate
-import com.welu.composenavdestinations.extensions.navigation.navigateAndPopUpTo
 import com.welu.composenavdestinations.extensions.navigation.popBackStack
 import com.welu.composenavdestinations.navgraphs.OtherGraphSpec
-import com.welu.composenavdestinations.navigation.ArgDestinationCompositionScope
 import com.welu.composenavdestinations.navigation.BottomSheetArgDestinationCompositionScope
 import com.welu.composenavdestinations.navigation.DestinationCompositionScope
 import com.welu.composenavdestinations.navigation.DialogArgDestinationCompositionScope
-import com.welu.composenavdestinations.navigation.destinations.ArgDestination
 import com.welu.composenavdestinations.navigation.destinations.BottomSheetArgDestination
 import com.welu.composenavdestinations.navigation.destinations.Destination
 import com.welu.composenavdestinations.navigation.destinations.DialogArgDestination
@@ -86,15 +83,6 @@ object FirstDestination : Destination {
     }
 }
 
-
-@OtherGraph
-@ComposeDestination
-object Lol : Destination {
-    override val Content: DestinationCompositionScope = {
-        Text(text = "Hallo")
-    }
-}
-
 @ComposeDestination
 object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> {
 
@@ -107,7 +95,8 @@ object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> 
                 popBackStack()
             },
             navigateToThirdScreen = {
-                navigateAndPopUpTo(ThirdDestination(otherString = "fd"), FirstDestination, false)
+                //navigateAndPopUpTo(ThirdDestination(otherString = "fd"), FirstDestination, false)
+                navigate(ThirdDestination(otherString = "hallo"))
             },
             sendResult = {
                 sendResultTo(FirstDestination, LongResult(Random.nextLong()))
@@ -138,16 +127,16 @@ object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> 
 }
 
 @ComposeDestination
-object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
+object ThirdDestination : BottomSheetArgDestination<DetailScreenNavArgs> {
 
-    override val Content: ArgDestinationCompositionScope<DetailScreenNavArgs> = {
+    override val Content: BottomSheetArgDestinationCompositionScope<DetailScreenNavArgs> = {
         val vm = viewModel<DetailsVm>()
 
         DetailScreen(args = vm.args) {
             //navigate to nested Graph
             //navController.navigate(OtherGraphSpec())
 
-            popBackStack(FirstDestination)
+            popBackStack()
         }
     }
 }
@@ -161,7 +150,7 @@ object FourthDestination : DialogArgDestination<FourthDestination.NavArgs> {
     override val Content: DialogArgDestinationCompositionScope<NavArgs> = {
 
         val parentNavArgs = remember {
-            OtherGraphSpec.argsFrom(findBackStackEntry(OtherGraphSpec)!!)
+            OtherGraphSpec.argsFrom(getBackStackEntry(OtherGraphSpec))
         }
 
         //TODO -> Das schauen - Was machen wenn die nicht richtig gesetzt wurden?

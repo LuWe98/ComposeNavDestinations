@@ -29,10 +29,10 @@ fun NavController.findBackStackEntry(destination: ComposeDestination<*>): NavBac
 }
 
 fun NavController.getBackStackEntry(spec: NavComponentSpec): NavBackStackEntry = findBackStackEntry(spec) ?:
-    throw IllegalStateException("Could not find the BackStackEntry for the specified ComposeDestinationSpec")
+    throw IllegalStateException("Could not find the BackStackEntry for the specified ComposeDestinationSpec.")
 
 fun NavController.getBackStackEntry(destination: ComposeDestination<*>): NavBackStackEntry = findBackStackEntry(destination) ?:
-    throw IllegalStateException("Could not find the BackStackEntry for the specified ComposeDestinationSpec")
+    throw IllegalStateException("Could not find the BackStackEntry for the specified ComposeDestinationSpec.")
 
 
 fun NavController.isOnBackStack(spec: NavComponentSpec) = findBackStackEntry(spec) != null

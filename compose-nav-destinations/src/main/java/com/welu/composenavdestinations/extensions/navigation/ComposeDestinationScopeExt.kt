@@ -1,5 +1,6 @@
 package com.welu.composenavdestinations.extensions.navigation
 
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.Navigator
@@ -10,7 +11,16 @@ import com.welu.composenavdestinations.navigation.scope.ComposeDestinationScope
 import com.welu.composenavdestinations.navigation.spec.ComposeDestinationSpec
 import com.welu.composenavdestinations.navigation.spec.NavComponentSpec
 
+/**
+ * Finds a [NavBackStackEntry] for a specific [NavComponentSpec] on the backstack.
+ * Returns null when no [NavBackStackEntry] was found.
+ */
 fun ComposeDestinationScope.findBackStackEntry(spec: NavComponentSpec) = navController.findBackStackEntry(spec)
+
+/**
+ * Gets a [NavBackStackEntry] for a specific [NavComponentSpec] on the backstack.
+ */
+fun ComposeDestinationScope.getBackStackEntry(spec: NavComponentSpec) = navController.getBackStackEntry(spec)
 
 fun ComposeDestinationScope.isOnBackStack(spec: NavComponentSpec) = navController.isOnBackStack(spec)
 
@@ -74,16 +84,19 @@ fun ComposeDestinationScope.navigateAndPopUpTo(
     popUpTo: String,
     inclusive: Boolean = true
 ) = navController.navigateAndPopUpTo(toDestination, popUpTo, inclusive)
+
 fun ComposeDestinationScope.navigateAndPopUpTo(
     toDestination: ComposeRoutableDestination<*>,
     popUpToSpec: ComposeDestinationSpec<*>,
     inclusive: Boolean = true
 ) = navController.navigateAndPopUpTo(toDestination, popUpToSpec, inclusive)
+
 fun ComposeDestinationScope.navigateAndPopUpTo(
     toDestination: ComposeRoutableDestination<*>,
     popUpToDestination: ComposeDestination<*>,
     inclusive: Boolean = true
 ) = navController.navigateAndPopUpTo(toDestination, popUpToDestination.route, inclusive)
+
 fun ComposeDestinationScope.navigateAndPopUpTo(
     toRoutable: Routable,
     popUpTo: ComposeDestination<*>,
