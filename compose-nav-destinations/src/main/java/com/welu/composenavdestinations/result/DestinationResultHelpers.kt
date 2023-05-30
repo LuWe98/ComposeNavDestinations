@@ -111,7 +111,7 @@ inline fun <reified T> NavController.LifecycleResultListener(
  */
 @Composable
 inline fun <reified T> NavController.LifecycleResultListener(
-    forNavBackStackEntry: NavBackStackEntry,
+    forNavBackStackEntry: NavBackStackEntry = currentBackStackEntry!!,
     key: String = T::class.qualifiedName!!,
     crossinline callback: (T) -> Unit
 ) {
@@ -131,7 +131,7 @@ inline fun <reified T> NavController.LifecycleResultListener(
         forNavBackStackEntry.lifecycle.addObserver(observer)
 
         onDispose {
-            //Alle aussser der hier waren davor: currentBackStackEntry
+            //Alle aussser der hier waren davor: forNavBackStackEntry -> currentBackStackEntry
             forNavBackStackEntry.lifecycle.removeObserver(observer)
         }
     }
@@ -284,9 +284,7 @@ inline fun <reified T> NavController.ResultListener(
 //
 //    return state
 //}
-
-
-
+//
 //------------------------------------------------------------------------------------
 // FlowResult State-Collection functions
 //------------------------------------------------------------------------------------
