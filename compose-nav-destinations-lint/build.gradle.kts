@@ -20,10 +20,8 @@ lint {
 dependencies {
     //compileOnly(project(":compose-nav-destinations-shared"))
 
-    val lintVersion = "30.3.0"
-    compileOnly("com.android.tools.lint:lint-api:$lintVersion")
-    compileOnly("com.android.tools.lint:lint-checks:$lintVersion")
+    compileOnly("com.android.tools.lint:lint-api:${Versions.lintVersion}")
+    compileOnly("com.android.tools.lint:lint-checks:${Versions.lintVersion}")
 
-    val kotlinVersion = "1.7.10"
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlinVersion}")
 }

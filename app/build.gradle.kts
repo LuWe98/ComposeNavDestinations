@@ -1,9 +1,9 @@
 plugins {
     kotlin("android")
-    kotlin("plugin.serialization") version "1.7.20"
+    kotlin("plugin.serialization") version Versions.kotlinSerialisationPluginVersion
     id("com.android.application")
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp") version "1.7.20-1.0.6"
+    id("com.google.devtools.ksp") version Versions.kspVersion
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
@@ -11,13 +11,13 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 android {
-    compileSdk = 33
+    compileSdk = Versions.compileSdk
     namespace = "com.welu.composenavdestinations.app"
 
     defaultConfig {
         applicationId = "com.welu.composenavdestinations.app"
-        minSdk = 21
-        targetSdk = 33
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
         versionCode = 1
         versionName = "1.0"
 
@@ -48,7 +48,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = Versions.composeCompilerExtensionVersion
     }
 
     packagingOptions {
@@ -74,36 +74,32 @@ android {
 }
 
 dependencies {
-    val composeVersion = "1.5.0-alpha02"
-
     implementation(project(":compose-nav-destinations"))
     ksp(project(":compose-nav-destinations-ksp"))
 
-
-    implementation("androidx.core:core-ktx:1.10.0")
-    implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.compose.material:material:$composeVersion")
-    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation("androidx.core:core-ktx:${Versions.anndroidCoreVersion}")
+    implementation("androidx.compose.ui:ui:${Versions.composeVersion}")
+    implementation("androidx.compose.material:material:${Versions.composeVersion}")
+    implementation("androidx.compose.ui:ui-tooling-preview:${Versions.composeVersion}")
+    implementation("androidx.activity:activity-compose:${Versions.composeActivityVersion}")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${Versions.androidLifecycleVersion}")
 
     //Navigation
-    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.navigation:navigation-compose:${Versions.composeNavigationVersion}")
 
     //0.27.0
-    val accompanistVersion = "0.31.0-alpha"
-    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-navigation-material:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-navigation-animation:${Versions.accompanistVersion}")
+    implementation("com.google.accompanist:accompanist-navigation-material:${Versions.accompanistVersion}")
 
     //Ktx Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.ktxSerializableVersion}")
 
 
-
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
+    //Tests
+    testImplementation("junit:junit:${Versions.jUnitVersion}")
+    androidTestImplementation("androidx.test.ext:junit:${Versions.androidJUnitVersion}")
+    androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.androidEspressoVersion}")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.composeVersion}")
+    debugImplementation("androidx.compose.ui:ui-tooling:${Versions.composeVersion}")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.composeVersion}")
 }

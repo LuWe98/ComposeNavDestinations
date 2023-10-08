@@ -16,12 +16,10 @@ java {
 
 dependencies {
     //api(project(":compose-nav-destinations-shared"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.7.20-1.0.6")
+    implementation("com.google.devtools.ksp:symbol-processing-api:${Versions.kspVersion}")
 
-    implementation("com.squareup:kotlinpoet:1.12.0")
-    implementation("com.squareup:kotlinpoet-ksp:1.12.0")
-
-    //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("com.squareup:kotlinpoet:${Versions.kotlinPoetVersion}")
+    implementation("com.squareup:kotlinpoet-ksp:${Versions.kotlinPoetVersion}")
 }
 
 publishing {

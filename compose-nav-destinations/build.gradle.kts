@@ -3,7 +3,7 @@ plugins {
     id("kotlin-android")
     //TODO -> Entfernen und Selbst schreiben
     id("kotlin-parcelize")
-    kotlin("plugin.serialization") version "1.7.20"
+    kotlin("plugin.serialization") version Versions.kotlinSerialisationPluginVersion
 
     id("maven-publish")
 }
@@ -11,12 +11,12 @@ plugins {
 group = "com.github.LuWe98"
 
 android {
-    compileSdk = 33
+    compileSdk = Versions.compileSdk
     namespace = "com.welu.composenavdestinations"
 
     defaultConfig {
-        minSdk = 21
-        targetSdk = 33
+        minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles.add(File("consumer-rules.pro"))
@@ -34,7 +34,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = Versions.composeCompilerExtensionVersion
     }
 
     compileOptions {
@@ -62,17 +62,14 @@ dependencies {
 //    lintPublish(project(":compose-nav-destinations-lint"))
 
     //ComposeNavigation
-    val composeNavigationVersion = "2.5.3"
-    implementation("androidx.navigation:navigation-compose:$composeNavigationVersion")
+    implementation("androidx.navigation:navigation-compose:${Versions.composeNavigationVersion}")
 
     //Accompanist
-    val accompanistVersion = "0.31.0-alpha"
-    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-navigation-material:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-navigation-animation:${Versions.accompanistVersion}")
+    implementation("com.google.accompanist:accompanist-navigation-material:${Versions.accompanistVersion}")
 
     //Ktx Serialization
-    val ktxSerializableVersion = "1.4.0"
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$ktxSerializableVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.ktxSerializableVersion}")
 }
 
 publishing {
