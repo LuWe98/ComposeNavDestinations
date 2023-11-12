@@ -38,12 +38,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = Versions.sourceCompatibility
+        targetCompatibility = Versions.targetCompatibility
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = Versions.jvmTarget
     }
 
 //    lint {
@@ -65,7 +65,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:${Versions.composeNavigationVersion}")
 
     //Accompanist
-    implementation("com.google.accompanist:accompanist-navigation-animation:${Versions.accompanistVersion}")
     implementation("com.google.accompanist:accompanist-navigation-material:${Versions.accompanistVersion}")
 
     //Ktx Serialization

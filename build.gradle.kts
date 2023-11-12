@@ -1,10 +1,3 @@
-//plugins {
-//    id("com.android.application") version "7.2.1" apply false
-//    id("com.android.library") version "7.2.1" apply false
-//    id("org.jetbrains.kotlin.android") version "1.7.10" apply false
-//    id("org.jetbrains.kotlin.jvm") version "1.7.10" apply false
-//}
-
 buildscript {
     repositories {
         google()
@@ -14,7 +7,6 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:${Versions.gradleVersion}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinVersion}")
-//        classpath("org.jetbrains.kotlin:kotlin-serialization:1.7.10")
     }
 }
 

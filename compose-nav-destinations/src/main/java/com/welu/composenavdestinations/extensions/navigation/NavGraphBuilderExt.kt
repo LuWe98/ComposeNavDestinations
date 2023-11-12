@@ -1,17 +1,15 @@
 package com.welu.composenavdestinations.extensions.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.navigation
+import androidx.navigation.compose.navigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
 import com.welu.composenavdestinations.navigation.scope.*
 import com.welu.composenavdestinations.navigation.spec.*
-import com.welu.composenavdestinations.service.ServiceLocator
 
 fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavGraph(
     navGraphSpec: N,
@@ -42,7 +40,6 @@ private fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavGraphInternal(
 }
 
 //TODO -> Das vllt noch oben einbauen?
-@OptIn(ExperimentalAnimationApi::class)
 private fun NavGraphBuilder.addNestedNavigation(
     navGraphSpec: ComposeNavGraphSpec,
     navController: NavHostController
@@ -60,7 +57,6 @@ private fun NavGraphBuilder.addNestedNavigation(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 private fun NavGraphBuilder.addDestinationComposable(
     destinationSpec: DestinationSpec,
     navController: NavHostController
@@ -86,7 +82,6 @@ private fun NavGraphBuilder.addDestinationComposable(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 private fun NavGraphBuilder.addArgDestinationComposable(
     argDestinationSpec: ArgDestinationSpec<Any>,
     navController: NavHostController

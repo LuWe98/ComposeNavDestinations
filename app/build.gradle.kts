@@ -35,12 +35,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = Versions.sourceCompatibility
+        targetCompatibility = Versions.targetCompatibility
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = Versions.jvmTarget
     }
 
     buildFeatures {
@@ -51,10 +51,10 @@ android {
         kotlinCompilerExtensionVersion = Versions.composeCompilerExtensionVersion
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
     }
-
+    
     //Das ist nötig um die generated KSP files zu sehen
     applicationVariants.all {
         kotlin.sourceSets {
@@ -87,13 +87,11 @@ dependencies {
     //Navigation
     implementation("androidx.navigation:navigation-compose:${Versions.composeNavigationVersion}")
 
-    //0.27.0
-    implementation("com.google.accompanist:accompanist-navigation-animation:${Versions.accompanistVersion}")
+    //Accompanist
     implementation("com.google.accompanist:accompanist-navigation-material:${Versions.accompanistVersion}")
 
     //Ktx Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.ktxSerializableVersion}")
-
 
     //Tests
     testImplementation("junit:junit:${Versions.jUnitVersion}")
