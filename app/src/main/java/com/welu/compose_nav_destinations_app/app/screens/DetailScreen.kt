@@ -83,11 +83,11 @@ class DetailScreenNavArgs(
 
 @Composable
 fun DetailScreen(
-    s: String = "Test",
-    args: DetailScreenNavArgs,
+    argsProvider: () -> DetailScreenNavArgs,
     onNavigate: () -> Unit
 ) {
-    args.apply {
+
+    argsProvider().apply {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
             Button(onClick = onNavigate) {

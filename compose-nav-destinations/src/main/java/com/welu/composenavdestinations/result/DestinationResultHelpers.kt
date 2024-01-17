@@ -2,20 +2,16 @@ package com.welu.composenavdestinations.result
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.SaverScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.welu.composenavdestinations.extensions.collectOnLifecycle
+import com.welu.composenavdestinations.extensions.navigation.findBackStackEntry
 import com.welu.composenavdestinations.extensions.navigation.getBackStackEntry
+import com.welu.composenavdestinations.extensions.navigation.spec
 import com.welu.composenavdestinations.navigation.destinations.ComposeDestination
 import com.welu.composenavdestinations.navigation.scope.ComposeDestinationScope
 import com.welu.composenavdestinations.navigation.spec.ComposeDestinationSpec
@@ -63,7 +59,6 @@ inline fun <reified T : DestinationResult<*>> NavBackStackEntry.sendResult(resul
     savedStateHandle[result.key] = result.value
 }
 
-
 //------------------------------------------------------------------------------------
 // Lifecycle-ResultListeners
 //------------------------------------------------------------------------------------
@@ -73,11 +68,13 @@ inline fun <reified T> ComposeDestinationScope.LifecycleResultListener(
     forSpec: ComposeDestinationSpec<*> = relatedSpec,
     key: String = T::class.qualifiedName!!,
     crossinline callback: (T) -> Unit
-) = navController.LifecycleResultListener(
-    forSpec = forSpec,
-    key = key,
-    callback = callback
-)
+) {
+    navController.LifecycleResultListener(
+        forSpec = forSpec,
+        key = key,
+        callback = callback
+    )
+}
 
 @Composable
 inline fun <reified T> NavController.LifecycleResultListener(
@@ -86,7 +83,7 @@ inline fun <reified T> NavController.LifecycleResultListener(
     crossinline callback: (T) -> Unit
 ) {
     LifecycleResultListener(
-        forNavBackStackEntry = getBackStackEntry(forDestination),
+        forSpec = forDestination.spec,
         key = key,
         callback = callback
     )
@@ -98,11 +95,17 @@ inline fun <reified T> NavController.LifecycleResultListener(
     key: String = T::class.qualifiedName!!,
     crossinline callback: (T) -> Unit
 ) {
-    LifecycleResultListener(
-        forNavBackStackEntry = getBackStackEntry(forSpec),
-        key = key,
-        callback = callback
-    )
+    val backStackEntry = remember {
+        findBackStackEntry(forSpec)
+    }
+
+    backStackEntry?.let {
+        LifecycleResultListener(
+            forNavBackStackEntry = it,
+            key = key,
+            callback = callback
+        )
+    }
 }
 
 /**
@@ -131,7 +134,6 @@ inline fun <reified T> NavController.LifecycleResultListener(
         forNavBackStackEntry.lifecycle.addObserver(observer)
 
         onDispose {
-            //Alle aussser der hier waren davor: forNavBackStackEntry -> currentBackStackEntry
             forNavBackStackEntry.lifecycle.removeObserver(observer)
         }
     }
@@ -148,12 +150,14 @@ inline fun <reified T> ComposeDestinationScope.ResultListener(
     key: String = T::class.qualifiedName!!,
     withLifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     crossinline callback: (T) -> Unit
-) = navController.ResultListener(
-    forSpec = forSpec,
-    key = key,
-    withLifecycleState = withLifecycleState,
-    callback = callback
-)
+) {
+    navController.ResultListener(
+        forSpec = forSpec,
+        key = key,
+        withLifecycleState = withLifecycleState,
+        callback = callback
+    )
+}
 
 @Composable
 inline fun <reified T> NavController.ResultListener(
@@ -163,7 +167,7 @@ inline fun <reified T> NavController.ResultListener(
     crossinline callback: (T) -> Unit
 ) {
     ResultListener(
-        forNavBackStackEntry = getBackStackEntry(forDestination),
+        forSpec = forDestination.spec,
         key = key,
         withLifecycleState = withLifecycleState,
         callback = callback
@@ -177,12 +181,18 @@ inline fun <reified T> NavController.ResultListener(
     withLifecycleState: Lifecycle.State = Lifecycle.State.STARTED,
     crossinline callback: (T) -> Unit
 ) {
-    ResultListener(
-        forNavBackStackEntry = getBackStackEntry(forSpec),
-        key = key,
-        withLifecycleState = withLifecycleState,
-        callback = callback
-    )
+    val backStackEntry = remember {
+        findBackStackEntry(forSpec)
+    }
+
+    backStackEntry?.let {
+        ResultListener(
+            forNavBackStackEntry = it,
+            key = key,
+            withLifecycleState = withLifecycleState,
+            callback = callback
+        )
+    }
 }
 
 /**

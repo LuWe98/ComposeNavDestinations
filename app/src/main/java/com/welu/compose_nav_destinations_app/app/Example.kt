@@ -28,14 +28,17 @@ import com.welu.composenavdestinations.extensions.navigation.navigate
 import com.welu.composenavdestinations.extensions.navigation.popBackStack
 import com.welu.composenavdestinations.navargs.com_welu_compose_nav_destinations_app_app_model_TestEnum_NavArgEnumArrayType
 import com.welu.composenavdestinations.navgraphs.OtherGraphSpec
+import com.welu.composenavdestinations.navigation.ArgDestinationCompositionScope
 import com.welu.composenavdestinations.navigation.BottomSheetArgDestinationCompositionScope
 import com.welu.composenavdestinations.navigation.DestinationCompositionScope
 import com.welu.composenavdestinations.navigation.DialogArgDestinationCompositionScope
+import com.welu.composenavdestinations.navigation.destinations.ArgDestination
 import com.welu.composenavdestinations.navigation.destinations.BottomSheetArgDestination
 import com.welu.composenavdestinations.navigation.destinations.Destination
 import com.welu.composenavdestinations.navigation.destinations.DialogArgDestination
 import com.welu.composenavdestinations.result.LifecycleResultListener
 import com.welu.composenavdestinations.result.LongResult
+import com.welu.composenavdestinations.result.ResultListener
 import com.welu.composenavdestinations.result.sendResultTo
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
@@ -87,11 +90,11 @@ object FirstDestination : Destination {
 }
 
 @ComposeDestination
-object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> {
+object SecondDestination : ArgDestination<SecondDestination.NavArgs> {
 
     class NavArgs(val user: User, val enum: TestEnum?, val enumArray: Array<TestEnum>)
 
-    override val Content: BottomSheetArgDestinationCompositionScope<NavArgs> = {
+    override val Content: ArgDestinationCompositionScope<NavArgs> = {
 
         TestDestinationComposable(
             user = args.user,
@@ -131,12 +134,14 @@ object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> 
 }
 
 @ComposeDestination
-object ThirdDestination : BottomSheetArgDestination<DetailScreenNavArgs> {
+object ThirdDestination : ArgDestination<DetailScreenNavArgs> {
 
-    override val Content: BottomSheetArgDestinationCompositionScope<DetailScreenNavArgs> = {
+    override val Content: ArgDestinationCompositionScope<DetailScreenNavArgs> = {
         val vm = viewModel<DetailsVm>()
 
-        DetailScreen(args = vm.args) {
+        Log.d("Manual", "TRIGGERED")
+
+        DetailScreen(argsProvider = { vm.args }) {
             //navigate to nested Graph
             //navController.navigate(OtherGraphSpec())
 

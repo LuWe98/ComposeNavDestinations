@@ -1,5 +1,6 @@
 package com.welu.composenavdestinations.extensions.navigation
 
+import android.util.Log
 import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -39,7 +40,6 @@ private fun <N : ComposeNavGraphSpec> NavGraphBuilder.addNavGraphInternal(
     }
 }
 
-//TODO -> Das vllt noch oben einbauen?
 private fun NavGraphBuilder.addNestedNavigation(
     navGraphSpec: ComposeNavGraphSpec,
     navController: NavHostController
@@ -77,7 +77,6 @@ private fun NavGraphBuilder.addDestinationComposable(
                 animatedVisibilityScope = this
             )
         }
-
         destinationSpec.destination.Content(scope)
     }
 }

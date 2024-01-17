@@ -12,8 +12,7 @@ import androidx.compose.ui.Modifier
 fun StartScreen(
     valueOne: Int?,
     valueTwo: Int?,
-    navToDetail: () -> Unit,
-    onRandomButtonClicked: () -> Unit
+    navToDetail: () -> Unit
 ) {
     Column {
         Text(
@@ -27,11 +26,6 @@ fun StartScreen(
             onClick = navToDetail
         ) {
             Text(text = "Navigate")
-        }
-        Button(
-            onClick = onRandomButtonClicked
-        ) {
-            Text(text = "SetRandom Page Result")
         }
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
@@ -37,9 +38,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        SecondDestinationSpec
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         ComposeNavDestinations.init()
@@ -67,7 +65,9 @@ private fun NavigationComp() {
         NavHost(
             startDestination = DefaultNavGraphSpec.startComponentSpec.baseRoute,
             navController = navController,
-            modifier = Modifier.fillMaxSize().padding(top = 24.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 24.dp)
         ) {
             addNavGraph(DefaultNavGraphSpec, navController)
         }
