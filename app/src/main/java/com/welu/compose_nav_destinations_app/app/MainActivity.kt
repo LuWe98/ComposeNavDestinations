@@ -2,6 +2,7 @@ package com.welu.compose_nav_destinations_app.app
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +19,11 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import com.welu.compose_nav_destinations_app.app.model.TestEnum
 import com.welu.compose_nav_destinations_app.app.ui.theme.ComposeNavDestinationsTheme
 import com.welu.composenavdestinations.extensions.init
 import com.welu.composenavdestinations.extensions.navigation.addNavGraph
+import com.welu.composenavdestinations.navargs.NavArgEnumType
 import com.welu.composenavdestinations.navgraphs.DefaultNavGraphSpec
 import com.welu.composenavdestinations.navigation.ComposeNavDestinations
 import kotlinx.parcelize.Parcelize
@@ -34,6 +37,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        SecondDestinationSpec
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

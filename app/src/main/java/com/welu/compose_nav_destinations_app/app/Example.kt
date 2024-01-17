@@ -1,6 +1,7 @@
 package com.welu.compose_nav_destinations_app.app
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.welu.compose_nav_destinations_app.app.model.TestEnum
 import com.welu.compose_nav_destinations_app.app.screens.DetailScreen
 import com.welu.compose_nav_destinations_app.app.screens.DetailScreenNavArgs
 import com.welu.composenavdestinations.annotations.ComposeDestination
@@ -24,6 +26,7 @@ import com.welu.composenavdestinations.extensions.navigation.areArgumentsSetCorr
 import com.welu.composenavdestinations.extensions.navigation.getBackStackEntry
 import com.welu.composenavdestinations.extensions.navigation.navigate
 import com.welu.composenavdestinations.extensions.navigation.popBackStack
+import com.welu.composenavdestinations.navargs.com_welu_compose_nav_destinations_app_app_model_TestEnum_NavArgEnumArrayType
 import com.welu.composenavdestinations.navgraphs.OtherGraphSpec
 import com.welu.composenavdestinations.navigation.BottomSheetArgDestinationCompositionScope
 import com.welu.composenavdestinations.navigation.DestinationCompositionScope
@@ -65,7 +68,7 @@ object FirstDestination : Destination {
         }
 
         StartDestinationComposable({ parsedValue }) {
-            navigate(SecondDestination(User("123", "Lucha", 23)))
+            navigate(SecondDestination(User("123", "Lucha", 23), null, TestEnum.values()))
         }
     }
 
@@ -86,9 +89,10 @@ object FirstDestination : Destination {
 @ComposeDestination
 object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> {
 
-    class NavArgs(val user: User)
+    class NavArgs(val user: User, val enum: TestEnum?, val enumArray: Array<TestEnum>)
 
     override val Content: BottomSheetArgDestinationCompositionScope<NavArgs> = {
+
         TestDestinationComposable(
             user = args.user,
             navigateBack = {
@@ -96,7 +100,7 @@ object SecondDestination : BottomSheetArgDestination<SecondDestination.NavArgs> 
             },
             navigateToThirdScreen = {
                 //navigateAndPopUpTo(ThirdDestination(otherString = "fd"), FirstDestination, false)
-                navigate(ThirdDestination(otherString = "hallo"))
+                navigate(ThirdDestination.invoke(otherString = "hallo"))
             },
             sendResult = {
                 sendResultTo(FirstDestination, LongResult(Random.nextLong()))

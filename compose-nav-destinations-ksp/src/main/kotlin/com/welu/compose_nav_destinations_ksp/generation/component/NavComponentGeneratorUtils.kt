@@ -137,7 +137,7 @@ object NavComponentGeneratorUtils {
         requiredParameters: List<Parameter>,
         optionalParameters: List<Parameter>
     ): String {
-        val body = "\"$baseRoute\" +\n\t" + requiredParameters.joinToString(" +\n\t") { "\"/{${provideSerializeSnipped(it)}}\"" }
+        val body = "\"$baseRoute\" +\n\t" + requiredParameters.joinToString(" +\n\t") { "\"/${provideSerializeSnipped(it)}\"" }
 
         if(optionalParameters.none()) return body
 
